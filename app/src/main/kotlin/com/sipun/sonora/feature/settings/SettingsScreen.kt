@@ -35,6 +35,8 @@ import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LightMode
@@ -99,6 +101,7 @@ fun SettingsScreen(
     var keepScreenAwake by remember { mutableStateOf(playbackPreferences.keepScreenAwake()) }
     var showThemeDialog by remember { mutableStateOf(false) }
     var showSonoraDialog by remember { mutableStateOf(false) }
+    var showFolderDialog by remember { mutableStateOf(false) }
     var mediaManagementAllowed by remember(context) {
         mutableStateOf(
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
@@ -416,6 +419,17 @@ fun SettingsScreen(
             }
         }
 
+        SettingsSection(stringResource(R.string.settings_library_folders)) {
+            SettingsRow(
+                icon = Icons.Default.FolderOpen,
+                title = stringResource(R.string.settings_excluded_folders),
+                subtitle = stringResource(R.string.settings_excluded_folders_detail),
+                onClick = {
+                    showFolderDialog = true
+                },
+            )
+        }
+
         SettingsSection(stringResource(R.string.settings_playback)) {
             SettingsRow(
                 icon = Icons.Default.PlayArrow,
@@ -618,6 +632,12 @@ fun SettingsScreen(
         SonoraAboutDialog(
             onDismiss = { showSonoraDialog = false },
             onCheckForUpdates = onCheckForUpdates,
+        )
+    }
+
+    if (showFolderDialog) {
+        FolderManagementDialog(
+            onDismiss = { showFolderDialog = false }
         )
     }
 

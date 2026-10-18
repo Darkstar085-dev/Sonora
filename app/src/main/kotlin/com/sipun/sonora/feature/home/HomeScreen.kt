@@ -88,7 +88,8 @@ fun HomeScreen(
     onOpenPlaylist: (String) -> Unit,
 ) {
     val context = LocalContext.current
-    val repository = remember(context) { AndroidMusicRepository(context.contentResolver) }
+    val metadataRefreshVersion by AndroidMusicRepository.refreshVersion.collectAsState()
+    val repository = remember(context, metadataRefreshVersion) { AndroidMusicRepository(context) }
     val preferences = remember(context) { SonoraPreferences(context) }
     var query by rememberSaveable { mutableStateOf("") }
     var searchActive by rememberSaveable { mutableStateOf(false) }
@@ -100,7 +101,6 @@ fun HomeScreen(
     var favoriteIds by remember { mutableStateOf(preferences.favoriteIds()) }
     var playlists by remember { mutableStateOf(preferences.playlists()) }
     val playerState by playerController.state.collectAsState()
-    val metadataRefreshVersion by AndroidMusicRepository.refreshVersion.collectAsState()
 
     LaunchedEffect(metadataRefreshVersion) {
         repository.invalidateCache()

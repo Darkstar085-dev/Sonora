@@ -59,11 +59,11 @@ fun AlbumDetailScreen(
     onOpenArtist: (String) -> Unit,
 ) {
     val context = LocalContext.current
-    val repository = remember(context) { AndroidMusicRepository(context.contentResolver) }
+    val metadataRefreshVersion by AndroidMusicRepository.refreshVersion.collectAsState()
+    val repository = remember(context, metadataRefreshVersion) { AndroidMusicRepository(context) }
     var songs by remember { mutableStateOf<List<Song>>(emptyList()) }
     val preferences =
         remember(context) { com.sipun.sonora.data.preferences.SonoraPreferences(context) }
-    val metadataRefreshVersion by AndroidMusicRepository.refreshVersion.collectAsState()
 
     LaunchedEffect(albumName, metadataRefreshVersion) {
         repository.invalidateCache()

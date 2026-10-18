@@ -74,6 +74,33 @@ internal class LibraryPreferences(context: Context) {
         )
     }
 
+    fun excludedFolders(): Set<String> =
+        preferences.getStringSet(EXCLUDED_FOLDERS, emptySet())
+            .orEmpty()
+            .map { it.trim() }
+            .filter { it.isNotBlank() && it != "/" && it != "/storage/emulated/0" }
+            .toSet()
+
+    fun setExcludedFolders(folders: Set<String>) {
+        preferences.edit().putStringSet(EXCLUDED_FOLDERS, folders).apply()
+    }
+
+    fun addExcludedFolder(folder: String) {
+        val clean = folder.trim()
+        if (clean.isBlank() || clean == "/" || clean == "/storage/emulated/0") return
+        val set = excludedFolders().toMutableSet()
+        if (set.add(clean)) {
+            setExcludedFolders(set)
+        }
+    }
+
+    fun removeExcludedFolder(folder: String) {
+        val set = excludedFolders().toMutableSet()
+        if (set.remove(folder)) {
+            setExcludedFolders(set)
+        }
+    }
+
     private fun savePlaylists(playlists: List<SonoraPlaylist>) {
         preferences.edit()
             .putStringSet(
@@ -90,5 +117,6 @@ internal class LibraryPreferences(context: Context) {
         const val FILE_NAME = "sonora_preferences"
         const val FAVORITE_IDS = "favorite_song_ids"
         const val PLAYLISTS = "playlists"
+        const val EXCLUDED_FOLDERS = "excluded_folders"
     }
 }

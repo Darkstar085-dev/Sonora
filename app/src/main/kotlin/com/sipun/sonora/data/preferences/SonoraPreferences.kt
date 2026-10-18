@@ -91,4 +91,9 @@ class SonoraPreferences(context: Context) {
 
     fun removeFromPlaylist(playlistId: String, songId: Long) =
         library.removeFromPlaylist(playlistId, songId)
+
+    fun excludedFolders(): Set<String> = library.excludedFolders()
+    fun setExcludedFolders(folders: Set<String>) = library.setExcludedFolders(folders)
+    fun addExcludedFolder(folder: String) = library.addExcludedFolder(folder)
+    fun removeExcludedFolder(folder: String) = library.removeExcludedFolder(folder)
 }

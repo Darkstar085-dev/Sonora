@@ -53,7 +53,8 @@ import com.sipun.sonora.ui.components.SongArtworkImage
 @Composable
 fun LibraryScreen(playerController: PlayerController, onOpenNowPlaying: () -> Unit) {
     val context = LocalContext.current
-    val repository = remember(context) { AndroidMusicRepository(context.contentResolver) }
+    val metadataRefreshVersion by AndroidMusicRepository.refreshVersion.collectAsState()
+    val repository = remember(context, metadataRefreshVersion) { AndroidMusicRepository(context) }
     val permission = remember {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_AUDIO
         else Manifest.permission.READ_EXTERNAL_STORAGE
@@ -74,7 +75,6 @@ fun LibraryScreen(playerController: PlayerController, onOpenNowPlaying: () -> Un
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
         granted = it
     }
-    val metadataRefreshVersion by AndroidMusicRepository.refreshVersion.collectAsState()
 
     LaunchedEffect(granted, metadataRefreshVersion) {
         repository.invalidateCache()

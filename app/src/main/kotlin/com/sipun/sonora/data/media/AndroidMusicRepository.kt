@@ -2,8 +2,10 @@ package com.sipun.sonora.data.media
 
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import com.sipun.sonora.data.preferences.LibraryPreferences
 import com.sipun.sonora.domain.model.Song
 import com.sipun.sonora.domain.repository.MusicRepository
 import kotlinx.coroutines.Dispatchers
@@ -16,13 +18,29 @@ import org.jaudiotagger.kt.AudioTagger
 import org.jaudiotagger.kt.tag.FieldKey
 import java.io.File
 
-class AndroidMusicRepository(private val contentResolver: ContentResolver) : MusicRepository {
+class AndroidMusicRepository : MusicRepository {
+    private val contentResolver: ContentResolver
+    private val context: Context?
+
+    constructor(context: Context) {
+        this.contentResolver = context.contentResolver
+        this.context = context.applicationContext
+        appContext = context.applicationContext
+    }
+
+    constructor(contentResolver: ContentResolver) {
+        this.contentResolver = contentResolver
+        this.context = null
+    }
+
     @Volatile
     private var cachedSongs: List<Song>? = null
 
     companion object {
         private val _refreshVersion = MutableStateFlow(0L)
         val refreshVersion = _refreshVersion.asStateFlow()
+        @Volatile
+        private var appContext: Context? = null
 
         fun notifyMetadataChanged() {
             _refreshVersion.update { it + 1L }
@@ -46,8 +64,40 @@ class AndroidMusicRepository(private val contentResolver: ContentResolver) : Mus
     override suspend fun artists(): List<String> =
         songs().map(Song::artist).distinct().sortedWith(String.CASE_INSENSITIVE_ORDER)
 
+    suspend fun getAvailableFolders(): List<String> = withContext(Dispatchers.IO) {
+        val folders = mutableSetOf<String>()
+        val projection = arrayOf(
+            MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.RELATIVE_PATH,
+        )
+        val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
+        contentResolver.query(
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            projection,
+            selection,
+            null,
+            null,
+        )?.use { cursor ->
+            val dataIdx = cursor.getColumnIndex(MediaStore.Audio.Media.DATA)
+            val relIdx = cursor.getColumnIndex(MediaStore.Audio.Media.RELATIVE_PATH)
+            while (cursor.moveToNext()) {
+                val data = if (dataIdx >= 0) cursor.getString(dataIdx).orEmpty() else ""
+                val rel = if (relIdx >= 0) cursor.getString(relIdx).orEmpty() else ""
+                val folder = data.substringBeforeLast('/', "").ifBlank { rel }
+                if (folder.isNotBlank()) {
+                    folders.add(folder)
+                }
+            }
+        }
+        folders.sortedWith(String.CASE_INSENSITIVE_ORDER)
+    }
+
     private fun querySongs(): List<Song> {
         val songs = mutableListOf<Song>()
+        val resolvedContext = context ?: appContext
+        val libraryPreferences = resolvedContext?.let { LibraryPreferences(it) }
+        val excludedFolders = libraryPreferences?.excludedFolders() ?: emptySet()
+
         val projection = arrayOf(
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.TITLE,
@@ -61,6 +111,7 @@ class AndroidMusicRepository(private val contentResolver: ContentResolver) : Mus
             MediaStore.Audio.Media.RELATIVE_PATH,
             MediaStore.Audio.Media.DISPLAY_NAME,
             MediaStore.Audio.Media.DATE_ADDED,
+            MediaStore.Audio.Media.DATA,
         )
         val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
         val sortOrder = MediaStore.Audio.Media.TITLE + " COLLATE NOCASE ASC"
@@ -84,8 +135,27 @@ class AndroidMusicRepository(private val contentResolver: ContentResolver) : Mus
             val relativePath = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.RELATIVE_PATH)
             val displayName = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)
             val dateAdded = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_ADDED)
+            val dataIndex = cursor.getColumnIndex(MediaStore.Audio.Media.DATA)
 
             while (cursor.moveToNext()) {
+                val dataPath = if (dataIndex >= 0) cursor.getString(dataIndex).orEmpty() else ""
+                val relativePathValue = cursor.getString(relativePath).orEmpty()
+                val folderPath = dataPath.substringBeforeLast('/', "").ifBlank { relativePathValue }
+
+                val isExcluded = excludedFolders.any { excluded ->
+                    val cleanExcluded = excluded.trim()
+                    if (cleanExcluded.isBlank() || cleanExcluded == "/" || cleanExcluded == "/storage/emulated/0") {
+                        return@any false
+                    }
+                    dataPath.equals(cleanExcluded, ignoreCase = true) ||
+                            dataPath.startsWith("$cleanExcluded/", ignoreCase = true) ||
+                            relativePathValue.equals(cleanExcluded, ignoreCase = true) ||
+                            relativePathValue.startsWith("$cleanExcluded/", ignoreCase = true) ||
+                            folderPath.equals(cleanExcluded, ignoreCase = true) ||
+                            folderPath.startsWith("$cleanExcluded/", ignoreCase = true)
+                }
+                if (isExcluded) continue
+
                 val songId = cursor.getLong(id)
                 val currentAlbumId = cursor.getLong(albumId)
                 val uri = ContentUris.withAppendedId(
@@ -126,7 +196,7 @@ class AndroidMusicRepository(private val contentResolver: ContentResolver) : Mus
                     },
                     trackNumber = metadata.trackNumber,
                     year = metadata.year,
-                    folder = cursor.getString(relativePath).orEmpty().ifBlank { null },
+                    folder = folderPath.ifBlank { null },
                     dateAddedSeconds = cursor.getLong(dateAdded),
                 )
             }

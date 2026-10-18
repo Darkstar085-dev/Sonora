@@ -60,14 +60,14 @@ fun PlaylistDetailScreen(
     onOpenArtist: (String) -> Unit,
 ) {
     val context = LocalContext.current
-    val repository = remember(context) { AndroidMusicRepository(context.contentResolver) }
+    val metadataRefreshVersion by AndroidMusicRepository.refreshVersion.collectAsState()
+    val repository = remember(context, metadataRefreshVersion) { AndroidMusicRepository(context) }
     val preferences = remember(context) { SonoraPreferences(context) }
     var playlist by remember {
         mutableStateOf(
             preferences.playlists().firstOrNull { it.id == playlistId })
     }
     var allSongs by remember { mutableStateOf<List<Song>>(emptyList()) }
-    val metadataRefreshVersion by AndroidMusicRepository.refreshVersion.collectAsState()
 
     LaunchedEffect(metadataRefreshVersion) {
         repository.invalidateCache()

@@ -158,4 +158,15 @@
     <string name="metadata_save_failed">Couldn\'t save metadata: %1$s</string>
     <string name="widget_name_4x2">Sonora Music (4x2)</string>
     <string name="widget_description_4x2">Material 3 music player widget with playback controls and track details.</string>
+    <string name="settings_library_folders">Library &amp; folders</string>
+    <string name="settings_scan_folders">Scan folders</string>
+    <string name="settings_scan_folders_detail">Choose specific folders to scan for music</string>
+    <string name="settings_excluded_folders">Excluded folders</string>
+    <string name="settings_excluded_folders_detail">Manage folders excluded from music library</string>
+    <string name="folder_management_title">Folder Management</string>
+    <string name="folder_include">Include</string>
+    <string name="folder_exclude">Exclude</string>
+    <string name="folder_all_included">All folders included (default)</string>
+    <string name="folder_no_discovered">No music folders discovered yet</string>
+    <string name="action_add_folder">Add folder...</string>
 </resources>
