@@ -1,6 +1,9 @@
 package com.sipun.sonora.navigation
 
+import android.app.Activity
 import android.net.Uri
+import android.view.WindowManager
+import com.sipun.sonora.data.preferences.SonoraPreferences
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -56,6 +59,23 @@ fun SonoraApp(
             currentRoute != SonoraRoute.NowPlaying.route &&
             currentRoute != SonoraRoute.Lyrics.route &&
             playerState.currentSong != null
+
+    val preferences = remember(context) { SonoraPreferences(context.applicationContext) }
+    val keepScreenAwake = preferences.keepScreenAwake()
+    val activity = context as? Activity
+
+    DisposableEffect(keepScreenAwake, playerState.isPlaying) {
+        if (activity != null) {
+            if (keepScreenAwake && playerState.isPlaying) {
+                activity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            } else {
+                activity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
+        }
+        onDispose {
+            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
 
     DisposableEffect(player) {
         onDispose { player.release() }

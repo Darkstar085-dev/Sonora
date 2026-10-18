@@ -98,6 +98,13 @@ internal class PlaybackPreferences(context: Context) {
         preferences.edit().putBoolean(KEY_NORMALIZE_VOLUME, enabled).apply()
     }
 
+    fun keepScreenAwake(): Boolean =
+        preferences.getBoolean(KEY_KEEP_SCREEN_AWAKE, false)
+
+    fun setKeepScreenAwake(enabled: Boolean) {
+        preferences.edit().putBoolean(KEY_KEEP_SCREEN_AWAKE, enabled).apply()
+    }
+
     fun setCrossfadeSeconds(seconds: Int) {
         preferences.edit()
             .putInt(KEY_CROSSFADE_SECONDS, seconds.coerceIn(0, MAX_CROSSFADE_SECONDS))
@@ -134,6 +141,7 @@ internal class PlaybackPreferences(context: Context) {
         const val KEY_GAPLESS_PLAYBACK = "gapless_playback"
         const val KEY_CROSSFADE_SECONDS = "crossfade_seconds"
         const val KEY_NORMALIZE_VOLUME = "normalize_volume"
+        const val KEY_KEEP_SCREEN_AWAKE = "keep_screen_awake"
         const val MAX_LISTENING_HISTORY = 10
         const val MAX_CROSSFADE_SECONDS = 12
     }

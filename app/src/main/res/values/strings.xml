@@ -72,6 +72,8 @@
     <string name="settings_crossfade_value">%1$d seconds</string>
     <string name="settings_normalize_volume">Normalize volume</string>
     <string name="settings_normalize_volume_detail">Use ReplayGain to keep track loudness consistent</string>
+    <string name="settings_keep_screen_awake">Keep screen awake</string>
+    <string name="settings_keep_screen_awake_detail">Keep screen turned on while music is playing</string>
     <string name="settings_about">About</string>
     <string name="about_sonora">Sonora</string>
     <string name="about_sonora_detail">A simple local music player for Android.</string>

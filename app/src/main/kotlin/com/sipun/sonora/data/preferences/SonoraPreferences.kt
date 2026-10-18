@@ -68,6 +68,10 @@ class SonoraPreferences(context: Context) {
 
     fun setNormalizeVolume(enabled: Boolean) = playback.setNormalizeVolume(enabled)
 
+    fun keepScreenAwake(): Boolean = playback.keepScreenAwake()
+
+    fun setKeepScreenAwake(enabled: Boolean) = playback.setKeepScreenAwake(enabled)
+
     fun listeningHistoryIds(): List<Long> = playback.listeningHistoryIds()
 
     fun lastPlayed(): Song? = playback.lastPlayed()

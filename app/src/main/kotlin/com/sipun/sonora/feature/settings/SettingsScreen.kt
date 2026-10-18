@@ -45,6 +45,7 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SystemUpdate
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -95,6 +96,7 @@ fun SettingsScreen(
     var gaplessPlayback by remember { mutableStateOf(playbackPreferences.gaplessPlayback()) }
     var crossfadeSeconds by remember { mutableIntStateOf(playbackPreferences.crossfadeSeconds()) }
     var normalizeVolume by remember { mutableStateOf(playbackPreferences.normalizeVolume()) }
+    var keepScreenAwake by remember { mutableStateOf(playbackPreferences.keepScreenAwake()) }
     var showThemeDialog by remember { mutableStateOf(false) }
     var showSonoraDialog by remember { mutableStateOf(false) }
     var mediaManagementAllowed by remember(context) {
@@ -456,6 +458,21 @@ fun SettingsScreen(
                         onCheckedChange = {
                             normalizeVolume = it
                             playbackPreferences.setNormalizeVolume(it)
+                        },
+                    )
+                },
+            )
+            SettingsRow(
+                icon = Icons.Default.Visibility,
+                title = stringResource(R.string.settings_keep_screen_awake),
+                subtitle = stringResource(R.string.settings_keep_screen_awake_detail),
+                trailing = {
+                    PlaybackSwitch(
+                        checked = keepScreenAwake,
+                        darkTheme = darkTheme,
+                        onCheckedChange = {
+                            keepScreenAwake = it
+                            playbackPreferences.setKeepScreenAwake(it)
                         },
                     )
                 },
