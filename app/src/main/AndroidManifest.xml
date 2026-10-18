@@ -58,6 +58,23 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".widget.SonoraWidgetProvider"
+            android:exported="true"
+            android:label="@string/widget_name_4x2">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.sipun.sonora.ACTION_WIDGET_PLAY_PAUSE" />
+                <action android:name="com.sipun.sonora.ACTION_WIDGET_SKIP_NEXT" />
+                <action android:name="com.sipun.sonora.ACTION_WIDGET_SKIP_PREVIOUS" />
+                <action android:name="com.sipun.sonora.ACTION_WIDGET_TOGGLE_SHUFFLE" />
+                <action android:name="com.sipun.sonora.ACTION_WIDGET_CYCLE_REPEAT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/sonora_widget_4x2_info" />
+        </receiver>
         <service
             android:name=".player.SonoraPlaybackService"
             android:exported="true"

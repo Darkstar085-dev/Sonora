@@ -6,7 +6,14 @@ import com.sipun.sonora.domain.model.Song
 internal class PlaybackPreferences(context: Context) {
     private val preferences = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
 
-    fun saveLastPlayed(song: Song, positionMs: Long = 0L) {
+    fun saveLastPlayed(
+        song: Song,
+        positionMs: Long = 0L,
+        durationMs: Long = 0L,
+        isPlaying: Boolean = false,
+        shuffleEnabled: Boolean = false,
+        repeatMode: Int = 0,
+    ) {
         val history = listeningHistoryIds().toMutableList()
         history.remove(song.id)
         history.add(0, song.id)
@@ -18,10 +25,26 @@ internal class PlaybackPreferences(context: Context) {
             .putString(LAST_PLAYED_URI, song.uri)
             .putString(LAST_PLAYED_ART, song.albumArtUri)
             .putLong(LAST_PLAYED_POSITION, positionMs.coerceAtLeast(0L))
+            .putLong(LAST_PLAYED_DURATION, durationMs.coerceAtLeast(0L))
+            .putBoolean(KEY_IS_PLAYING, isPlaying)
+            .putBoolean(KEY_SHUFFLE_ENABLED, shuffleEnabled)
+            .putInt(KEY_REPEAT_MODE, repeatMode)
             .putLong("${LAST_PLAYED_POSITION}_${song.id}", positionMs.coerceAtLeast(0L))
             .putString(LISTENING_HISTORY, history.take(MAX_LISTENING_HISTORY).joinToString(","))
             .apply()
     }
+
+    fun isPlaying(): Boolean = preferences.getBoolean(KEY_IS_PLAYING, false)
+
+    fun setIsPlaying(isPlaying: Boolean) {
+        preferences.edit().putBoolean(KEY_IS_PLAYING, isPlaying).apply()
+    }
+
+    fun shuffleEnabled(): Boolean = preferences.getBoolean(KEY_SHUFFLE_ENABLED, false)
+
+    fun repeatMode(): Int = preferences.getInt(KEY_REPEAT_MODE, 0)
+
+    fun lastPlayedDurationMs(): Long = preferences.getLong(LAST_PLAYED_DURATION, 0L)
 
     fun listeningHistoryIds(): List<Long> =
         preferences.getString(LISTENING_HISTORY, null)
@@ -102,6 +125,10 @@ internal class PlaybackPreferences(context: Context) {
         const val LAST_PLAYED_URI = "last_played_uri"
         const val LAST_PLAYED_ART = "last_played_art"
         const val LAST_PLAYED_POSITION = "last_played_position"
+        const val LAST_PLAYED_DURATION = "last_played_duration"
+        const val KEY_IS_PLAYING = "key_is_playing"
+        const val KEY_SHUFFLE_ENABLED = "key_shuffle_enabled"
+        const val KEY_REPEAT_MODE = "key_repeat_mode"
         const val LISTENING_HISTORY = "listening_history"
         const val KEY_RESUME_PLAYBACK = "resume_playback"
         const val KEY_GAPLESS_PLAYBACK = "gapless_playback"

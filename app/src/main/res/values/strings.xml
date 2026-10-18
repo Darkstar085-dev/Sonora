@@ -154,4 +154,6 @@
     <string name="metadata_remove_artwork">Remove artwork</string>
     <string name="metadata_save">Save changes</string>
     <string name="metadata_save_failed">Couldn\'t save metadata: %1$s</string>
+    <string name="widget_name_4x2">Sonora Music (4x2)</string>
+    <string name="widget_description_4x2">Material 3 music player widget with playback controls and track details.</string>
 </resources>

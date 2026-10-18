@@ -285,12 +285,30 @@ class PlayerController(context: Context) {
             .takeIf { it != C.TIME_UNSET }
             ?.coerceAtLeast(0L)
             ?: 0L
+        val position = mediaController.currentPosition.coerceAtLeast(0L)
+        val isPlaying = mediaController.isPlaying
 
         _state.value = _state.value.copy(
-            isPlaying = mediaController.isPlaying,
-            positionMs = mediaController.currentPosition.coerceAtLeast(0L),
+            isPlaying = isPlaying,
+            positionMs = position,
             durationMs = duration,
         )
+
+        _state.value.currentSong?.let { song ->
+            preferences.saveLastPlayed(
+                song = song,
+                positionMs = position,
+                durationMs = duration,
+                isPlaying = isPlaying,
+                shuffleEnabled = mediaController.shuffleModeEnabled,
+                repeatMode = when (mediaController.repeatMode) {
+                    Player.REPEAT_MODE_ONE -> 2
+                    Player.REPEAT_MODE_ALL -> 1
+                    else -> 0
+                },
+            )
+            com.sipun.sonora.widget.SonoraWidgetProvider.updateAllWidgets(appContext)
+        }
     }
 
     private fun restoreLastPlayedIfNeeded() {
@@ -364,30 +382,44 @@ class PlayerController(context: Context) {
             ?: currentItem?.toSong()
             ?: _state.value.currentSong
 
+        val isPlaying = mediaController.isPlaying
+        val position = mediaController.currentPosition.coerceAtLeast(0L)
+        val duration = mediaController.duration.takeIf { it != C.TIME_UNSET }?.coerceAtLeast(0L) ?: 0L
+        val shuffleEnabled = mediaController.shuffleModeEnabled
+        val repeatModeInt = when (mediaController.repeatMode) {
+            Player.REPEAT_MODE_ONE -> 2
+            Player.REPEAT_MODE_ALL -> 1
+            else -> 0
+        }
+
         currentSong?.let {
             preferences.saveLastPlayed(
-                it,
-                mediaController.currentPosition.coerceAtLeast(0L),
+                song = it,
+                positionMs = position,
+                durationMs = duration,
+                isPlaying = isPlaying,
+                shuffleEnabled = shuffleEnabled,
+                repeatMode = repeatModeInt,
             )
         }
         _state.value = PlayerState(
             currentSong = currentSong,
             artworkData = _state.value.artworkData,
-            isPlaying = mediaController.isPlaying,
-            positionMs = mediaController.currentPosition.coerceAtLeast(0L),
-            durationMs = mediaController.duration.takeIf { it != C.TIME_UNSET }?.coerceAtLeast(0L)
-                ?: 0L,
+            isPlaying = isPlaying,
+            positionMs = position,
+            durationMs = duration,
             queue = resolvedQueue,
             queueIndex = currentSong?.let(resolvedQueue::indexOf) ?: -1,
             hasPrevious = mediaController.hasPreviousMediaItem(),
             hasNext = mediaController.hasNextMediaItem(),
-            shuffleEnabled = mediaController.shuffleModeEnabled,
-            repeatMode = when (mediaController.repeatMode) {
-                Player.REPEAT_MODE_ONE -> RepeatMode.ONE
-                Player.REPEAT_MODE_ALL -> RepeatMode.ALL
+            shuffleEnabled = shuffleEnabled,
+            repeatMode = when (repeatModeInt) {
+                2 -> RepeatMode.ONE
+                1 -> RepeatMode.ALL
                 else -> RepeatMode.OFF
             },
         )
+        com.sipun.sonora.widget.SonoraWidgetProvider.updateAllWidgets(appContext)
     }
 
     private fun MediaItem.toSong(): Song {

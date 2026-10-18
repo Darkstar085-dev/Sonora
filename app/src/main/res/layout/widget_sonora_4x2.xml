@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_m3_container_bg"
+    android:baselineAligned="false"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <!-- Top Section: Prominent Album Artwork + Song Info -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!-- Artwork Container (80dp x 80dp) -->
+        <FrameLayout
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="14dp">
+
+            <ImageView
+                android:id="@+id/widget_artwork"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/metadata_artwork"
+                android:scaleType="centerCrop"
+                android:src="@drawable/widget_artwork_bg" />
+
+            <ImageView
+                android:id="@+id/widget_artwork_icon"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_widget_music_note" />
+        </FrameLayout>
+
+        <!-- Track Information Column -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/widget_song_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/app_name"
+                android:textColor="@color/widget_m3_on_surface"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/widget_song_artist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/app_name"
+                android:textColor="@color/widget_m3_on_surface_variant"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Middle Section: Controls Row (Repeat, Prev, Play/Pause Circle, Next, Shuffle) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!-- Repeat Button -->
+        <ImageView
+            android:id="@+id/widget_btn_repeat"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="@string/app_name"
+            android:padding="8dp"
+            android:src="@drawable/ic_widget_repeat" />
+
+        <!-- Skip Previous -->
+        <ImageView
+            android:id="@+id/widget_btn_prev"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="10dp"
+            android:contentDescription="@string/app_name"
+            android:padding="8dp"
+            android:src="@drawable/ic_widget_skip_previous" />
+
+        <!-- Play / Pause Circle Container -->
+        <FrameLayout
+            android:id="@+id/widget_btn_play_pause_container"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp">
+
+            <ImageView
+                android:id="@+id/widget_btn_play_pause_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/widget_m3_play_bg" />
+
+            <ImageView
+                android:id="@+id/widget_btn_play_pause"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_widget_play" />
+        </FrameLayout>
+
+        <!-- Skip Next -->
+        <ImageView
+            android:id="@+id/widget_btn_next"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@string/app_name"
+            android:padding="8dp"
+            android:src="@drawable/ic_widget_skip_next" />
+
+        <!-- Shuffle Button -->
+        <ImageView
+            android:id="@+id/widget_btn_shuffle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription="@string/app_name"
+            android:padding="8dp"
+            android:src="@drawable/ic_widget_shuffle" />
+    </LinearLayout>
+
+    <!-- Bottom Section: Seekbar / Progress & Time Indicators -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/widget_progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/widget_m3_progress_drawable" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp">
+
+            <TextView
+                android:id="@+id/widget_time_current"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="0:00"
+                android:textColor="@color/widget_m3_on_surface_variant"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/widget_time_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:text="0:00"
+                android:textColor="@color/widget_m3_on_surface_variant"
+                android:textSize="12sp" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>
