@@ -121,7 +121,7 @@
     <string name="update_check_failed">Couldn\'t check for updates</string>
     <string name="update_check_failed_message">Sonora couldn\'t reach GitHub right now. Check your internet connection and try again.</string>
     <string name="update_up_to_date">You\'re up to date</string>
-    <string name="update_latest_prefix">You\'re already running the latest version, </string>
+    <string name="update_latest_message">You\'re already running the latest version %1$s.</string>
     <string name="playlist_count_one">1 playlist</string>
     <string name="playlist_count_other">%1$d playlists</string>
     <string name="create_playlist_to_save">Create a playlist to save this song.</string>

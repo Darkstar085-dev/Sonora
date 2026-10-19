@@ -159,8 +159,7 @@ class MainActivity : ComponentActivity() {
         onExternalAudioConsumed: () -> Unit = {},
     ) {
         val appIcon = remember {
-            packageManager
-                .getApplicationIcon(applicationInfo)
+            requireNotNull(ContextCompat.getDrawable(this, R.drawable.sonora_icon_foreground))
                 .toBitmap()
                 .asImageBitmap()
         }

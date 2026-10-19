@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
@@ -74,7 +75,11 @@ fun UpdateDialog(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(18.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.06f),
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f),
+                    ),
+                    border = BorderStroke(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.25f),
                     ),
                 ) {
                     Column(
@@ -160,7 +165,7 @@ fun UpdateDialog(
         },
         shape = RoundedCornerShape(28.dp),
         containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 6.dp,
+        tonalElevation = 0.dp,
     )
 }
 

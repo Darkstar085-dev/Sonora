@@ -2,16 +2,23 @@ package com.sipun.sonora.ui.update
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.window.Dialog
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -259,20 +266,54 @@ fun UpdateContent(
     }
 
     if (showNoUpdate) {
-        AlertDialog(
-            onDismissRequest = { showNoUpdate = false },
-            title = { Text(stringResource(R.string.update_up_to_date)) },
-            text = {
-                Text(stringResource(R.string.update_latest_prefix) + BuildConfig.VERSION_NAME + ".")
-            },
-            confirmButton = {
-                Button(
-                    onClick = { showNoUpdate = false },
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+        Dialog(onDismissRequest = { showNoUpdate = false }) {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(28.dp),
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 0.dp,
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 24.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    Text(stringResource(R.string.action_ok))
+                    Image(
+                        bitmap = appIcon,
+                        contentDescription = "Sonora",
+                        modifier = Modifier.size(64.dp),
+                    )
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            stringResource(R.string.update_up_to_date),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            stringResource(R.string.update_latest_message, BuildConfig.VERSION_NAME),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End,
+                    ) {
+                        Button(
+                            onClick = { showNoUpdate = false },
+                            shape = RoundedCornerShape(14.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary,
+                            ),
+                        ) {
+                            Text(stringResource(R.string.action_ok))
+                        }
+                    }
                 }
-            },
-        )
+            }
+        }
     }
 }
