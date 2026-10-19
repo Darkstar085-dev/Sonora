@@ -167,7 +167,7 @@ class AndroidMusicRepository : MusicRepository {
                     title = cursor.getString(title).cleanMetadata("Unknown title")
                         .ifBlank { displayNameValue },
                     artist = cursor.getString(artist).cleanMetadata("Unknown artist"),
-                    album = cursor.getString(album).cleanMetadata("Unknown album"),
+                    album = cursor.getString(album).cleanAlbum(folderPath, "Unknown album"),
                     genre = cursor.getString(genre).cleanMetadata("").takeIf { it.isNotBlank() },
                     trackNumber = cursor.getInt(track).takeIf { it > 0 },
                     year = cursor.getInt(year).takeIf { it > 0 },
@@ -249,4 +249,16 @@ private fun parseTrackNumber(value: String): Int? =
 private fun String?.cleanMetadata(fallback: String): String {
     val value = orEmpty().trim()
     return if (value.isBlank() || value.equals("<unknown>", ignoreCase = true)) fallback else value
+}
+
+private fun String?.cleanAlbum(folderPath: String, fallback: String): String {
+    val value = orEmpty().trim()
+    if (value.isBlank() || value.equals("<unknown>", ignoreCase = true) || value.equals("Music", ignoreCase = true)) {
+        val folderName = folderPath.substringAfterLast('/').ifBlank { folderPath }
+        if (folderName.isNotBlank() && !folderName.equals("0", ignoreCase = true) && !folderName.equals("Music", ignoreCase = true) && !folderName.equals("Download", ignoreCase = true)) {
+            return folderName
+        }
+        return fallback
+    }
+    return value
 }

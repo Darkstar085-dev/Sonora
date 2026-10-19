@@ -1,17 +1,21 @@
 package com.sipun.sonora.feature.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -190,61 +194,59 @@ private fun SongCard(
     actions: SongActionConfig = SongActionConfig(),
     onChanged: () -> Unit = {},
 ) {
-    Card(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 6.dp, horizontal = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
+        Artwork(song, Modifier.size(56.dp))
+        Column(
             Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .padding(start = 12.dp)
+                .weight(1f),
+            verticalArrangement = Arrangement.spacedBy(3.dp),
         ) {
-            Artwork(song, Modifier.size(56.dp))
-            Column(
-                Modifier
-                    .padding(start = 12.dp)
-                    .weight(1f),
-                verticalArrangement = Arrangement.spacedBy(3.dp),
-            ) {
-                Text(
-                    song.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Text(
-                    song.artist + " • " + song.album,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-            SongMoreButton(
-                song = song,
-                preferences = preferences,
-                playerController = player,
-                actions = SongActionConfig(
-                    showPlayNext = true,
-                    showAddToQueue = true,
-                    showEditMetadata = actions.showEditMetadata,
-                    showRemoveFromDevice = actions.showRemoveFromDevice,
-                ),
-                onOpenAlbum = onOpenAlbum,
-                onOpenArtist = onOpenArtist,
-                onChanged = onChanged,
+            Text(
+                song.title,
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                song.artist + " • " + song.album,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
+        SongMoreButton(
+            song = song,
+            preferences = preferences,
+            playerController = player,
+            actions = SongActionConfig(
+                showPlayNext = true,
+                showAddToQueue = true,
+                showEditMetadata = actions.showEditMetadata,
+                showRemoveFromDevice = actions.showRemoveFromDevice,
+            ),
+            onOpenAlbum = onOpenAlbum,
+            onOpenArtist = onOpenArtist,
+            onChanged = onChanged,
+        )
     }
 }
 
 @Composable
 internal fun AlbumList(songs: List<Song>, openAlbum: (String) -> Unit) {
     val albums = songs.groupBy(Song::album)
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(bottom = 85.dp)
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(bottom = 85.dp),
+        modifier = Modifier.fillMaxSize(),
     ) {
         items(albums.keys.sorted(), key = { it }) { album ->
             val tracks = albums.getValue(album)
@@ -253,33 +255,42 @@ internal fun AlbumList(songs: List<Song>, openAlbum: (String) -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(18.dp),
             ) {
-                Row(
+                Column(
                     Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Artwork(tracks.first(), Modifier.size(64.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        SongArtworkImage(
+                            song = tracks.first(),
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                    }
                     Column(
-                        Modifier
-                            .padding(start = 12.dp)
-                            .weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(3.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
                     ) {
                         Text(
                             album,
                             style = MaterialTheme.typography.titleMedium,
-                            maxLines = 2,
+                            maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
                             tracks.first().artist + " • " + songCountLabel(tracks.size),
+                            style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
-
                 }
             }
         }
@@ -289,9 +300,12 @@ internal fun AlbumList(songs: List<Song>, openAlbum: (String) -> Unit) {
 @Composable
 internal fun ArtistList(songs: List<Song>, openArtist: (String) -> Unit) {
     val artists = songs.groupBy(Song::artist)
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(bottom = 85.dp)
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(bottom = 85.dp),
+        modifier = Modifier.fillMaxSize(),
     ) {
         items(artists.keys.sorted(), key = { it }) { artist ->
             val tracks = artists.getValue(artist)
@@ -300,16 +314,17 @@ internal fun ArtistList(songs: List<Song>, openArtist: (String) -> Unit) {
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(18.dp),
             ) {
-                Row(
+                Column(
                     Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     Box(
-                        Modifier
-                            .size(64.dp)
-                            .clip(RoundedCornerShape(16.dp))
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .clip(RoundedCornerShape(14.dp))
                             .background(MaterialTheme.colorScheme.surfaceVariant),
                         contentAlignment = Alignment.Center,
                     ) {
@@ -322,20 +337,20 @@ internal fun ArtistList(songs: List<Song>, openArtist: (String) -> Unit) {
                         }
                     }
                     Column(
-                        Modifier
-                            .padding(start = 12.dp)
-                            .weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(3.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp),
                     ) {
                         Text(
                             artist,
                             style = MaterialTheme.typography.titleMedium,
-                            maxLines = 2,
+                            maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
                             songCountLabel(tracks.size),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }
