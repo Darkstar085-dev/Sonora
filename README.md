@@ -97,6 +97,7 @@ streaming service.
 - Playlists and favorites
 - Recently added tracks and continue-listening history on Home
 - Album artwork and local metadata
+- Exclude selected folders from library scanning
 
 ### Playback
 
@@ -113,6 +114,8 @@ streaming service.
 - Android system media controls
 - Media notification
 - Audio format information
+- 4×2 home screen widget with album artwork, playback progress, and controls
+- Optional keep-screen-awake setting while music is playing
 
 ### Lyrics
 
@@ -141,7 +144,7 @@ streaming service.
 - System media controls and playback notifications
 - Open audio files directly from compatible file managers
 - Permission management for music, artwork/photos, notifications, metadata editing, and media deletion
-- WorkManager-based update flow
+- WorkManager-based update flow with theme-aware dialogs and clear update status messaging
 - First-launch onboarding and media permission flow
 
 ---
