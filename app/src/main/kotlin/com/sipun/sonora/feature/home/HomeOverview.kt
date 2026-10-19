@@ -77,7 +77,8 @@ internal fun Overview(
     val showNowPlaying = nowPlayingSong != null
 
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
     ) {
         item {
             LibraryLottieCard(

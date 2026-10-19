@@ -53,6 +53,7 @@ internal fun SongList(
     val sortedSongs = remember(songs) { songs.sortedWith(songTitleComparator) }
 
     LazyColumn(
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(bottom = 85.dp),
     ) {
@@ -194,47 +195,52 @@ private fun SongCard(
     actions: SongActionConfig = SongActionConfig(),
     onChanged: () -> Unit = {},
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 6.dp, horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
     ) {
-        Artwork(song, Modifier.size(56.dp))
-        Column(
+        Row(
             Modifier
-                .padding(start = 12.dp)
-                .weight(1f),
-            verticalArrangement = Arrangement.spacedBy(3.dp),
+                .fillMaxWidth()
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                song.title,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                song.artist + " • " + song.album,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+            Artwork(song, Modifier.size(56.dp))
+            Column(
+                Modifier
+                    .padding(start = 12.dp)
+                    .weight(1f),
+                verticalArrangement = Arrangement.spacedBy(3.dp),
+            ) {
+                Text(
+                    song.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    song.artist + " • " + song.album,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            SongMoreButton(
+                song = song,
+                preferences = preferences,
+                playerController = player,
+                actions = SongActionConfig(
+                    showPlayNext = true,
+                    showAddToQueue = true,
+                    showEditMetadata = actions.showEditMetadata,
+                    showRemoveFromDevice = actions.showRemoveFromDevice,
+                ),
+                onOpenAlbum = onOpenAlbum,
+                onOpenArtist = onOpenArtist,
+                onChanged = onChanged,
             )
         }
-        SongMoreButton(
-            song = song,
-            preferences = preferences,
-            playerController = player,
-            actions = SongActionConfig(
-                showPlayNext = true,
-                showAddToQueue = true,
-                showEditMetadata = actions.showEditMetadata,
-                showRemoveFromDevice = actions.showRemoveFromDevice,
-            ),
-            onOpenAlbum = onOpenAlbum,
-            onOpenArtist = onOpenArtist,
-            onChanged = onChanged,
-        )
     }
 }
 
