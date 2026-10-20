@@ -34,6 +34,7 @@ class SonoraPlaybackService : MediaSessionService() {
     private val normalizationVolumes = mutableMapOf<ExoPlayer, Float>()
     private val normalizationEffects = mutableMapOf<ExoPlayer, LoudnessEnhancer?>()
     private val normalizationMetadata = mutableMapOf<ExoPlayer, Metadata>()
+    private var externalPlaybackActive = false
 
     override fun onCreate() {
         super.onCreate()
@@ -72,6 +73,27 @@ class SonoraPlaybackService : MediaSessionService() {
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? =
         mediaSession
 
+    override fun onUpdateNotification(session: MediaSession, startInForegroundRequired: Boolean) {
+        if (externalPlaybackActive) {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            return
+        }
+        super.onUpdateNotification(session, startInForegroundRequired)
+    }
+
+    private fun beginExternalPlayback() {
+        if (externalPlaybackActive) return
+        externalPlaybackActive = true
+        triggerNotificationUpdate()
+    }
+
+    private fun endExternalPlayback() {
+        if (!externalPlaybackActive) return
+        externalPlaybackActive = false
+        activePlayer?.pause()
+        triggerNotificationUpdate()
+    }
+
     override fun onDestroy() {
         transitionHandler.removeCallbacks(transitionRunnable)
         cancelCrossfade()
@@ -87,7 +109,10 @@ class SonoraPlaybackService : MediaSessionService() {
             .setRenderersFactory(SonoraRenderersFactory(this))
             .setHandleAudioBecomingNoisy(handleAudioFocus)
             .setAudioAttributes(
-                androidx.media3.common.AudioAttributes.DEFAULT,
+                androidx.media3.common.AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+                    .build(),
                 handleAudioFocus,
             )
             .setPauseAtEndOfMediaItems(
@@ -118,6 +143,14 @@ class SonoraPlaybackService : MediaSessionService() {
         }
 
         override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
+            if (!playWhenReady && reason == Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS) {
+                beginExternalPlayback()
+            } else if (playWhenReady &&
+                reason == Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS &&
+                externalPlaybackActive
+            ) {
+                endExternalPlayback()
+            }
             if (!playWhenReady &&
                 reason == Player.PLAY_WHEN_READY_CHANGE_REASON_END_OF_MEDIA_ITEM &&
                 preferences.crossfadeSeconds() == 0 &&
@@ -127,6 +160,14 @@ class SonoraPlaybackService : MediaSessionService() {
                     { activePlayer?.play() },
                     NON_GAPLESS_DELAY_MS,
                 )
+            }
+        }
+
+        override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
+            if (playbackSuppressionReason == Player.PLAYBACK_SUPPRESSION_REASON_TRANSIENT_AUDIO_FOCUS_LOSS) {
+                beginExternalPlayback()
+            } else if (playbackSuppressionReason == Player.PLAYBACK_SUPPRESSION_REASON_NONE) {
+                endExternalPlayback()
             }
         }
 
