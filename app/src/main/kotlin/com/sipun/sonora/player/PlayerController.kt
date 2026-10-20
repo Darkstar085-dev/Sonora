@@ -392,6 +392,18 @@ class PlayerController(context: Context) {
             else -> 0
         }
 
+        val audioFormat = mediaController.currentTracks.groups
+            .firstOrNull { it.type == C.TRACK_TYPE_AUDIO && it.isSelected }
+            ?.getTrackFormat(0)
+        val audioBitrate = audioFormat?.bitrate?.takeIf { it > 0 } ?: 0
+        val audioSampleRate = audioFormat?.sampleRate?.takeIf { it > 0 } ?: 0
+        val audioChannelCount = audioFormat?.channelCount?.takeIf { it > 0 } ?: 0
+        val audioBitDepth = audioFormat?.initializationData
+            ?.firstOrNull()
+            ?.takeIf { it.size > 5 }
+            ?.get(5)?.toInt()?.and(0xff)
+            ?.takeIf { it == 16 || it == 24 || it == 32 } ?: 0
+
         currentSong?.let {
             preferences.saveLastPlayed(
                 song = it,
@@ -418,6 +430,11 @@ class PlayerController(context: Context) {
                 1 -> RepeatMode.ALL
                 else -> RepeatMode.OFF
             },
+            audioBitrate = audioBitrate,
+            audioSampleRate = audioSampleRate,
+            audioChannelCount = audioChannelCount,
+            audioBitDepth = audioBitDepth,
+            audioMimeType = audioFormat?.sampleMimeType,
         )
         com.sipun.sonora.widget.SonoraWidgetProvider.updateAllWidgets(appContext)
     }

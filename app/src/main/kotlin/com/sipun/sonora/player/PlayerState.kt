@@ -14,6 +14,11 @@ data class PlayerState(
     val hasNext: Boolean = false,
     val shuffleEnabled: Boolean = false,
     val repeatMode: RepeatMode = RepeatMode.OFF,
+    val audioBitrate: Int = 0,
+    val audioSampleRate: Int = 0,
+    val audioChannelCount: Int = 0,
+    val audioBitDepth: Int = 0,
+    val audioMimeType: String? = null,
 )
 
 enum class RepeatMode {

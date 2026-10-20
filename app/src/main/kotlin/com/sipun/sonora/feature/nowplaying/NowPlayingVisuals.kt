@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -196,32 +197,39 @@ internal fun loadAudioInfo(context: android.content.Context, uriString: String):
             context.contentResolver.openFileDescriptor(uri, "r")?.use { descriptor ->
                 retriever.setDataSource(descriptor.fileDescriptor)
                 extractor.setDataSource(descriptor.fileDescriptor)
-            } ?: return null
-            val mimeType = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)
-            val bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)
-                ?.toLongOrNull()?.div(1000)?.takeIf { it > 0 }
-            var sampleRate = 0
-            for (index in 0 until extractor.trackCount) {
-                val format = extractor.getTrackFormat(index)
-                if (format.getString(MediaFormat.KEY_MIME)?.startsWith("audio/") == true) {
-                    if (format.containsKey(MediaFormat.KEY_SAMPLE_RATE)) {
-                        sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+
+                val mimeType = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)
+                var bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)
+                    ?.toLongOrNull()?.takeIf { it > 0 }
+                var sampleRate = 0
+
+                for (index in 0 until extractor.trackCount) {
+                    val format = extractor.getTrackFormat(index)
+                    if (format.getString(MediaFormat.KEY_MIME)?.startsWith("audio/") == true) {
+                        if (format.containsKey(MediaFormat.KEY_SAMPLE_RATE)) {
+                            sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
+                        }
+                        if (bitrate == null && format.containsKey(MediaFormat.KEY_BIT_RATE)) {
+                            bitrate = format.getInteger(MediaFormat.KEY_BIT_RATE).toLong()
+                                .takeIf { it > 0 }
+                        }
+                        break
                     }
-                    break
                 }
+
+                AudioInfo(
+                    bitrate = bitrate?.div(1000)?.takeIf { it > 0 }?.let { "$it kbps" } ?: "—",
+                    format = audioFormatLabel(mimeType),
+                    sampleRate = if (sampleRate > 0) {
+                        val khz = sampleRate / 1000f
+                        if (khz % 1f == 0f) {
+                            "${khz.toInt()} kHz"
+                        } else {
+                            "$khz kHz"
+                        }
+                    } else "—",
+                )
             }
-            AudioInfo(
-                bitrate = bitrate?.let { it.toString() + " kbps" } ?: "—",
-                format = audioFormatLabel(mimeType),
-                sampleRate = if (sampleRate > 0) {
-                    val khz = sampleRate / 1000f
-                    if (khz % 1f == 0f) {
-                        khz.toInt().toString() + " kHz"
-                    } else {
-                        khz.toString() + " kHz"
-                    }
-                } else "—",
-            )
         } finally {
             extractor.release()
             retriever.release()

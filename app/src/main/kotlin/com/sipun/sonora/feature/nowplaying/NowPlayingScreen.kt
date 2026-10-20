@@ -113,9 +113,19 @@ fun NowPlayingScreen(
     )
     val favoriteAnimation = rememberLottieAnimatable()
     var sleepTimerJob by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
-    var audioInfo by remember {
+    var fileAudioInfo by remember {
         mutableStateOf(AudioInfo(bitrate = "—", format = "AUDIO", sampleRate = "—"))
     }
+    val audioInfo = AudioInfo(
+        bitrate = state.audioBitrate.takeIf { it > 0 }?.div(1000)?.let { "$it kbps" }
+            ?: fileAudioInfo.bitrate,
+        format = fileAudioInfo.format.takeUnless { it == "AUDIO" }
+            ?: audioFormatLabel(state.audioMimeType),
+        sampleRate = if (state.audioSampleRate > 0) {
+            val khz = state.audioSampleRate / 1000f
+            (if (khz % 1f == 0f) "${khz.toInt()}" else khz.toString()) + " kHz"
+        } else fileAudioInfo.sampleRate,
+    )
     val deleteRequestLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartIntentSenderForResult()
     ) { result ->
@@ -132,7 +142,7 @@ fun NowPlayingScreen(
     LaunchedEffect(state.currentSong?.uri) {
         state.currentSong?.uri?.let { uri ->
             loadAudioInfo(context, uri)?.let { loadedInfo ->
-                audioInfo = loadedInfo
+                fileAudioInfo = loadedInfo
             }
         }
     }

@@ -84,6 +84,7 @@ class SonoraPlaybackService : MediaSessionService() {
 
     private fun buildPlayer(handleAudioFocus: Boolean): ExoPlayer =
         ExoPlayer.Builder(this)
+            .setRenderersFactory(SonoraRenderersFactory(this))
             .setHandleAudioBecomingNoisy(handleAudioFocus)
             .setAudioAttributes(
                 androidx.media3.common.AudioAttributes.DEFAULT,
