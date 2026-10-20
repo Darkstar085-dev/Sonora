@@ -31,6 +31,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.AllInclusive
 import androidx.compose.material.icons.filled.BatteryFull
+import androidx.compose.material.icons.filled.BrightnessAuto
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DeleteOutline
@@ -291,10 +292,14 @@ fun SettingsScreen(
         AppTheme.DARK -> true
     }
 
-    val themeLabel = when (selectedTheme) {
-        AppTheme.LIGHT -> stringResource(R.string.settings_theme_light)
-        AppTheme.DARK -> stringResource(R.string.settings_theme_dark)
-        AppTheme.SYSTEM -> stringResource(R.string.settings_theme_device_default)
+    val themeLabel = if (pureBlack) {
+        stringResource(R.string.settings_pure_black)
+    } else {
+        when (selectedTheme) {
+            AppTheme.LIGHT -> stringResource(R.string.settings_theme_light)
+            AppTheme.DARK -> stringResource(R.string.settings_theme_dark)
+            AppTheme.SYSTEM -> stringResource(R.string.settings_theme_device_default)
+        }
     }
 
     Column(
@@ -320,8 +325,7 @@ fun SettingsScreen(
         }
 
         SettingsSection(stringResource(R.string.settings_appearance)) {
-            if (!pureBlack) {
-                SettingsRow(
+            SettingsRow(
                     icon = Icons.Default.LightMode,
                     title = stringResource(R.string.settings_theme),
                     subtitle = themeLabel,
@@ -339,8 +343,7 @@ fun SettingsScreen(
                             )
                         }
                     },
-                )
-            }
+            )
             SettingsRow(
                 icon = Icons.Default.Palette,
                 title = stringResource(R.string.settings_dynamic_color),
@@ -379,37 +382,6 @@ fun SettingsScreen(
                     onSelect = themePreferences::setDynamicPalette,
                 )
             }
-
-            SettingsRow(
-                icon = Icons.Default.DarkMode,
-                title = stringResource(R.string.settings_pure_black),
-                subtitle = stringResource(R.string.settings_pure_black_detail),
-                trailing = {
-                    Switch(
-                        checked = pureBlack,
-                        onCheckedChange = themePreferences::setPureBlack,
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
-                            checkedTrackColor = MaterialTheme.colorScheme.primary,
-                            uncheckedThumbColor = if (darkTheme) {
-                                MaterialTheme.colorScheme.onSurface
-                            } else {
-                                Color.White
-                            },
-                            uncheckedTrackColor = if (darkTheme) {
-                                MaterialTheme.colorScheme.surfaceVariant
-                            } else {
-                                Color(0xFFE3E3E8)
-                            },
-                            uncheckedBorderColor = if (darkTheme) {
-                                MaterialTheme.colorScheme.outline
-                            } else {
-                                Color(0xFFC1C1C8)
-                            },
-                        ),
-                    )
-                },
-            )
 
             if (!dynamicColor) {
                 CustomColorSelector(
@@ -641,7 +613,7 @@ fun SettingsScreen(
         )
     }
 
-    if (!pureBlack && showThemeDialog) {
+    if (showThemeDialog) {
         AlertDialog(
             onDismissRequest = { showThemeDialog = false },
             shape = RoundedCornerShape(28.dp),
@@ -666,26 +638,45 @@ fun SettingsScreen(
                         modifier = Modifier.padding(bottom = 8.dp),
                     )
                     ThemeOption(
-                        title = stringResource(R.string.settings_theme_light),
-                        selected = selectedTheme == AppTheme.LIGHT,
+                        title = stringResource(R.string.settings_theme_device_default),
+                        icon = Icons.Default.BrightnessAuto,
+                        description = "Follows your device settings",
+                        selected = !pureBlack && selectedTheme == AppTheme.SYSTEM,
                         onClick = {
+                            themePreferences.setPureBlack(false)
+                            themePreferences.setTheme(AppTheme.SYSTEM)
+                            showThemeDialog = false
+                        },
+                    )
+                    ThemeOption(
+                        title = stringResource(R.string.settings_theme_light),
+                        icon = Icons.Default.LightMode,
+                        description = "Bright and clear",
+                        selected = !pureBlack && selectedTheme == AppTheme.LIGHT,
+                        onClick = {
+                            themePreferences.setPureBlack(false)
                             themePreferences.setTheme(AppTheme.LIGHT)
                             showThemeDialog = false
                         },
                     )
                     ThemeOption(
                         title = stringResource(R.string.settings_theme_dark),
-                        selected = selectedTheme == AppTheme.DARK,
+                        icon = Icons.Default.DarkMode,
+                        description = "Easy on the eyes",
+                        selected = !pureBlack && selectedTheme == AppTheme.DARK,
                         onClick = {
+                            themePreferences.setPureBlack(false)
                             themePreferences.setTheme(AppTheme.DARK)
                             showThemeDialog = false
                         },
                     )
                     ThemeOption(
-                        title = stringResource(R.string.settings_theme_device_default),
-                        selected = selectedTheme == AppTheme.SYSTEM,
+                        title = stringResource(R.string.settings_pure_black),
+                        icon = Icons.Default.DarkMode,
+                        description = "True black surfaces for dark mode",
+                        selected = pureBlack,
                         onClick = {
-                            themePreferences.setTheme(AppTheme.SYSTEM)
+                            themePreferences.setPureBlack(true)
                             showThemeDialog = false
                         },
                     )
