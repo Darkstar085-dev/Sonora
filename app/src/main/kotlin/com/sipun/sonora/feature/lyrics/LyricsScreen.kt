@@ -45,16 +45,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sipun.sonora.R
-import com.sipun.sonora.ui.components.SonoraBackButton
 import com.sipun.sonora.data.lyrics.Lyrics
 import com.sipun.sonora.data.lyrics.LyricsRepository
 import com.sipun.sonora.player.PlayerController
+import com.sipun.sonora.ui.components.SonoraBackButton
 import com.sipun.sonora.ui.components.SongArtworkImage
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
@@ -63,11 +64,11 @@ import kotlinx.coroutines.delay
 @Composable
 fun LyricsScreen(playerController: PlayerController, onBack: () -> Unit) {
     val state by playerController.state.collectAsStateWithLifecycle()
-    val repository = remember { LyricsRepository() }
+    val context = LocalContext.current
+    val repository = remember(context) { LyricsRepository(context.applicationContext) }
     var lyrics by remember { mutableStateOf<Lyrics?>(null) }
     var loading by remember { mutableStateOf(false) }
     var retry by remember { mutableIntStateOf(0) }
-
 
     LaunchedEffect(state.isPlaying) {
         while (state.isPlaying) {
@@ -85,6 +86,7 @@ fun LyricsScreen(playerController: PlayerController, onBack: () -> Unit) {
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
+            lyrics = null
         } finally {
             loading = false
         }
