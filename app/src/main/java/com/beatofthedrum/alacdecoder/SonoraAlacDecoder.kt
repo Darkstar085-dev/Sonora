@@ -26,7 +26,7 @@ internal class SonoraAlacDecoder(
         config.forEachIndexed { index, value -> cookie[index + 24] = value.toInt() and 0xff }
         decoderFile = AlacDecodeUtils.create_alac(bitDepth, channelCount)
         AlacDecodeUtils.alac_set_info(decoderFile, cookie)
-        pcmSamples = IntArray(decoderFile.setinfo_max_samples_per_frame * channelCount)
+        pcmSamples = IntArray(decoderFile.setinfo_max_samples_per_frame * channelCount * if (bitDepth == 24) 3 else 1)
         val maximumPacketSize = inputFormat.maxInputSize
             .takeIf { it != Format.NO_VALUE && it > 0 } ?: DEFAULT_PACKET_SIZE
         setInitialInputBufferSize(maximumPacketSize)
@@ -54,15 +54,19 @@ internal class SonoraAlacDecoder(
             source.get(encoded, 0, encoded.size - READ_PADDING)
             val outputBytes = AlacDecodeUtils.decode_frame(decoderFile, encoded, pcmSamples, 0)
             if (outputBytes <= 0) return SonoraAlacDecoderException("ALAC decoder returned an empty frame")
-            val bytesPerSample = bitDepth / 8
-            val sampleCount = outputBytes / bytesPerSample
-            outputBuffer.init(inputBuffer.timeUs, sampleCount * bytesPerSample)
+            outputBuffer.init(inputBuffer.timeUs, outputBytes)
             val pcm = outputBuffer.data ?: return SonoraAlacDecoderException("Could not allocate PCM output")
-            for (index in 0 until sampleCount) {
-                val sample = pcmSamples[index]
-                pcm.put(sample.toByte())
-                pcm.put((sample shr 8).toByte())
-                if (bytesPerSample == 3) pcm.put((sample shr 16).toByte())
+            if (bitDepth == 24) {
+                for (index in 0 until outputBytes) {
+                    pcm.put(pcmSamples[index].toByte())
+                }
+            } else {
+                val sampleCount = outputBytes / 2
+                for (index in 0 until sampleCount) {
+                    val sample = pcmSamples[index]
+                    pcm.put(sample.toByte())
+                    pcm.put((sample shr 8).toByte())
+                }
             }
             pcm.flip()
             null
