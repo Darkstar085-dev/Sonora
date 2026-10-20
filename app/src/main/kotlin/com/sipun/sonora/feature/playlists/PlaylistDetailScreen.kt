@@ -22,10 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistPlay
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -46,9 +44,13 @@ import androidx.compose.ui.unit.dp
 import com.sipun.sonora.data.media.AndroidMusicRepository
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.feature.sorting.SongSortOption
+import com.sipun.sonora.feature.sorting.SongSortScope
+import com.sipun.sonora.feature.sorting.sortSongs
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.SongActionConfig
 import com.sipun.sonora.ui.components.SongMoreButton
+import com.sipun.sonora.ui.components.SongCollectionControls
 
 @Composable
 fun PlaylistDetailScreen(
@@ -68,6 +70,9 @@ fun PlaylistDetailScreen(
             preferences.playlists().firstOrNull { it.id == playlistId })
     }
     var allSongs by remember { mutableStateOf<List<Song>>(emptyList()) }
+    var sortOption by remember(playlistId) {
+        mutableStateOf(SongSortOption.fromKey(preferences.sortOption(SongSortScope.PLAYLIST.key)))
+    }
 
     LaunchedEffect(metadataRefreshVersion) {
         repository.invalidateCache()
@@ -76,6 +81,8 @@ fun PlaylistDetailScreen(
 
     val songs =
         playlist?.songIds?.mapNotNull { id -> allSongs.firstOrNull { it.id == id } }.orEmpty()
+    val history = preferences.listeningHistoryIds()
+    val sortedSongs = remember(songs, sortOption, history) { sortSongs(songs, sortOption, history) }
 
     Scaffold(
         topBar = {
@@ -135,18 +142,24 @@ fun PlaylistDetailScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(top = 3.dp),
                         )
-                        if (songs.isNotEmpty()) {
-                            FilledIconButton(
-                                onClick = { playerController.playQueue(songs); onOpenNowPlaying() },
-                                modifier = Modifier.padding(top = 12.dp),
-                                colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primary),
-                            ) { Icon(Icons.Default.PlayArrow, "Play playlist") }
+                        if (sortedSongs.isNotEmpty()) {
+                            SongCollectionControls(
+                                songs = sortedSongs,
+                                playerController = playerController,
+                                onOpenNowPlaying = onOpenNowPlaying,
+                                scope = SongSortScope.PLAYLIST,
+                                currentOption = sortOption,
+                                onOptionSelected = { option ->
+                                    sortOption = option
+                                    preferences.setSortOption(SongSortScope.PLAYLIST.key, option.key)
+                                },
+                            )
                         }
                     }
                 }
-                itemsIndexed(songs, key = { _, song -> song.id }) { index, song ->
+                itemsIndexed(sortedSongs, key = { _, song -> song.id }) { index, song ->
                     Card(
-                        onClick = { playerController.playQueue(songs, index); onOpenNowPlaying() },
+                        onClick = { playerController.playQueue(sortedSongs, index); onOpenNowPlaying() },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(18.dp),
                     ) {

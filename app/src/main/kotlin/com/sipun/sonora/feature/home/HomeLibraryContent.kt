@@ -26,6 +26,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,11 +36,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.feature.sorting.SongSortOption
+import com.sipun.sonora.feature.sorting.SongSortScope
+import com.sipun.sonora.feature.sorting.sortSongs
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.SongActionConfig
 import com.sipun.sonora.ui.components.SongArtworkImage
 import com.sipun.sonora.ui.components.SongMoreButton
-import java.text.Normalizer
+import com.sipun.sonora.ui.components.SongSortButton
 
 @Composable
 internal fun SongList(
@@ -50,13 +55,34 @@ internal fun SongList(
     openArtist: (String) -> Unit,
     onChanged: () -> Unit,
 ) {
-    val sortedSongs = remember(songs) { songs.sortedWith(songTitleComparator) }
+    var sortOption by remember(preferences) {
+        mutableStateOf(SongSortOption.fromKey(preferences.sortOption(SongSortScope.SONGS.key)))
+    }
+    val history = preferences.listeningHistoryIds()
+    val sortedSongs = remember(songs, sortOption, history) { sortSongs(songs, sortOption, history) }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(bottom = 85.dp),
     ) {
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("Songs", style = MaterialTheme.typography.titleLarge)
+                SongSortButton(
+                    scope = SongSortScope.SONGS,
+                    currentOption = sortOption,
+                    onOptionSelected = { option ->
+                        sortOption = option
+                        preferences.setSortOption(SongSortScope.SONGS.key, option.key)
+                    },
+                )
+            }
+        }
         itemsIndexed(sortedSongs, key = { _, song -> song.id }) { index, song ->
             SongCard(
                 song = song,
@@ -74,60 +100,6 @@ internal fun SongList(
         }
     }
 }
-
-private val songTitleComparator = Comparator<Song> { first, second ->
-    naturalCompare(first.title, second.title)
-        .takeIf { it != 0 }
-        ?: naturalCompare(first.artist, second.artist)
-            .takeIf { it != 0 }
-        ?: naturalCompare(first.album, second.album)
-            .takeIf { it != 0 }
-        ?: first.id.compareTo(second.id)
-}
-
-private fun naturalCompare(first: String, second: String): Int {
-    val left = normalizeForSort(first)
-    val right = normalizeForSort(second)
-    var leftIndex = 0
-    var rightIndex = 0
-
-    while (leftIndex < left.length && rightIndex < right.length) {
-        val leftChar = left[leftIndex]
-        val rightChar = right[rightIndex]
-
-        if (leftChar.isDigit() && rightChar.isDigit()) {
-            val leftStart = leftIndex
-            val rightStart = rightIndex
-            while (leftIndex < left.length && left[leftIndex].isDigit()) leftIndex++
-            while (rightIndex < right.length && right[rightIndex].isDigit()) rightIndex++
-
-            val leftNumber = left.substring(leftStart, leftIndex).trimStart('0').ifBlank { "0" }
-            val rightNumber = right.substring(rightStart, rightIndex).trimStart('0').ifBlank { "0" }
-
-            if (leftNumber.length != rightNumber.length) {
-                return leftNumber.length.compareTo(rightNumber.length)
-            }
-
-            val numericCompare = leftNumber.compareTo(rightNumber)
-            if (numericCompare != 0) return numericCompare
-            continue
-        }
-
-        val charCompare = leftChar.lowercaseChar().compareTo(rightChar.lowercaseChar())
-        if (charCompare != 0) return charCompare
-
-        leftIndex++
-        rightIndex++
-    }
-
-    return left.length.compareTo(right.length)
-}
-
-private fun normalizeForSort(value: String): String =
-    Normalizer.normalize(value, Normalizer.Form.NFKC)
-        .filterNot { Character.getType(it.code) == Character.FORMAT.toInt() }
-        .trim()
-
 
 @Composable
 internal fun FavoriteList(

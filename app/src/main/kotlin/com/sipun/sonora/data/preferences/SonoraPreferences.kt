@@ -21,6 +21,10 @@ class SonoraPreferences(context: Context) {
 
     fun favoriteIds(): Set<Long> = library.favoriteIds()
 
+    fun sortOption(scope: String): String = library.sortOption(scope)
+
+    fun setSortOption(scope: String, option: String) = library.setSortOption(scope, option)
+
     fun saveLastPlayed(
         song: Song,
         positionMs: Long = 0L,

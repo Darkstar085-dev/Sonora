@@ -74,6 +74,13 @@ internal class LibraryPreferences(context: Context) {
         )
     }
 
+    fun sortOption(scope: String): String =
+        preferences.getString("$SORT_OPTION_PREFIX$scope", DEFAULT_SORT_OPTION) ?: DEFAULT_SORT_OPTION
+
+    fun setSortOption(scope: String, option: String) {
+        preferences.edit().putString("$SORT_OPTION_PREFIX$scope", option).apply()
+    }
+
     fun excludedFolders(): Set<String> =
         preferences.getStringSet(EXCLUDED_FOLDERS, emptySet())
             .orEmpty()
@@ -118,5 +125,7 @@ internal class LibraryPreferences(context: Context) {
         const val FAVORITE_IDS = "favorite_song_ids"
         const val PLAYLISTS = "playlists"
         const val EXCLUDED_FOLDERS = "excluded_folders"
+        const val SORT_OPTION_PREFIX = "sort_option_"
+        const val DEFAULT_SORT_OPTION = "TITLE_ASC"
     }
 }

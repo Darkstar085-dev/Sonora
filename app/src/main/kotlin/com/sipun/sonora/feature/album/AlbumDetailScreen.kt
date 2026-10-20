@@ -22,10 +22,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -45,10 +43,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.data.media.AndroidMusicRepository
 import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.feature.sorting.SongSortOption
+import com.sipun.sonora.feature.sorting.SongSortScope
+import com.sipun.sonora.feature.sorting.sortSongs
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.SongActionConfig
 import com.sipun.sonora.ui.components.SongArtworkImage
 import com.sipun.sonora.ui.components.SongMoreButton
+import com.sipun.sonora.ui.components.SongCollectionControls
 
 @Composable
 fun AlbumDetailScreen(
@@ -64,6 +66,9 @@ fun AlbumDetailScreen(
     var songs by remember { mutableStateOf<List<Song>>(emptyList()) }
     val preferences =
         remember(context) { com.sipun.sonora.data.preferences.SonoraPreferences(context) }
+    var sortOption by remember(albumName) {
+        mutableStateOf(SongSortOption.fromKey(preferences.sortOption(SongSortScope.ALBUM.key)))
+    }
 
     LaunchedEffect(albumName, metadataRefreshVersion) {
         repository.invalidateCache()
@@ -90,7 +95,9 @@ fun AlbumDetailScreen(
                 CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             }
         } else {
-            val first = songs.first()
+            val history = preferences.listeningHistoryIds()
+            val sortedSongs = remember(songs, sortOption, history) { sortSongs(songs, sortOption, history) }
+            val first = sortedSongs.first()
             LazyColumn(
                 Modifier
                     .fillMaxSize()
@@ -134,19 +141,17 @@ fun AlbumDetailScreen(
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.padding(top = 2.dp),
                         )
-                        FilledIconButton(
-                            onClick = {
-                                playerController.playQueue(songs)
-                                onOpenNowPlaying()
+                        SongCollectionControls(
+                            songs = sortedSongs,
+                            playerController = playerController,
+                            onOpenNowPlaying = onOpenNowPlaying,
+                            scope = SongSortScope.ALBUM,
+                            currentOption = sortOption,
+                            onOptionSelected = { option ->
+                                sortOption = option
+                                preferences.setSortOption(SongSortScope.ALBUM.key, option.key)
                             },
-                            modifier = Modifier.padding(top = 12.dp),
-                            colors = IconButtonDefaults.filledIconButtonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                                contentColor = MaterialTheme.colorScheme.onPrimary,
-                            ),
-                        ) {
-                            Icon(Icons.Default.PlayArrow, "Play album")
-                        }
+                        )
                     }
                 }
                 item {
@@ -156,10 +161,10 @@ fun AlbumDetailScreen(
                         modifier = Modifier.padding(top = 10.dp, bottom = 4.dp),
                     )
                 }
-                itemsIndexed(songs, key = { _, song -> song.id }) { index, song ->
+                itemsIndexed(sortedSongs, key = { _, song -> song.id }) { index, song ->
                     Card(
                         onClick = {
-                            playerController.playQueue(songs, index)
+                            playerController.playQueue(sortedSongs, index)
                             onOpenNowPlaying()
                         },
                         modifier = Modifier.fillMaxWidth(),
