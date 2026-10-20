@@ -1,11 +1,15 @@
 package com.sipun.sonora.player
 
 import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioManager
 import android.media.audiofx.LoudnessEnhancer
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import androidx.core.content.ContextCompat
 import androidx.media3.common.C
 import androidx.media3.common.Metadata
 import androidx.media3.common.Player
@@ -24,6 +28,17 @@ import kotlin.math.pow
 class SonoraPlaybackService : MediaSessionService() {
     private val preferences by lazy { SonoraPreferences(applicationContext) }
     private val transitionHandler = Handler(Looper.getMainLooper())
+    private val audioBecomingNoisyReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: android.content.Context?, intent: Intent?) {
+            if (intent?.action != AudioManager.ACTION_AUDIO_BECOMING_NOISY) return
+            cancelCrossfade()
+            activePlayer?.pause()
+        }
+    }
+    private val audioAttributes = androidx.media3.common.AudioAttributes.Builder()
+        .setUsage(C.USAGE_MEDIA)
+        .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
+        .build()
     private var mediaSession: MediaSession? = null
     private var activePlayer: ExoPlayer? = null
     private var crossfadePlayer: ExoPlayer? = null
@@ -38,6 +53,12 @@ class SonoraPlaybackService : MediaSessionService() {
 
     override fun onCreate() {
         super.onCreate()
+        ContextCompat.registerReceiver(
+            this,
+            audioBecomingNoisyReceiver,
+            IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
         setForegroundServiceTimeoutMs(120_000L)
 
         val initialPlayer = buildPlayer(handleAudioFocus = true)
@@ -95,6 +116,7 @@ class SonoraPlaybackService : MediaSessionService() {
     }
 
     override fun onDestroy() {
+        unregisterReceiver(audioBecomingNoisyReceiver)
         transitionHandler.removeCallbacks(transitionRunnable)
         cancelCrossfade()
         mediaSession?.release()
@@ -107,14 +129,8 @@ class SonoraPlaybackService : MediaSessionService() {
     private fun buildPlayer(handleAudioFocus: Boolean): ExoPlayer =
         ExoPlayer.Builder(this)
             .setRenderersFactory(SonoraRenderersFactory(this))
-            .setHandleAudioBecomingNoisy(handleAudioFocus)
-            .setAudioAttributes(
-                androidx.media3.common.AudioAttributes.Builder()
-                    .setUsage(C.USAGE_MEDIA)
-                    .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
-                    .build(),
-                handleAudioFocus,
-            )
+            .setHandleAudioBecomingNoisy(false)
+            .setAudioAttributes(audioAttributes, handleAudioFocus)
             .setPauseAtEndOfMediaItems(
                 preferences.crossfadeSeconds() == 0 && !preferences.gaplessPlayback(),
             )
@@ -285,6 +301,7 @@ class SonoraPlaybackService : MediaSessionService() {
     }
 
     private fun finalizeCrossfade(oldPlayer: ExoPlayer, nextPlayer: ExoPlayer) {
+        nextPlayer.setAudioAttributes(audioAttributes, true)
         nextPlayer.volume = normalizationVolumes[nextPlayer] ?: 1f
         nextPlayer.addListener(serviceListener)
         mediaSession?.setPlayer(nextPlayer)
