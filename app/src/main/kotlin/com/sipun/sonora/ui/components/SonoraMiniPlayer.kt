@@ -104,12 +104,15 @@ fun SonoraMiniPlayer(
                 }
                 IconButton(
                     onClick = playerController::togglePlayPause,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(LocalAccentBrush.current),
                 ) {
                     AnimatedContent(targetState = state.isPlaying, label = "mini_player_play_pause") { playing ->
                         Icon(
                             if (playing) Icons.Default.Pause else Icons.Default.PlayArrow,
                             if (playing) "Pause" else "Play",
-                            tint = MaterialTheme.colorScheme.primary,
+                            tint = Color.White,
                         )
                     }
                 }
@@ -121,14 +124,19 @@ fun SonoraMiniPlayer(
                 }
             }
 
-            LinearProgressIndicator(
-                progress = { progress },
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(2.dp),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            )
+                    .height(2.dp)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(progress)
+                        .fillMaxHeight()
+                        .background(LocalAccentBrush.current),
+                )
+            }
         }
     }
 }
