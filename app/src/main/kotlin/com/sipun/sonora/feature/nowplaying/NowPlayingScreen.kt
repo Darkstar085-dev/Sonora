@@ -82,6 +82,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sipun.sonora.R
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.data.media.AudioMetadataEditor
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.player.PlayerController
@@ -592,9 +593,12 @@ fun NowPlayingScreen(
                             FilledIconButton(
                                 onClick = playerController::togglePlayPause,
                                 enabled = song != null,
-                                modifier = Modifier.size(72.dp),
+                                modifier = Modifier
+                                    .size(72.dp)
+                                    .clip(RoundedCornerShape(50.dp))
+                                    .background(LocalAccentBrush.current),
                                 colors = IconButtonDefaults.filledIconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    containerColor = Color.Transparent,
                                     contentColor = Color.White,
                                 ),
                             ) {

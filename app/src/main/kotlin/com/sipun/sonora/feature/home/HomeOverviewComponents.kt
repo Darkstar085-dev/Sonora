@@ -48,6 +48,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.R
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.domain.model.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.player.PlayerState
@@ -283,10 +284,13 @@ internal fun LibraryLottieCard(
                     )
                     FilledTonalButton(
                         onClick = onPlayAll,
-                        modifier = Modifier.padding(top = 4.dp),
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(LocalAccentBrush.current),
                         colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            containerColor = Color.Transparent,
+                            contentColor = Color.White,
                         ),
                     ) {
                         Icon(Icons.Default.PlayArrow, null)
