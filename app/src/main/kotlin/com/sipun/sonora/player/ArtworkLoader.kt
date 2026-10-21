@@ -36,6 +36,19 @@ internal class ArtworkLoader(private val context: Context) {
         }
     }
 
+    fun loadArtwork(uri: Uri?): ByteArray? {
+        if (uri == null) return null
+
+        return try {
+            context.contentResolver.openInputStream(uri)?.use { input ->
+                val bytes = input.readBytes()
+                if (bytes.size <= MAX_ARTWORK_BYTES) bytes else resizeArtwork(bytes)
+            }
+        } catch (_: Exception) {
+            null
+        }
+    }
+
     private fun extractWithJaudiotagger(uri: Uri): ByteArray? {
         val suffix = runCatching {
             context.contentResolver.query(

@@ -39,6 +39,34 @@ class SonoraPlaybackService : MediaSessionService() {
         .setUsage(C.USAGE_MEDIA)
         .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
         .build()
+    private val mediaSessionCallback = object : MediaSession.Callback {
+        override fun onConnect(
+            session: MediaSession,
+            controller: MediaSession.ControllerInfo,
+        ): MediaSession.ConnectionResult {
+            val defaultResult = super<MediaSession.Callback>.onConnect(session, controller)
+            if (!defaultResult.isAccepted || controller.isTrusted) return defaultResult
+
+            val playbackCommands = defaultResult.availablePlayerCommands.buildUpon()
+                .add(Player.COMMAND_GET_METADATA)
+                .add(Player.COMMAND_GET_CURRENT_MEDIA_ITEM)
+                .add(Player.COMMAND_GET_TIMELINE)
+                .add(Player.COMMAND_PLAY_PAUSE)
+                .add(Player.COMMAND_SEEK_TO_PREVIOUS)
+                .add(Player.COMMAND_SEEK_TO_PREVIOUS_MEDIA_ITEM)
+                .add(Player.COMMAND_SEEK_TO_NEXT)
+                .add(Player.COMMAND_SEEK_TO_NEXT_MEDIA_ITEM)
+                .add(Player.COMMAND_SEEK_IN_CURRENT_MEDIA_ITEM)
+                .add(Player.COMMAND_SEEK_BACK)
+                .add(Player.COMMAND_SEEK_FORWARD)
+                .build()
+
+            return MediaSession.ConnectionResult.accept(
+                defaultResult.availableSessionCommands,
+                playbackCommands,
+            )
+        }
+    }
     private var mediaSession: MediaSession? = null
     private var activePlayer: ExoPlayer? = null
     private var crossfadePlayer: ExoPlayer? = null
@@ -75,6 +103,7 @@ class SonoraPlaybackService : MediaSessionService() {
         setMediaNotificationProvider(notificationProvider)
 
         mediaSession = MediaSession.Builder(this, initialPlayer)
+            .setCallback(mediaSessionCallback)
             .setSessionActivity(
                 PendingIntent.getActivity(
                     this,

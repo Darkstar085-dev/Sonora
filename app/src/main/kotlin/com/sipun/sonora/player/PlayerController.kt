@@ -382,6 +382,7 @@ class PlayerController(context: Context) {
         artworkJob = artworkScope.launch {
             val artwork = withContext(Dispatchers.IO) {
                 artworkLoader.extractEmbeddedArtwork(item.localConfiguration?.uri)
+                    ?: artworkLoader.loadArtwork(item.mediaMetadata.artworkUri)
             } ?: return@launch
 
             val current = mediaController.currentMediaItem ?: return@launch
