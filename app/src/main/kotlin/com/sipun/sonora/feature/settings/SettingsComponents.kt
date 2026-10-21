@@ -598,7 +598,7 @@ internal fun SettingsRow(
             Modifier
                 .size(42.dp)
                 .background(
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                    com.sipun.sonora.ui.theme.LocalAccentBrush.current,
                     RoundedCornerShape(14.dp)
                 ),
             contentAlignment = Alignment.Center
