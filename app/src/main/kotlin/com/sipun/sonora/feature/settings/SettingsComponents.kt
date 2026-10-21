@@ -197,7 +197,11 @@ internal fun CrossfadeSelector(
 @Composable
 internal fun CustomColorSelector(
     color: Color,
+    style: com.sipun.sonora.data.preferences.AccentStyle,
+    gradient: com.sipun.sonora.data.preferences.AccentGradient,
     onColorChange: (Int) -> Unit,
+    onStyleChange: (com.sipun.sonora.data.preferences.AccentStyle) -> Unit,
+    onGradientChange: (com.sipun.sonora.data.preferences.AccentGradient) -> Unit,
 ) {
     val presetColors = listOf(
         Color(0xFFE92B2B),
@@ -212,17 +216,28 @@ internal fun CustomColorSelector(
         Color(0xFF7E57C2),
         Color(0xFF5C6BC0),
         Color(0xFF26C6DA),
-        Color(0xFF26A69A),
         Color(0xFF8BC34A),
-        Color(0xFFD4E157),
         Color(0xFFFFCA28),
         Color(0xFFFFA726),
+    )
+    val gradients = listOf(
+        com.sipun.sonora.data.preferences.AccentGradient.SUNSET to
+            listOf(Color(0xFFFF512F), Color(0xFFDD2476)),
+        com.sipun.sonora.data.preferences.AccentGradient.OCEAN to
+            listOf(Color(0xFF2193B0), Color(0xFF6DD5ED)),
+        com.sipun.sonora.data.preferences.AccentGradient.AURORA to
+            listOf(Color(0xFF00B09B), Color(0xFF96C93D)),
+        com.sipun.sonora.data.preferences.AccentGradient.PURPLE_HAZE to
+            listOf(Color(0xFF8E2DE2), Color(0xFF4A00E0)),
+        com.sipun.sonora.data.preferences.AccentGradient.PEACH to
+            listOf(Color(0xFFFF9966), Color(0xFFFF5E62)),
+        com.sipun.sonora.data.preferences.AccentGradient.EMERALD to
+            listOf(Color(0xFF11998E), Color(0xFF38EF7D)),
     )
     val hsv = remember(color) {
         FloatArray(3).also { android.graphics.Color.colorToHSV(color.toArgb(), it) }
     }
     var hue by remember(color) { mutableStateOf(hsv[0]) }
-
     val hueColors = remember {
         (0..360 step 30).map { Color.hsv(it.toFloat(), 0.78f, 0.92f) }
     }
@@ -243,86 +258,164 @@ internal fun CustomColorSelector(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 2.dp),
         )
-
         Row(
-            modifier = Modifier
+            Modifier
                 .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
                 .padding(top = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            presetColors.forEach { preset ->
-                Box(
-                    modifier = Modifier
-                        .size(38.dp)
-                        .background(preset, RoundedCornerShape(50))
-                        .clickable {
-                            val presetHsv = FloatArray(3)
-                            android.graphics.Color.colorToHSV(preset.toArgb(), presetHsv)
-                            hue = presetHsv[0]
-                            onColorChange(preset.toArgb())
+            listOf(
+                com.sipun.sonora.data.preferences.AccentStyle.SOLID,
+                com.sipun.sonora.data.preferences.AccentStyle.GRADIENT,
+            ).forEach { option ->
+                Surface(
+                    modifier = Modifier.weight(1f).clickable { onStyleChange(option) },
+                    shape = RoundedCornerShape(14.dp),
+                    color = if (style == option) {
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
+                    },
+                    border = BorderStroke(
+                        1.dp,
+                        if (style == option) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                         },
-                    contentAlignment = Alignment.Center,
+                    ),
                 ) {
-                    if (color.toArgb() == preset.toArgb()) {
-                        Icon(
-                            Icons.Default.Check,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(20.dp),
-                        )
-                    }
+                    Text(
+                        text = if (option == com.sipun.sonora.data.preferences.AccentStyle.SOLID) {
+                            "Solid color"
+                        } else {
+                            "Gradient"
+                        },
+                        modifier = Modifier.padding(vertical = 11.dp),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.labelLarge,
+                    )
                 }
             }
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(44.dp)
-                .padding(top = 8.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(12.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(Brush.horizontalGradient(hueColors)),
-            )
-
-            Slider(
-                value = hue,
-                onValueChange = {
-                    hue = it
-                    val hsvColor = floatArrayOf(it, 0.78f, 0.92f)
-                    onColorChange(android.graphics.Color.HSVToColor(hsvColor))
-                },
-                valueRange = 0f..360f,
-                colors = SliderDefaults.colors(
-                    thumbColor = Color.White,
-                    activeTrackColor = Color.Transparent,
-                    inactiveTrackColor = Color.Transparent,
-                    activeTickColor = Color.Transparent,
-                    inactiveTickColor = Color.Transparent,
-                ),
-                thumb = {
+        if (style == com.sipun.sonora.data.preferences.AccentStyle.GRADIENT) {
+            gradients.forEach { (preset, colors) ->
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .clickable { onGradientChange(preset) }
+                        .padding(2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Box(
+                        Modifier
+                            .weight(1f)
+                            .height(42.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Brush.horizontalGradient(colors)),
+                    ) {
+                        if (gradient == preset) {
+                            Icon(
+                                Icons.Default.Check,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .padding(end = 12.dp),
+                            )
+                        }
+                    }
+                    Text(
+                        preset.name.lowercase().replace('_', ' ')
+                            .replaceFirstChar { it.uppercase() },
                         modifier = Modifier
-                            .width(4.dp)
-                            .height(34.dp)
-                            .background(
-                                Color.White,
-                                RoundedCornerShape(50),
-                            ),
+                            .width(112.dp)
+                            .padding(start = 12.dp),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodyMedium,
                     )
-                },
-                modifier = Modifier.fillMaxWidth(),
-            )
+                }
+            }
+        } else {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(top = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                presetColors.forEach { preset ->
+                    Box(
+                        Modifier
+                            .size(38.dp)
+                            .background(preset, RoundedCornerShape(50))
+                            .clickable {
+                                val presetHsv = FloatArray(3)
+                                android.graphics.Color.colorToHSV(preset.toArgb(), presetHsv)
+                                hue = presetHsv[0]
+                                onColorChange(preset.toArgb())
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        if (color.toArgb() == preset.toArgb()) {
+                            Icon(
+                                Icons.Default.Check,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp),
+                            )
+                        }
+                    }
+                }
+            }
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(44.dp)
+                    .padding(top = 8.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(12.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(Brush.horizontalGradient(hueColors)),
+                )
+                Slider(
+                    value = hue,
+                    onValueChange = {
+                        hue = it
+                        onColorChange(
+                            android.graphics.Color.HSVToColor(floatArrayOf(it, 0.78f, 0.92f)),
+                        )
+                    },
+                    valueRange = 0f..360f,
+                    colors = SliderDefaults.colors(
+                        thumbColor = Color.White,
+                        activeTrackColor = Color.Transparent,
+                        inactiveTrackColor = Color.Transparent,
+                        activeTickColor = Color.Transparent,
+                        inactiveTickColor = Color.Transparent,
+                    ),
+                    thumb = {
+                        Box(
+                            Modifier
+                                .width(4.dp)
+                                .height(34.dp)
+                                .background(Color.White, RoundedCornerShape(50)),
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
     }
 }
-
 @Composable
 internal fun PaletteSelector(
     seed: Color,
@@ -713,12 +806,12 @@ internal fun SettingsRow(
             Modifier
                 .size(42.dp)
                 .background(
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                    com.sipun.sonora.ui.theme.LocalAccentBrush.current,
                     RoundedCornerShape(14.dp)
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Icon(icon, null, tint = MaterialTheme.colorScheme.primary)
+            Icon(icon, null, tint = Color.White)
         }
         Column(
             Modifier

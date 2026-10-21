@@ -96,6 +96,8 @@ fun SettingsScreen(
     val dynamicColor by themePreferences.dynamicColor.collectAsStateWithLifecycle()
     val selectedPalette by themePreferences.dynamicPalette.collectAsStateWithLifecycle()
     val customColor by themePreferences.customColor.collectAsStateWithLifecycle()
+    val accentStyle by themePreferences.accentStyle.collectAsStateWithLifecycle()
+    val accentGradient by themePreferences.accentGradient.collectAsStateWithLifecycle()
     var resumePlayback by remember { mutableStateOf(playbackPreferences.resumePlayback()) }
     var gaplessPlayback by remember { mutableStateOf(playbackPreferences.gaplessPlayback()) }
     var crossfadeSeconds by remember { mutableIntStateOf(playbackPreferences.crossfadeSeconds()) }
@@ -387,7 +389,11 @@ fun SettingsScreen(
             if (!dynamicColor) {
                 CustomColorSelector(
                     color = Color(customColor),
+                    style = accentStyle,
+                    gradient = accentGradient,
                     onColorChange = { themePreferences.setCustomColor(it) },
+                    onStyleChange = themePreferences::setAccentStyle,
+                    onGradientChange = themePreferences::setAccentGradient,
                 )
             }
         }
