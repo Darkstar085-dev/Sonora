@@ -49,6 +49,7 @@ import com.sipun.sonora.feature.sorting.SongSortScope
 import com.sipun.sonora.feature.sorting.sortSongs
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.SongActionConfig
+import com.sipun.sonora.ui.components.PlayingEqualizer
 import com.sipun.sonora.ui.components.SongArtworkImage
 import com.sipun.sonora.ui.components.SongMoreButton
 import com.sipun.sonora.ui.components.SongCollectionControls
@@ -63,6 +64,7 @@ fun ArtistDetailScreen(
 ) {
     val context = LocalContext.current
     val metadataRefreshVersion by AndroidMusicRepository.refreshVersion.collectAsState()
+    val playerState by playerController.state.collectAsState()
     val repository = remember(context, metadataRefreshVersion) { AndroidMusicRepository(context) }
     val preferences = remember(context) { SonoraPreferences(context) }
     var songs by remember { mutableStateOf<List<Song>>(emptyList()) }
@@ -188,6 +190,9 @@ fun ArtistDetailScreen(
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
+                            }
+                            if (playerState.currentSong?.id == song.id) {
+                                PlayingEqualizer(isPlaying = playerState.isPlaying, modifier = Modifier.padding(end = 8.dp))
                             }
                             SongMoreButton(
                                 song = song,

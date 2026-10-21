@@ -40,6 +40,7 @@ import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.domain.model.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.SongArtworkImage
+import com.sipun.sonora.ui.components.PlayingEqualizer
 
 @Composable
 fun FavoritesScreen(
@@ -50,6 +51,7 @@ fun FavoritesScreen(
     val metadataRefreshVersion by AndroidMusicRepository.refreshVersion.collectAsState()
     val repository = remember(context, metadataRefreshVersion) { AndroidMusicRepository(context) }
     val preferences = remember(context) { SonoraPreferences(context) }
+    val playerState by playerController.state.collectAsState()
     var songs by remember { mutableStateOf<List<Song>>(emptyList()) }
 
     LaunchedEffect(metadataRefreshVersion) {
@@ -102,6 +104,8 @@ fun FavoritesScreen(
                 itemsIndexed(songs, key = { _, song -> song.id }) { index, song ->
                     FavoriteSongCard(
                         song = song,
+                        isCurrentSong = playerState.currentSong?.id == song.id,
+                        isPlaying = playerState.isPlaying,
                         onClick = {
                             playerController.playQueue(songs, index)
                             onOpenNowPlaying()
@@ -120,6 +124,8 @@ fun FavoritesScreen(
 @Composable
 private fun FavoriteSongCard(
     song: Song,
+    isCurrentSong: Boolean,
+    isPlaying: Boolean,
     onClick: () -> Unit,
     onRemove: () -> Unit,
 ) {
@@ -155,6 +161,7 @@ private fun FavoriteSongCard(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
+            if (isCurrentSong) PlayingEqualizer(isPlaying = isPlaying, modifier = Modifier.padding(end = 8.dp))
             IconButton(onClick = onRemove) {
                 Icon(
                     Icons.Default.Favorite,

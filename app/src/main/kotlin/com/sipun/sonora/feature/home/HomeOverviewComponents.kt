@@ -1,5 +1,8 @@
 package com.sipun.sonora.feature.home
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -38,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
@@ -62,6 +66,20 @@ internal fun LibraryLottieCard(
     } else {
         0f
     }
+    val repeatRotation = animateFloatAsState(
+        targetValue = when (state.repeatMode) {
+            com.sipun.sonora.player.RepeatMode.OFF -> 0f
+            com.sipun.sonora.player.RepeatMode.ALL -> 180f
+            com.sipun.sonora.player.RepeatMode.ONE -> 360f
+        },
+        animationSpec = tween(320),
+        label = "home_repeat_rotation",
+    ).value
+    val shuffleScale = animateFloatAsState(
+        targetValue = if (state.shuffleEnabled) 1.10f else 1f,
+        animationSpec = tween(220),
+        label = "home_shuffle_scale",
+    ).value
 
     Card(
         onClick = { if (nowPlayingSong != null) onOpenNowPlaying() },
@@ -161,6 +179,7 @@ internal fun LibraryLottieCard(
                                 Icons.Default.Repeat
                             },
                             contentDescription = "Repeat",
+                            modifier = Modifier.graphicsLayer { rotationZ = repeatRotation },
                             tint = if (state.repeatMode == com.sipun.sonora.player.RepeatMode.OFF) {
                                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f)
                             } else {
@@ -185,10 +204,15 @@ internal fun LibraryLottieCard(
                         onClick = player::togglePlayPause,
                         modifier = Modifier.size(56.dp),
                     ) {
-                        Icon(
-                            if (state.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                            contentDescription = if (state.isPlaying) "Pause" else "Play",
-                        )
+                        AnimatedContent(
+                            targetState = state.isPlaying,
+                            label = "home_play_pause_transition",
+                        ) { playing ->
+                            Icon(
+                                if (playing) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                contentDescription = if (playing) "Pause" else "Play",
+                            )
+                        }
                     }
                     IconButton(
                         onClick = player::skipNext,
@@ -215,6 +239,10 @@ internal fun LibraryLottieCard(
                         Icon(
                             Icons.Default.Shuffle,
                             contentDescription = "Shuffle",
+                            modifier = Modifier.graphicsLayer {
+                                scaleX = shuffleScale
+                                scaleY = shuffleScale
+                            },
                             tint = if (state.shuffleEnabled) {
                                 MaterialTheme.colorScheme.primary
                             } else {

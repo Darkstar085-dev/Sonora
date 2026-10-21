@@ -10,6 +10,12 @@ import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import androidx.compose.foundation.Canvas
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -98,6 +104,24 @@ internal fun ExpressiveSeekBar(
     } else {
         0f
     }
+    val animatedProgress = animateFloatAsState(
+        targetValue = progress,
+        animationSpec = tween(220),
+        label = "expressive_seek_progress",
+    ).value
+    val wavePhase = if (isPlaying) {
+        rememberInfiniteTransition(label = "seekbar_wave").animateFloat(
+            initialValue = 0f,
+            targetValue = (2f * kotlin.math.PI).toFloat(),
+            animationSpec = infiniteRepeatable(
+                animation = tween(3_000, easing = LinearEasing),
+                repeatMode = androidx.compose.animation.core.RepeatMode.Restart,
+            ),
+            label = "seekbar_wave_phase",
+        ).value
+    } else {
+        0f
+    }
     val primary = if (isPlaying) {
         MaterialTheme.colorScheme.primary
     } else {
@@ -133,15 +157,18 @@ internal fun ExpressiveSeekBar(
                 val centerY = size.height / 2f
                 val trackStart = 0f
                 val trackEnd = size.width
-                val thumbX = trackStart + (trackEnd - trackStart) * progress
+                val thumbX = trackStart + (trackEnd - trackStart) * animatedProgress
 
                 val wavePath = androidx.compose.ui.graphics.Path()
                 val waveLength = 34.dp.toPx()
                 val amplitude = 4.dp.toPx()
-                wavePath.moveTo(trackStart, centerY)
-                var x = trackStart
+                val angularLength = (2f * kotlin.math.PI).toFloat()
+                val startPhase = (trackStart / waveLength) * angularLength + wavePhase
+                val startY = centerY + kotlin.math.sin(startPhase) * amplitude
+                wavePath.moveTo(trackStart, startY)
+                var x = trackStart + 2.dp.toPx()
                 while (x <= thumbX) {
-                    val phase = (x / waveLength) * (2f * kotlin.math.PI).toFloat()
+                    val phase = (x / waveLength) * angularLength + wavePhase
                     wavePath.lineTo(
                         x,
                         centerY + kotlin.math.sin(phase) * amplitude,

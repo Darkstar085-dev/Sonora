@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -41,6 +42,7 @@ import com.sipun.sonora.feature.sorting.SongSortScope
 import com.sipun.sonora.feature.sorting.sortSongs
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.SongActionConfig
+import com.sipun.sonora.ui.components.PlayingEqualizer
 import com.sipun.sonora.ui.components.SongArtworkImage
 import com.sipun.sonora.ui.components.SongMoreButton
 import com.sipun.sonora.ui.components.SongSortButton
@@ -58,6 +60,7 @@ internal fun SongList(
     var sortOption by remember(preferences) {
         mutableStateOf(SongSortOption.fromKey(preferences.sortOption(SongSortScope.SONGS.key)))
     }
+    val playerState by player.state.collectAsStateWithLifecycle()
     val history = preferences.listeningHistoryIds()
     val sortedSongs = remember(songs, sortOption, history) { sortSongs(songs, sortOption, history) }
 
@@ -87,6 +90,8 @@ internal fun SongList(
             SongCard(
                 song = song,
                 player = player,
+                isCurrentSong = playerState.currentSong?.id == song.id,
+                isPlaying = playerState.isPlaying,
                 onClick = { player.playQueue(sortedSongs, index); open() },
                 preferences = preferences,
                 onOpenAlbum = openAlbum,
@@ -111,6 +116,7 @@ internal fun FavoriteList(
     openArtist: (String) -> Unit,
     onChanged: () -> Unit,
 ) {
+    val playerState by player.state.collectAsStateWithLifecycle()
     if (songs.isEmpty()) {
         Column(
             Modifier.fillMaxSize(),
@@ -146,6 +152,8 @@ internal fun FavoriteList(
             SongCard(
                 song = song,
                 player = player,
+                isCurrentSong = playerState.currentSong?.id == song.id,
+                isPlaying = playerState.isPlaying,
                 onClick = { player.playQueue(songs, index); open() },
                 preferences = preferences,
                 onOpenAlbum = openAlbum,
@@ -160,6 +168,8 @@ internal fun FavoriteList(
 private fun SongCard(
     song: Song,
     player: PlayerController,
+    isCurrentSong: Boolean,
+    isPlaying: Boolean,
     onClick: () -> Unit,
     preferences: SonoraPreferences,
     onOpenAlbum: (String) -> Unit,
@@ -198,6 +208,7 @@ private fun SongCard(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
+            if (isCurrentSong) PlayingEqualizer(isPlaying = isPlaying, modifier = Modifier.padding(end = 8.dp))
             SongMoreButton(
                 song = song,
                 preferences = preferences,

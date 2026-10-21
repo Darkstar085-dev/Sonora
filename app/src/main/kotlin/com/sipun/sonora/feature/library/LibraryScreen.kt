@@ -50,6 +50,7 @@ import com.sipun.sonora.domain.model.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.AddToPlaylistDialog
 import com.sipun.sonora.ui.components.SongArtworkImage
+import com.sipun.sonora.ui.components.PlayingEqualizer
 
 @Composable
 fun LibraryScreen(playerController: PlayerController, onOpenNowPlaying: () -> Unit) {
@@ -71,6 +72,7 @@ fun LibraryScreen(playerController: PlayerController, onOpenNowPlaying: () -> Un
     var songs by remember { mutableStateOf<List<Song>>(emptyList()) }
     var loading by remember { mutableStateOf(false) }
     val preferences = remember(context) { SonoraPreferences(context) }
+    val playerState by playerController.state.collectAsState()
     var playlistSongId by remember { mutableStateOf<Long?>(null) }
     var favoriteIds by remember { mutableStateOf(preferences.favoriteIds()) }
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {
@@ -152,6 +154,7 @@ fun LibraryScreen(playerController: PlayerController, onOpenNowPlaying: () -> Un
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
+                    if (playerState.currentSong?.id == song.id) PlayingEqualizer(isPlaying = playerState.isPlaying, modifier = Modifier.padding(end = 4.dp))
                     IconButton(onClick = {
                         playlistSongId = song.id
                     }) { Icon(Icons.AutoMirrored.Filled.PlaylistAdd, "Add to playlist") }

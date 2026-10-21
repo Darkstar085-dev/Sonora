@@ -1,6 +1,12 @@
 package com.sipun.sonora.navigation
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -21,25 +27,21 @@ internal fun SonoraMiniPlayerOverlay(
     visible: Boolean,
     onOpenNowPlaying: () -> Unit,
 ) {
-    if (!visible || playerState.currentSong == null) return
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .zIndex(1f),
-        contentAlignment = Alignment.BottomCenter,
+    AnimatedVisibility(
+        visible = visible && playerState.currentSong != null,
+        enter = fadeIn(tween(220)) + slideInVertically(initialOffsetY = { it / 2 }, animationSpec = tween(260)),
+        exit = fadeOut(tween(160)) + slideOutVertically(targetOffsetY = { it / 3 }, animationSpec = tween(180)),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .padding(bottom = 10.dp),
+            modifier = Modifier.fillMaxSize().zIndex(1f),
             contentAlignment = Alignment.BottomCenter,
         ) {
-            SonoraMiniPlayer(
-                playerController = player,
-                onOpenNowPlaying = onOpenNowPlaying,
-            )
+            Box(
+                modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(bottom = 10.dp),
+                contentAlignment = Alignment.BottomCenter,
+            ) {
+                SonoraMiniPlayer(playerController = player, onOpenNowPlaying = onOpenNowPlaying)
+            }
         }
     }
 }

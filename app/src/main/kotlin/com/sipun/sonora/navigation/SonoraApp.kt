@@ -13,6 +13,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
@@ -105,7 +107,8 @@ fun SonoraApp(
                         ),
                     )
                 } else {
-                    EnterTransition.None
+                    fadeIn(animationSpec = tween(240, easing = FastOutSlowInEasing)) +
+                        slideInHorizontally(initialOffsetX = { it / 18 }, animationSpec = tween(240, easing = FastOutSlowInEasing))
                 }
             },
             exitTransition = {
@@ -126,7 +129,8 @@ fun SonoraApp(
                         ),
                     )
                 } else {
-                    ExitTransition.None
+                    fadeOut(animationSpec = tween(180, easing = FastOutSlowInEasing)) +
+                        slideOutHorizontally(targetOffsetX = { -it / 24 }, animationSpec = tween(180, easing = FastOutSlowInEasing))
                 }
             },
             popEnterTransition = {
@@ -138,7 +142,8 @@ fun SonoraApp(
                         ),
                     )
                 } else {
-                    EnterTransition.None
+                    fadeIn(animationSpec = tween(220, easing = FastOutSlowInEasing)) +
+                        slideInHorizontally(initialOffsetX = { -it / 20 }, animationSpec = tween(220, easing = FastOutSlowInEasing))
                 }
             },
             popExitTransition = {
@@ -162,7 +167,8 @@ fun SonoraApp(
                         ),
                     )
                 } else {
-                    ExitTransition.None
+                    fadeOut(animationSpec = tween(180, easing = FastOutSlowInEasing)) +
+                        slideOutHorizontally(targetOffsetX = { it / 20 }, animationSpec = tween(180, easing = FastOutSlowInEasing))
                 }
             },
             predictivePopEnterTransition = { _ ->
@@ -174,7 +180,8 @@ fun SonoraApp(
                         ),
                     )
                 } else {
-                    EnterTransition.None
+                    fadeIn(animationSpec = tween(220, easing = FastOutSlowInEasing)) +
+                        slideInHorizontally(initialOffsetX = { -it / 20 }, animationSpec = tween(220, easing = FastOutSlowInEasing))
                 }
             },
             predictivePopExitTransition = { _ ->
@@ -198,7 +205,8 @@ fun SonoraApp(
                         ),
                     )
                 } else {
-                    ExitTransition.None
+                    fadeOut(animationSpec = tween(180, easing = FastOutSlowInEasing)) +
+                        slideOutHorizontally(targetOffsetX = { it / 20 }, animationSpec = tween(180, easing = FastOutSlowInEasing))
                 }
             },
         )

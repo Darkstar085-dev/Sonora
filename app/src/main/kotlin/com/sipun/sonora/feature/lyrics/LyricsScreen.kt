@@ -1,6 +1,7 @@
 package com.sipun.sonora.feature.lyrics
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -44,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -238,7 +240,17 @@ private fun LyricsCard(
 
     LaunchedEffect(active) {
         if (active >= 0) {
-            listState.animateScrollToItem((active - 3).coerceAtLeast(0))
+            val layoutInfo = listState.layoutInfo
+            val activeItem = layoutInfo.visibleItemsInfo.firstOrNull { it.index == active }
+            val viewportHeight = layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset
+            val lowerThreshold = layoutInfo.viewportStartOffset + (viewportHeight * 0.72f).toInt()
+            val shouldScroll = activeItem == null ||
+                activeItem.offset + activeItem.size > lowerThreshold ||
+                activeItem.offset < layoutInfo.viewportStartOffset
+
+            if (shouldScroll) {
+                listState.animateScrollToItem((active - 3).coerceAtLeast(0))
+            }
         }
     }
 
@@ -275,15 +287,24 @@ private fun LyricsCard(
                             animationSpec = tween(durationMillis = 220),
                             label = "lyrics_text_color",
                         )
+                        val markerProgress = animateFloatAsState(
+                            targetValue = if (isActive) 1f else 0f,
+                            animationSpec = tween(durationMillis = 260),
+                            label = "lyrics_marker_progress",
+                        ).value
 
                         Box(
                             Modifier
-                                .padding(end = if (isActive) 12.dp else 0.dp)
-                                .width(if (isActive) 5.dp else 0.dp)
-                                .height(if (isActive) 48.dp else 0.dp)
+                                .width(5.dp)
+                                .height(48.dp)
+                                .graphicsLayer {
+                                    scaleX = markerProgress
+                                    alpha = markerProgress
+                                }
                                 .clip(RoundedCornerShape(5.dp))
                                 .background(MaterialTheme.colorScheme.primary),
                         )
+                        Spacer(Modifier.width(12.dp))
 
                         Text(
                             text = line.text,

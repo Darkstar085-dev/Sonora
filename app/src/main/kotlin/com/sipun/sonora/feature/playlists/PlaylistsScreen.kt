@@ -2,6 +2,11 @@ package com.sipun.sonora.feature.playlists
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -115,11 +120,15 @@ fun PlaylistsScreen(
                 contentPadding = PaddingValues(bottom = 20.dp),
             ) {
                 items(playlists, key = { it.id }) { playlist ->
-                    Card(
-                        onClick = { onOpenPlaylist(playlist.id) },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(22.dp),
+                    AnimatedVisibility(
+                        visible = true,
+                        enter = fadeIn(tween(240)) + slideInVertically(initialOffsetY = { it / 12 }, animationSpec = tween(260)),
                     ) {
+                        Card(
+                            onClick = { onOpenPlaylist(playlist.id) },
+                            modifier = Modifier.fillMaxWidth().animateContentSize(),
+                            shape = RoundedCornerShape(22.dp),
+                        ) {
                         Row(
                             Modifier
                                 .fillMaxWidth()
@@ -168,6 +177,7 @@ fun PlaylistsScreen(
                                     stringResource(R.string.action_delete_playlist)
                                 )
                             }
+                        }
                         }
                     }
                 }

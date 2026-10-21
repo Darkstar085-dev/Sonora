@@ -12,6 +12,15 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
@@ -63,6 +72,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -95,6 +105,56 @@ fun NowPlayingScreen(
     val context = LocalContext.current
     val preferences = remember(context) { SonoraPreferences(context) }
     val state by playerController.state.collectAsStateWithLifecycle()
+    val artworkScale = animateFloatAsState(
+        targetValue = if (state.isPlaying) 1f else 0.985f,
+        animationSpec = spring(dampingRatio = 0.72f, stiffness = 280f),
+        label = "artwork_playback_scale",
+    ).value
+    val repeatRotation = animateFloatAsState(
+        targetValue = when (state.repeatMode) {
+            RepeatMode.OFF -> 0f
+            RepeatMode.ALL -> 180f
+            RepeatMode.ONE -> 360f
+        },
+        animationSpec = tween(320),
+        label = "repeat_rotation",
+    ).value
+    val shuffleScale = animateFloatAsState(
+        targetValue = if (state.shuffleEnabled) 1.12f else 1f,
+        animationSpec = spring(dampingRatio = 0.62f, stiffness = 360f),
+        label = "shuffle_scale",
+    ).value
+    val repeatTint = animateColorAsState(
+        targetValue = if (state.repeatMode != RepeatMode.OFF) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        animationSpec = tween(220),
+        label = "repeat_tint",
+    ).value
+    val shuffleTint = animateColorAsState(
+        targetValue = if (state.shuffleEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+        animationSpec = tween(220),
+        label = "shuffle_tint",
+    ).value
+    val playPauseHaloTransition = rememberInfiniteTransition(label = "play_pause_halo")
+    val playingHaloScale = playPauseHaloTransition.animateFloat(
+        initialValue = 0.98f,
+        targetValue = 1.08f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1_150, easing = FastOutSlowInEasing),
+            repeatMode = androidx.compose.animation.core.RepeatMode.Reverse,
+        ),
+        label = "play_pause_halo_scale",
+    ).value
+    val playingHaloAlpha = playPauseHaloTransition.animateFloat(
+        initialValue = 0.12f,
+        targetValue = 0.28f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1_150, easing = FastOutSlowInEasing),
+            repeatMode = androidx.compose.animation.core.RepeatMode.Reverse,
+        ),
+        label = "play_pause_halo_alpha",
+    ).value
+    val playPauseHaloScale = if (state.isPlaying) playingHaloScale else 0.94f
+    val playPauseHaloAlpha = if (state.isPlaying) playingHaloAlpha else 0.10f
     val scope = rememberCoroutineScope()
     var showPlaylistPicker by remember { mutableStateOf(false) }
     var showMore by remember { mutableStateOf(false) }
@@ -362,36 +422,37 @@ fun NowPlayingScreen(
                 .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            key(song?.id) {
-                Column(
-                    Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+            Column(
+                Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
+                    AnimatedContent(
+                        targetState = song?.title?.replace(Regex("\\s*[-–—]\\s*"), " ")?.trim()
+                            ?: "Select a song from your library",
+                        label = "song_title_transition",
+                    ) { title ->
                         Text(
-                            song?.title?.replace(Regex("\\s*[-–—]\\s*"), " ")?.trim()
-                                ?: "Select a song from your library",
+                            title,
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
                             textAlign = TextAlign.Center,
                             maxLines = 1,
                             softWrap = false,
                             overflow = TextOverflow.Clip,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .basicMarquee(
-                                    iterations = Int.MAX_VALUE,
-                                    initialDelayMillis = 1_000,
-                                    repeatDelayMillis = 1_000,
-                                ),
+                            modifier = Modifier.fillMaxWidth().basicMarquee(
+                                iterations = Int.MAX_VALUE,
+                                initialDelayMillis = 1_000,
+                                repeatDelayMillis = 1_000,
+                            ),
                         )
                     }
+                }
+                AnimatedContent(targetState = song?.artist ?: "Sonora", label = "song_artist_transition") { artist ->
                     Text(
-                        song?.artist ?: "Sonora",
+                        artist,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
                         maxLines = 1,
@@ -419,7 +480,13 @@ fun NowPlayingScreen(
                     if (currentSongId != null && song?.id == currentSongId) {
                         SongArtworkImage(
                             song = song,
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(30.dp))
+                                .graphicsLayer {
+                                    scaleX = artworkScale
+                                    scaleY = artworkScale
+                                },
                             artworkData = state.artworkData,
                         )
                     }
@@ -488,7 +555,8 @@ fun NowPlayingScreen(
                             Icon(
                                 if (state.repeatMode == RepeatMode.ONE) Icons.Default.RepeatOne else Icons.Default.Repeat,
                                 "Repeat " + state.repeatMode.name.lowercase(),
-                                tint = if (state.repeatMode != RepeatMode.OFF) MaterialTheme.colorScheme.primary else LocalContentColor.current,
+                                modifier = Modifier.graphicsLayer { rotationZ = repeatRotation },
+                                tint = repeatTint,
                             )
                         }
                         IconButton(
@@ -504,9 +572,13 @@ fun NowPlayingScreen(
                             Box(
                                 Modifier
                                     .size(92.dp)
+                                    .graphicsLayer {
+                                        scaleX = playPauseHaloScale
+                                        scaleY = playPauseHaloScale
+                                    }
                                     .clip(RoundedCornerShape(50.dp))
                                     .background(
-                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)
+                                        MaterialTheme.colorScheme.primary.copy(alpha = playPauseHaloAlpha)
                                     ),
                             )
                             Box(
@@ -526,11 +598,13 @@ fun NowPlayingScreen(
                                     contentColor = Color.White,
                                 ),
                             ) {
-                                Icon(
-                                    if (state.isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
-                                    if (state.isPlaying) "Pause" else "Play",
-                                    modifier = Modifier.size(32.dp),
-                                )
+                                AnimatedContent(targetState = state.isPlaying, label = "play_pause_transition") { playing ->
+                                    Icon(
+                                        if (playing) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                        if (playing) "Pause" else "Play",
+                                        modifier = Modifier.size(32.dp),
+                                    )
+                                }
                             }
                         }
                         IconButton(onClick = playerController::skipNext, enabled = state.hasNext) {
@@ -540,7 +614,11 @@ fun NowPlayingScreen(
                             Icon(
                                 Icons.Default.Shuffle,
                                 "Shuffle",
-                                tint = if (state.shuffleEnabled) MaterialTheme.colorScheme.primary else LocalContentColor.current,
+                                modifier = Modifier.graphicsLayer {
+                                    scaleX = shuffleScale
+                                    scaleY = shuffleScale
+                                },
+                                tint = shuffleTint,
                             )
                         }
                     }
