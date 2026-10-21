@@ -236,7 +236,7 @@ fun HomeScreen(
                     }
                 }
 
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(if (pagerState.currentPage == 1) 8.dp else 20.dp))
 
                 if (isLoading) {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

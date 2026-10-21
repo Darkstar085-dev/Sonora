@@ -20,8 +20,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -72,10 +74,16 @@ internal fun SongList(
         item {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text("Songs", style = MaterialTheme.typography.titleLarge)
+                IconButton(onClick = { player.playQueueShuffled(sortedSongs) }) {
+                    Icon(
+                        Icons.Default.Shuffle,
+                        contentDescription = "Shuffle songs",
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
                 SongSortButton(
                     scope = SongSortScope.SONGS,
                     currentOption = sortOption,
