@@ -32,6 +32,7 @@ import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.AllInclusive
 import androidx.compose.material.icons.filled.BatteryFull
 import androidx.compose.material.icons.filled.BrightnessAuto
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DeleteOutline
@@ -594,6 +595,21 @@ fun SettingsScreen(
                     context.startActivity(
                         Intent(Intent.ACTION_VIEW, Uri.parse(SONORA_REPOSITORY)),
                     )
+                },
+            )
+            SettingsRow(
+                icon = Icons.Default.BugReport,
+                title = stringResource(R.string.about_contact),
+                subtitle = stringResource(R.string.about_contact_detail),
+                onClick = {
+                    runCatching {
+                        context.startActivity(
+                            Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://t.me/Darkstar085"),
+                            ),
+                        )
+                    }
                 },
             )
         }
