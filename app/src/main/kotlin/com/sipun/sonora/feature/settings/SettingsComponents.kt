@@ -149,7 +149,7 @@ internal fun CrossfadeSelector(
                 Modifier
                     .size(42.dp)
                     .background(
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                        com.sipun.sonora.ui.theme.LocalAccentBrush.current,
                         RoundedCornerShape(14.dp),
                     ),
                 contentAlignment = Alignment.Center,
@@ -157,7 +157,7 @@ internal fun CrossfadeSelector(
                 Icon(
                     Icons.Default.SwapHoriz,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = Color.White,
                 )
             }
             Column(
