@@ -43,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.R
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.domain.model.Song
 import com.sipun.sonora.player.PlayerController
@@ -298,7 +299,7 @@ internal fun Overview(
                                                         .fillMaxWidth(progress)
                                                         .fillMaxSize()
                                                         .clip(CircleShape)
-                                                        .background(MaterialTheme.colorScheme.primary),
+                                                        .background(LocalAccentBrush.current),
                                                 )
                                             }
                                         }
