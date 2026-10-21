@@ -117,7 +117,7 @@ internal fun PlaylistList(
                                 Modifier
                                     .size(58.dp)
                                     .background(
-                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                                        LocalAccentBrush.current,
                                         RoundedCornerShape(16.dp),
                                     ),
                                 contentAlignment = Alignment.Center,
