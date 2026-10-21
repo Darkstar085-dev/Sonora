@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.sipun.sonora.R
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.player.PlayerController
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 
 @Composable
 fun PlaylistsScreen(
@@ -82,9 +83,13 @@ fun PlaylistsScreen(
             }
             FilledIconButton(
                 onClick = { showCreate = true },
+                modifier = Modifier.background(
+                    LocalAccentBrush.current,
+                    RoundedCornerShape(50),
+                ),
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                    contentColor = androidx.compose.ui.graphics.Color.White,
                 ),
             ) { Icon(Icons.Default.Add, stringResource(R.string.action_create_playlist)) }
         }
