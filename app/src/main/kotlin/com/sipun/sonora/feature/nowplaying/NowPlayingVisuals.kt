@@ -5,6 +5,8 @@
 
 package com.sipun.sonora.feature.nowplaying
 
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
