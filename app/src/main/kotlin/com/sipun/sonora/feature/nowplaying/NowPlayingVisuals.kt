@@ -122,6 +122,7 @@ internal fun ExpressiveSeekBar(
     } else {
         0f
     }
+    val accentBrush = LocalAccentBrush.current
     val primary = if (isPlaying) {
         MaterialTheme.colorScheme.primary
     } else {
@@ -178,7 +179,7 @@ internal fun ExpressiveSeekBar(
                 if (thumbX > trackStart) {
                     drawPath(
                         path = wavePath,
-                        color = primary,
+                        brush = if (isPlaying) accentBrush else androidx.compose.ui.graphics.SolidColor(primary),
                         style = androidx.compose.ui.graphics.drawscope.Stroke(
                             width = 4.dp.toPx(),
                             cap = androidx.compose.ui.graphics.StrokeCap.Round,
@@ -198,7 +199,7 @@ internal fun ExpressiveSeekBar(
                 }
 
                 drawLine(
-                    color = primary,
+                    brush = if (isPlaying) accentBrush else androidx.compose.ui.graphics.SolidColor(primary),
                     start = androidx.compose.ui.geometry.Offset(thumbX, centerY - 11.dp.toPx()),
                     end = androidx.compose.ui.geometry.Offset(thumbX, centerY + 11.dp.toPx()),
                     strokeWidth = 4.dp.toPx(),
