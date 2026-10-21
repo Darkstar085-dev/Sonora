@@ -83,7 +83,7 @@ fun SonoraBottomBar(
                     Surface(
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.large,
-                        color = if (selected) {
+                        color = if (selected && LocalAccentBrush.current == null) {
                             MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
                         } else {
                             Color.Transparent
@@ -92,6 +92,12 @@ fun SonoraBottomBar(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .then(
+                                    if (selected) Modifier.background(
+                                        LocalAccentBrush.current,
+                                        MaterialTheme.shapes.large,
+                                    ) else Modifier
+                                )
                                 .clickable(
                                     interactionSource = interactionSource,
                                     indication = null,
@@ -111,11 +117,7 @@ fun SonoraBottomBar(
                             Icon(
                                 imageVector = destination.icon,
                                 contentDescription = destination.label,
-                                tint = if (selected) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                },
+                                tint = if (selected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.size(24.dp),
                             )
                             Text(
@@ -127,11 +129,7 @@ fun SonoraBottomBar(
                                 } else {
                                     FontWeight.Normal
                                 },
-                                color = if (selected) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                },
+                                color = if (selected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.bodySmall,
                             )
                         }
