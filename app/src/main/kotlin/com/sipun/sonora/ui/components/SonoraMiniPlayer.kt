@@ -1,5 +1,6 @@
 package com.sipun.sonora.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -31,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sipun.sonora.player.PlayerController
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 
 @Composable
 fun SonoraMiniPlayer(
@@ -104,12 +107,15 @@ fun SonoraMiniPlayer(
                 }
                 IconButton(
                     onClick = playerController::togglePlayPause,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(LocalAccentBrush.current),
                 ) {
                     AnimatedContent(targetState = state.isPlaying, label = "mini_player_play_pause") { playing ->
                         Icon(
                             if (playing) Icons.Default.Pause else Icons.Default.PlayArrow,
                             if (playing) "Pause" else "Play",
-                            tint = MaterialTheme.colorScheme.primary,
+                            tint = Color.White,
                         )
                     }
                 }
@@ -121,14 +127,19 @@ fun SonoraMiniPlayer(
                 }
             }
 
-            LinearProgressIndicator(
-                progress = { progress },
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(2.dp),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            )
+                    .height(2.dp)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(progress)
+                        .fillMaxHeight()
+                        .background(LocalAccentBrush.current),
+                )
+            }
         }
     }
 }

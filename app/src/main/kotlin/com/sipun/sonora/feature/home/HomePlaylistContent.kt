@@ -1,5 +1,7 @@
 package com.sipun.sonora.feature.home
 
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -117,7 +119,7 @@ internal fun PlaylistList(
                                 Modifier
                                     .size(58.dp)
                                     .background(
-                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                                        LocalAccentBrush.current,
                                         RoundedCornerShape(16.dp),
                                     ),
                                 contentAlignment = Alignment.Center,

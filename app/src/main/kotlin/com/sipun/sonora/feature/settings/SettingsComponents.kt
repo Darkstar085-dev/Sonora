@@ -58,6 +58,7 @@ import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import com.sipun.sonora.BuildConfig
 import com.sipun.sonora.R
 import com.sipun.sonora.data.preferences.DynamicPalette
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.ui.theme.WallpaperPalette
 import com.sipun.sonora.ui.theme.wallpaperPalette
 import androidx.compose.runtime.getValue
@@ -269,10 +270,19 @@ internal fun CustomColorSelector(
                 com.sipun.sonora.data.preferences.AccentStyle.GRADIENT,
             ).forEach { option ->
                 Surface(
-                    modifier = Modifier.weight(1f).clickable { onStyleChange(option) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .then(
+                            if (style == option) {
+                                Modifier.background(LocalAccentBrush.current, RoundedCornerShape(14.dp))
+                            } else {
+                                Modifier
+                            },
+                        )
+                        .clickable { onStyleChange(option) },
                     shape = RoundedCornerShape(14.dp),
                     color = if (style == option) {
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)
+                        Color.Transparent
                     } else {
                         MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
                     },
@@ -293,7 +303,7 @@ internal fun CustomColorSelector(
                         },
                         modifier = Modifier.padding(vertical = 11.dp),
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = if (style == option) Color.White else MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.labelLarge,
                     )
                 }
