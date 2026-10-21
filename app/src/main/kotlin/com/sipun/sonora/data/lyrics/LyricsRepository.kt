@@ -5,39 +5,76 @@ import android.content.Context
 import android.net.Uri
 import com.sipun.sonora.domain.model.Song
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.io.files.Path
 import org.jaudiotagger.kt.AudioTagger
 import org.jaudiotagger.kt.tag.FieldKey
 import java.io.File
 import java.util.Locale
+import java.util.concurrent.ConcurrentHashMap
 
 internal class LyricsRepository(context: Context) {
     private val appContext = context.applicationContext
     private val client = LrcLibClient()
     private val cache = LyricsCache(File(appContext.cacheDir, "lyrics"))
+    private val refreshScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val refreshingKeys = ConcurrentHashMap.newKeySet<String>()
 
     suspend fun get(song: Song): Lyrics? = withContext(Dispatchers.IO) {
-        val key = listOf(song.title, song.artist, song.album)
+        val key = "lrclib-v2|" + listOf(song.title, song.artist, song.album)
             .joinToString("|") { it.trim().lowercase(Locale.ROOT) }
+
+        cache.get(key)?.takeIf { it.lines.isNotEmpty() }?.let { cached ->
+            refreshInBackground(key, song)
+            return@withContext cached
+        }
+
+        val online = try {
+            fetchAndCache(key, song)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: Exception) {
+            null
+        }
+        if (online != null) return@withContext online
 
         val embedded = readEmbeddedLyrics(song.uri)
         if (embedded?.synced == true && embedded.lines.isNotEmpty()) {
-            cache.put(key, embedded)
             return@withContext embedded
         }
+        if (embedded != null && embedded.lines.isNotEmpty()) {
+            return@withContext embedded
+        }
+        null
+    }
 
-        cache.get(key)?.takeIf { it.lines.isNotEmpty() }?.let { return@withContext it }
+    private fun refreshInBackground(key: String, song: Song) {
+        if (!refreshingKeys.add(key)) return
+        refreshScope.launch {
+            try {
+                fetchAndCache(key, song)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Exception) {
+            } finally {
+                refreshingKeys.remove(key)
+            }
+        }
+    }
 
+    private suspend fun fetchAndCache(key: String, song: Song): Lyrics? {
         var lastFailure: Exception? = null
         repeat(MAX_ATTEMPTS) { attempt ->
             try {
                 val result = client.fetch(song.title, song.artist, song.album)
                 if (result != null && result.lines.isNotEmpty()) {
                     cache.put(key, result)
-                    return@withContext result
+                    return result
                 }
                 lastFailure = null
             } catch (e: CancellationException) {
@@ -48,14 +85,8 @@ internal class LyricsRepository(context: Context) {
 
             if (attempt < MAX_ATTEMPTS - 1) delay(RETRY_DELAY_MS)
         }
-
-        if (embedded != null && embedded.lines.isNotEmpty()) {
-            cache.put(key, embedded)
-            return@withContext embedded
-        }
-
         lastFailure?.let { throw it }
-        null
+        return null
     }
 
     private fun readEmbeddedLyrics(uriString: String): Lyrics? {
