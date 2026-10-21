@@ -1,5 +1,6 @@
 package com.sipun.sonora.feature.favorites
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,6 +43,7 @@ import com.sipun.sonora.domain.model.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.SongArtworkImage
 import com.sipun.sonora.ui.components.PlayingEqualizer
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 
 @Composable
 fun FavoritesScreen(
@@ -84,9 +87,13 @@ fun FavoritesScreen(
                         playerController.playQueue(songs)
                         onOpenNowPlaying()
                     },
+                    modifier = Modifier.background(
+                        LocalAccentBrush.current,
+                        RoundedCornerShape(50),
+                    ),
                     colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        containerColor = Color.Transparent,
+                        contentColor = Color.White,
                     ),
                 ) {
                     Icon(Icons.Default.PlayArrow, contentDescription = "Play favorites")
