@@ -10,6 +10,7 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
+import com.sipun.sonora.data.media.AndroidMusicRepository
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.domain.model.Song
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +28,7 @@ import kotlinx.coroutines.withContext
 class PlayerController(context: Context) {
     private val appContext = context.applicationContext
     private val preferences = SonoraPreferences(appContext)
+    private val musicRepository = AndroidMusicRepository(appContext)
     private val artworkLoader = ArtworkLoader(appContext)
     private val artworkScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var artworkJob: Job? = null
@@ -109,13 +111,23 @@ class PlayerController(context: Context) {
                 }
             }
 
-            mediaController.setMediaItem(
-                MediaItem.Builder()
-                    .setUri(uri)
-                    .setMediaId(uri.toString().hashCode().toLong().toString())
-                    .setMediaMetadata(metadata)
-                    .build(),
-            )
+            val librarySongs = runCatching { musicRepository.songs() }.getOrDefault(emptyList())
+            val queueIndex = librarySongs.indexOfFirst { it.uri == uri.toString() }
+            if (queueIndex >= 0) {
+                mediaController.setMediaItems(
+                    librarySongs.map(::toMediaItem),
+                    queueIndex,
+                    C.TIME_UNSET,
+                )
+            } else {
+                mediaController.setMediaItem(
+                    MediaItem.Builder()
+                        .setUri(uri)
+                        .setMediaId(uri.toString().hashCode().toLong().toString())
+                        .setMediaMetadata(metadata)
+                        .build(),
+                )
+            }
             mediaController.prepare()
             mediaController.play()
             loadCurrentArtwork()
@@ -188,10 +200,14 @@ class PlayerController(context: Context) {
                     } else {
                         0L
                     }
-                    mediaController.setMediaItem(toMediaItem(song), position)
-                    mediaController.prepare()
-                    mediaController.play()
-                    loadCurrentArtwork()
+                    artworkScope.launch {
+                        if (mediaController.currentMediaItem != null) return@launch
+                        setQueueStartingWithSong(mediaController, song, position)
+                        mediaController.prepare()
+                        mediaController.play()
+                        loadCurrentArtwork()
+                        updateState()
+                    }
                 }
             }
         }
@@ -320,13 +336,41 @@ class PlayerController(context: Context) {
         }
 
         val song = preferences.lastPlayed() ?: return
-        mediaController.setMediaItem(
-            toMediaItem(song),
-            preferences.lastPlayedPositionMs().coerceAtLeast(0L),
-        )
-        mediaController.prepare()
         restoredLastPlayed = true
-        loadCurrentArtwork()
+        artworkScope.launch {
+            if (mediaController.currentMediaItem != null) return@launch
+            setQueueStartingWithSong(
+                mediaController,
+                song,
+                preferences.lastPlayedPositionMs().coerceAtLeast(0L),
+            )
+            mediaController.prepare()
+            loadCurrentArtwork()
+        }
+    }
+
+    private suspend fun setQueueStartingWithSong(
+        mediaController: MediaController,
+        song: Song,
+        positionMs: Long,
+    ) {
+        val librarySongs = runCatching { musicRepository.songs() }.getOrDefault(emptyList())
+        val queueIndex = librarySongs.indexOfFirst { it.uri == song.uri }
+            .takeIf { it >= 0 }
+            ?: librarySongs.indexOfFirst { it.id == song.id }
+
+        if (queueIndex >= 0) {
+            mediaController.setMediaItems(
+                librarySongs.map(::toMediaItem),
+                queueIndex,
+                positionMs.coerceAtLeast(0L),
+            )
+        } else {
+            mediaController.setMediaItem(
+                toMediaItem(song),
+                positionMs.coerceAtLeast(0L),
+            )
+        }
     }
 
     private fun loadCurrentArtwork() {
