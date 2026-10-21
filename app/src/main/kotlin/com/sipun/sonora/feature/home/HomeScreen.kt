@@ -47,6 +47,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -58,6 +60,8 @@ import com.sipun.sonora.domain.model.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.SonoraMiniPlayer
 import com.sipun.sonora.ui.components.SonoraSearchBar
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+import com.sipun.sonora.ui.theme.accentGradientTint
 import kotlinx.coroutines.launch
 
 private val tabs = listOf(
@@ -153,6 +157,7 @@ fun HomeScreen(
                             Icon(
                                 Icons.Default.Refresh,
                                 contentDescription = "Refresh library",
+                                modifier = Modifier.accentGradientTint(),
                             )
                         }
                         IconButton(
@@ -167,10 +172,11 @@ fun HomeScreen(
                                 contentDescription = stringResource(
                                     if (searchActive) R.string.action_close_search else R.string.action_search_music
                                 ),
+                                modifier = Modifier.accentGradientTint(),
                             )
                         }
                         IconButton(onClick = onOpenSettings) {
-                            Icon(Icons.Default.Settings, stringResource(R.string.action_settings))
+                            Icon(Icons.Default.Settings, stringResource(R.string.action_settings), modifier = Modifier.accentGradientTint())
                         }
                     },
                 )
@@ -212,11 +218,8 @@ fun HomeScreen(
                                 Icon(
                                     imageVector = tabIcons[index],
                                     contentDescription = stringResource(label),
-                                    tint = if (selected) {
-                                        MaterialTheme.colorScheme.primary
-                                    } else {
-                                        MaterialTheme.colorScheme.onSurfaceVariant
-                                    },
+                                    tint = Color.White,
+                                    modifier = Modifier.accentGradientTint(),
                                 )
                             }
 
@@ -225,10 +228,10 @@ fun HomeScreen(
                                     .width(40.dp)
                                     .height(3.dp)
                                     .background(
-                                        if (selected) {
-                                            MaterialTheme.colorScheme.primary
+                                        brush = if (selected) {
+                                            LocalAccentBrush.current
                                         } else {
-                                            MaterialTheme.colorScheme.surfaceVariant
+                                            SolidColor(MaterialTheme.colorScheme.surfaceVariant)
                                         }
                                     ),
                             )

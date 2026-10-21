@@ -1,5 +1,6 @@
 package com.sipun.sonora.feature.lyrics
 
+import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -44,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
@@ -54,6 +56,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sipun.sonora.R
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.data.lyrics.Lyrics
 import com.sipun.sonora.data.lyrics.LyricsRepository
 import com.sipun.sonora.player.PlayerController
@@ -111,8 +114,7 @@ fun LyricsScreen(playerController: PlayerController, onBack: () -> Unit) {
                     IconButton(onClick = { retry++ }) {
                         Icon(
                             Icons.Default.Refresh,
-                            contentDescription = stringResource(R.string.lyrics_retry),
-                        )
+                            contentDescription = stringResource(R.string.lyrics_retry), modifier = Modifier.accentGradientTint())
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -205,7 +207,13 @@ fun LyricsScreen(playerController: PlayerController, onBack: () -> Unit) {
                 ) {
                     Button(
                         onClick = { retry++ },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(50))
+                            .background(LocalAccentBrush.current),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.White,
+                        ),
                     ) {
                         Text(stringResource(R.string.lyrics_retry))
                     }
@@ -302,7 +310,7 @@ private fun LyricsCard(
                                     alpha = markerProgress
                                 }
                                 .clip(RoundedCornerShape(5.dp))
-                                .background(MaterialTheme.colorScheme.primary),
+                                .background(LocalAccentBrush.current),
                         )
                         Spacer(Modifier.width(12.dp))
 

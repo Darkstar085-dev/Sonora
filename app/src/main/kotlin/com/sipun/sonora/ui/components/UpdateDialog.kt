@@ -1,5 +1,6 @@
 package com.sipun.sonora.ui.components
 
+import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -150,7 +151,7 @@ fun UpdateDialog(
                         contentColor = MaterialTheme.colorScheme.onPrimary,
                     ),
                 ) {
-                    Icon(Icons.Default.Download, null, Modifier.size(17.dp))
+                    Icon(Icons.Default.Download, null, Modifier.size(17.dp).accentGradientTint())
                     Spacer(Modifier.size(6.dp))
                     Text(
                         when {
@@ -252,7 +253,7 @@ private fun UpdateInfoRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(9.dp),
     ) {
-        Icon(icon, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+        Icon(icon, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp).accentGradientTint())
         Text(
             label,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

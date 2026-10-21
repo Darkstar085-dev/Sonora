@@ -1,5 +1,7 @@
 package com.sipun.sonora.ui.components
 
+import com.sipun.sonora.ui.theme.accentGradientTint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
@@ -7,11 +9,13 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -28,9 +32,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sipun.sonora.player.PlayerController
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 
 @Composable
 fun SonoraMiniPlayer(
@@ -100,16 +106,20 @@ fun SonoraMiniPlayer(
                     onClick = playerController::skipPrevious,
                     enabled = state.hasPrevious,
                 ) {
-                    Icon(Icons.Default.SkipPrevious, "Previous")
+                    Icon(Icons.Default.SkipPrevious, "Previous", tint = MaterialTheme.colorScheme.onSurface)
                 }
                 IconButton(
                     onClick = playerController::togglePlayPause,
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(LocalAccentBrush.current),
                 ) {
                     AnimatedContent(targetState = state.isPlaying, label = "mini_player_play_pause") { playing ->
                         Icon(
                             if (playing) Icons.Default.Pause else Icons.Default.PlayArrow,
                             if (playing) "Pause" else "Play",
-                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(26.dp),
+                            tint = Color.White,
                         )
                     }
                 }
@@ -117,18 +127,23 @@ fun SonoraMiniPlayer(
                     onClick = playerController::skipNext,
                     enabled = state.hasNext,
                 ) {
-                    Icon(Icons.Default.SkipNext, "Next")
+                    Icon(Icons.Default.SkipNext, "Next", tint = MaterialTheme.colorScheme.onSurface)
                 }
             }
 
-            LinearProgressIndicator(
-                progress = { progress },
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(2.dp),
-                color = MaterialTheme.colorScheme.primary,
-                trackColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            )
+                    .height(2.dp)
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(progress)
+                        .fillMaxHeight()
+                        .background(LocalAccentBrush.current),
+                )
+            }
         }
     }
 }

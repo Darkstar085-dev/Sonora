@@ -1,5 +1,6 @@
 package com.sipun.sonora.ui.components
 
+import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.heightIn
@@ -70,7 +71,7 @@ fun AddToPlaylistDialog(songId: Long, preferences: SonoraPreferences, onDismiss:
                                         Icons.Default.LibraryMusic,
                                         null,
                                         tint = if (added) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
+                                    , modifier = Modifier.accentGradientTint())
                                 },
                                 trailingContent = {
                                     if (added) Text(
@@ -88,7 +89,7 @@ fun AddToPlaylistDialog(songId: Long, preferences: SonoraPreferences, onDismiss:
                                                 R.string.action_add_to_playlist,
                                                 playlist.name
                                             )
-                                        )
+                                        , modifier = Modifier.accentGradientTint())
                                     }
                                 },
                             )

@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -43,6 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.R
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.domain.model.Song
 import com.sipun.sonora.player.PlayerController
@@ -179,11 +181,19 @@ internal fun Overview(
                                         modifier = Modifier
                                             .align(Alignment.BottomEnd)
                                             .padding(8.dp)
-                                            .size(38.dp),
+                                            .size(38.dp)
+                                            .clip(CircleShape)
+                                            .background(LocalAccentBrush.current),
+                                        colors = IconButtonDefaults.filledIconButtonColors(
+                                            containerColor = Color.Transparent,
+                                            contentColor = Color.White,
+                                        ),
                                     ) {
                                         Icon(
                                             Icons.Default.PlayArrow,
                                             contentDescription = "Play",
+                                            modifier = Modifier.size(24.dp),
+                                            tint = Color.White,
                                         )
                                     }
                                 }
@@ -298,7 +308,7 @@ internal fun Overview(
                                                         .fillMaxWidth(progress)
                                                         .fillMaxSize()
                                                         .clip(CircleShape)
-                                                        .background(MaterialTheme.colorScheme.primary),
+                                                        .background(LocalAccentBrush.current),
                                                 )
                                             }
                                         }
@@ -310,11 +320,19 @@ internal fun Overview(
                                         },
                                         modifier = Modifier
                                             .padding(start = 10.dp)
-                                            .size(44.dp),
+                                            .size(44.dp)
+                                            .clip(CircleShape)
+                                            .background(LocalAccentBrush.current),
+                                        colors = IconButtonDefaults.filledIconButtonColors(
+                                            containerColor = Color.Transparent,
+                                            contentColor = Color.White,
+                                        ),
                                     ) {
                                         Icon(
                                             Icons.Default.PlayArrow,
                                             contentDescription = "Play",
+                                            modifier = Modifier.size(26.dp),
+                                            tint = Color.White,
                                         )
                                     }
                                 }

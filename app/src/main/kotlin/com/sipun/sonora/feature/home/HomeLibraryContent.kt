@@ -1,5 +1,7 @@
 package com.sipun.sonora.feature.home
 
+import androidx.compose.ui.graphics.Color
+import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -81,8 +83,7 @@ internal fun SongList(
                     Icon(
                         Icons.Default.Shuffle,
                         contentDescription = "Shuffle songs",
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
+                        tint = Color.White, modifier = Modifier.accentGradientTint())
                 }
                 SongSortButton(
                     scope = SongSortScope.SONGS,
@@ -134,8 +135,8 @@ internal fun FavoriteList(
             Icon(
                 Icons.Default.FavoriteBorder,
                 null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(56.dp)
+                tint = Color.White,
+                modifier = Modifier.size(56.dp).accentGradientTint()
             )
             Text(
                 "No favorites yet",

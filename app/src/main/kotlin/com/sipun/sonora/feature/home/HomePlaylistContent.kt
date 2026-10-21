@@ -1,5 +1,9 @@
 package com.sipun.sonora.feature.home
 
+import androidx.compose.ui.graphics.Color
+import com.sipun.sonora.ui.theme.accentGradientTint
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,7 +63,7 @@ internal fun PlaylistList(
             }
             var showCreate by remember { mutableStateOf(false) }
             IconButton(onClick = { showCreate = true }) {
-                Icon(Icons.Default.Add, "Create playlist", tint = MaterialTheme.colorScheme.primary)
+                Icon(Icons.Default.Add, "Create playlist", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.accentGradientTint())
             }
             if (showCreate) {
                 CreatePlaylistDialog(
@@ -82,8 +86,8 @@ internal fun PlaylistList(
                 Icon(
                     Icons.AutoMirrored.Filled.PlaylistPlay,
                     null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(56.dp)
+                    tint = Color.White,
+                    modifier = Modifier.size(56.dp).accentGradientTint()
                 )
                 Text(
                     "No playlists yet",
@@ -117,7 +121,7 @@ internal fun PlaylistList(
                                 Modifier
                                     .size(58.dp)
                                     .background(
-                                        MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                                        LocalAccentBrush.current,
                                         RoundedCornerShape(16.dp),
                                     ),
                                 contentAlignment = Alignment.Center,
@@ -125,7 +129,7 @@ internal fun PlaylistList(
                                 Icon(
                                     Icons.AutoMirrored.Filled.PlaylistPlay,
                                     null,
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = Color.White,
                                 )
                             }
                             Column(
@@ -143,7 +147,7 @@ internal fun PlaylistList(
                                 preferences.deletePlaylist(playlist.id)
                                 onRefresh()
                             }) {
-                                Icon(Icons.Default.DeleteOutline, "Delete playlist")
+                                Icon(Icons.Default.DeleteOutline, "Delete playlist", modifier = Modifier.accentGradientTint())
                             }
                         }
                     }

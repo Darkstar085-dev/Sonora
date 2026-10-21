@@ -1,5 +1,6 @@
 package com.sipun.sonora.ui.components
 
+import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -58,7 +59,7 @@ fun SongSortButton(
     var expanded by remember(scope) { mutableStateOf(false) }
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         IconButton(onClick = { expanded = true }) {
-            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = "Sort songs", tint = MaterialTheme.colorScheme.primary)
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = "Sort songs", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.accentGradientTint())
         }
         if (scope == SongSortScope.SONGS) {
             DropdownMenu(
@@ -94,7 +95,7 @@ fun SongSortButton(
                                     )
                                 },
                                 leadingIcon = {
-                                    SortOptionIcon(option, option == currentOption)
+                                    SortOptionIcon(option, option == currentOption, modifier = Modifier.accentGradientTint())
                                 },
                                 trailingIcon = {
                                     if (option == currentOption) {
@@ -102,7 +103,7 @@ fun SongSortButton(
                                             Icons.Default.Check,
                                             contentDescription = "Selected",
                                             tint = MaterialTheme.colorScheme.primary,
-                                            modifier = Modifier.size(18.dp),
+                                            modifier = Modifier.size(18.dp).accentGradientTint(),
                                         )
                                     }
                                 },
@@ -153,7 +154,7 @@ fun SongSortButton(
                                 .padding(horizontal = 14.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            SortOptionIcon(option, selected)
+                            SortOptionIcon(option, selected, modifier = Modifier.accentGradientTint())
                             Text(
                                 option.label,
                                 modifier = Modifier.weight(1f).padding(start = 14.dp),
@@ -165,7 +166,7 @@ fun SongSortButton(
                                     Icons.Default.Check,
                                     contentDescription = "Selected",
                                     tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(20.dp),
+                                    modifier = Modifier.size(20.dp).accentGradientTint(),
                                 )
                             }
                         }
@@ -186,7 +187,7 @@ private fun SortMenuHeading() {
             Icons.AutoMirrored.Filled.Sort,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(20.dp),
+            modifier = Modifier.size(20.dp).accentGradientTint(),
         )
         Text(
             "Sort by",
@@ -198,7 +199,7 @@ private fun SortMenuHeading() {
 }
 
 @Composable
-private fun SortOptionIcon(option: SongSortOption, selected: Boolean) {
+private fun SortOptionIcon(option: SongSortOption, selected: Boolean, modifier: Modifier = Modifier) {
     Icon(
         imageVector = when (option) {
             SongSortOption.TITLE_ASC -> Icons.Default.ArrowUpward
@@ -210,7 +211,7 @@ private fun SortOptionIcon(option: SongSortOption, selected: Boolean) {
         },
         contentDescription = null,
         tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.size(20.dp),
+        modifier = Modifier.size(20.dp).accentGradientTint(),
     )
 }
 
@@ -229,7 +230,7 @@ fun SongCollectionControls(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = { playerController.playQueueShuffled(songs); onOpenNowPlaying() }) {
-            Icon(Icons.Default.Shuffle, contentDescription = "Shuffle", tint = MaterialTheme.colorScheme.primary)
+            Icon(Icons.Default.Shuffle, contentDescription = "Shuffle", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.accentGradientTint())
         }
         FilledIconButton(
             onClick = { playerController.playQueue(songs); onOpenNowPlaying() },
@@ -238,7 +239,12 @@ fun SongCollectionControls(
                 contentColor = MaterialTheme.colorScheme.onPrimary,
             ),
         ) {
-            Icon(Icons.Default.PlayArrow, contentDescription = "Play")
+            Icon(
+                Icons.Default.PlayArrow,
+                contentDescription = "Play",
+                modifier = Modifier.size(28.dp),
+                tint = Color.White,
+            )
         }
         SongSortButton(scope, currentOption, onOptionSelected)
     }

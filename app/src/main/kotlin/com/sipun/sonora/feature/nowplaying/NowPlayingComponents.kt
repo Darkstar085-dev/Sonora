@@ -70,6 +70,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.ui.theme.accentGradientTint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -95,7 +96,12 @@ internal fun QuickAction(
                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(icon, label, tint = MaterialTheme.colorScheme.primary)
+                    Icon(
+                        icon,
+                        contentDescription = label,
+                        modifier = Modifier.size(24.dp).accentGradientTint(),
+                        tint = Color.White,
+                    )
                 }
             }
         }
@@ -169,7 +175,8 @@ private fun MoreOption(
             Icon(
                 icon,
                 null,
-                tint = if (destructive) MaterialTheme.colorScheme.primary else LocalContentColor.current
+                tint = if (destructive) MaterialTheme.colorScheme.primary else LocalContentColor.current,
+                modifier = Modifier.accentGradientTint(),
             )
         },
         modifier = Modifier
@@ -258,8 +265,8 @@ internal fun QueueDialog(
                                             Icon(
                                                 Icons.Default.GraphicEq,
                                                 contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.primary,
-                                                modifier = Modifier.size(24.dp),
+                                                tint = Color.White,
+                                                modifier = Modifier.size(24.dp).accentGradientTint(),
                                             )
                                         } else {
                                             Text(

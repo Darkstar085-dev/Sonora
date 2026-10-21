@@ -2,6 +2,8 @@
 
 package com.sipun.sonora.feature.playlists
 
+import androidx.compose.ui.graphics.Color
+import com.sipun.sonora.ui.theme.accentGradientTint
 import com.sipun.sonora.ui.components.SonoraBackButton
 
 import androidx.compose.foundation.background
@@ -127,8 +129,8 @@ fun PlaylistDetailScreen(
                             Icon(
                                 Icons.AutoMirrored.Filled.PlaylistPlay,
                                 null,
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(72.dp)
+                                tint = Color.White,
+                                modifier = Modifier.size(72.dp).accentGradientTint()
                             )
                         }
                         Text(

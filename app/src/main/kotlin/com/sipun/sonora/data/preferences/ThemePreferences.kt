@@ -11,6 +11,27 @@ enum class AppTheme {
     DARK,
 }
 
+enum class AccentStyle {
+    SOLID,
+    GRADIENT,
+}
+
+enum class AccentGradient {
+    SUNSET,
+    OCEAN,
+    AURORA,
+    PURPLE_HAZE,
+    PEACH,
+    EMERALD,
+    CHERRY,
+    ROYAL,
+    AMBER,
+    MINT,
+    ROSE,
+    INDIGO,
+    CUSTOM,
+}
+
 enum class DynamicPalette {
     TONAL_SPOT,
     VIBRANT,
@@ -38,6 +59,15 @@ class ThemePreferences private constructor(context: Context) {
     private val _customColor = MutableStateFlow(readCustomColor())
     val customColor: StateFlow<Int> = _customColor.asStateFlow()
 
+    private val _accentStyle = MutableStateFlow(readAccentStyle())
+    val accentStyle: StateFlow<AccentStyle> = _accentStyle.asStateFlow()
+    private val _accentGradient = MutableStateFlow(readAccentGradient())
+    val accentGradient: StateFlow<AccentGradient> = _accentGradient.asStateFlow()
+    private val _customGradientStart = MutableStateFlow(preferences.getInt(KEY_CUSTOM_GRADIENT_START, 0xFFE92DE2.toInt()))
+    val customGradientStart: StateFlow<Int> = _customGradientStart.asStateFlow()
+    private val _customGradientEnd = MutableStateFlow(preferences.getInt(KEY_CUSTOM_GRADIENT_END, 0xFF4A00E0.toInt()))
+    val customGradientEnd: StateFlow<Int> = _customGradientEnd.asStateFlow()
+
     fun setTheme(theme: AppTheme) {
         preferences.edit().putString(KEY_THEME, theme.name).apply()
         _theme.value = theme
@@ -63,6 +93,40 @@ class ThemePreferences private constructor(context: Context) {
         _customColor.value = color
     }
 
+    fun setAccentStyle(style: AccentStyle) {
+        preferences.edit().putString(KEY_ACCENT_STYLE, style.name).apply()
+        _accentStyle.value = style
+    }
+
+    fun setAccentGradient(gradient: AccentGradient) {
+        preferences.edit().putString(KEY_ACCENT_GRADIENT, gradient.name).apply()
+        _accentGradient.value = gradient
+    }
+
+    fun setCustomGradientColors(start: Int, end: Int) {
+        preferences.edit()
+            .putInt(KEY_CUSTOM_GRADIENT_START, start)
+            .putInt(KEY_CUSTOM_GRADIENT_END, end)
+            .apply()
+        _customGradientStart.value = start
+        _customGradientEnd.value = end
+    }
+
+    private fun readAccentStyle(): AccentStyle =
+        runCatching {
+            AccentStyle.valueOf(
+                preferences.getString(KEY_ACCENT_STYLE, AccentStyle.SOLID.name)
+                    ?: AccentStyle.SOLID.name,
+            )
+        }.getOrDefault(AccentStyle.SOLID)
+
+    private fun readAccentGradient(): AccentGradient =
+        runCatching {
+            AccentGradient.valueOf(
+                preferences.getString(KEY_ACCENT_GRADIENT, AccentGradient.SUNSET.name)
+                    ?: AccentGradient.SUNSET.name,
+            )
+        }.getOrDefault(AccentGradient.SUNSET)
     private fun readPureBlack(): Boolean =
         preferences.getBoolean(KEY_PURE_BLACK, false)
 
@@ -94,6 +158,10 @@ class ThemePreferences private constructor(context: Context) {
         private const val KEY_DYNAMIC_COLOR = "dynamic_color"
         private const val KEY_DYNAMIC_PALETTE = "dynamic_palette"
         private const val KEY_CUSTOM_COLOR = "custom_color"
+        private const val KEY_ACCENT_STYLE = "accent_style"
+        private const val KEY_ACCENT_GRADIENT = "accent_gradient"
+        private const val KEY_CUSTOM_GRADIENT_START = "custom_gradient_start"
+        private const val KEY_CUSTOM_GRADIENT_END = "custom_gradient_end"
 
         @Volatile
         private var instance: ThemePreferences? = null

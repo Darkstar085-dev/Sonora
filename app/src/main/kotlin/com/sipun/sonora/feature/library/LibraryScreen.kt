@@ -1,5 +1,7 @@
 package com.sipun.sonora.feature.library
 
+import androidx.compose.ui.graphics.Color
+import com.sipun.sonora.ui.theme.accentGradientTint
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
@@ -157,7 +159,7 @@ fun LibraryScreen(playerController: PlayerController, onOpenNowPlaying: () -> Un
                     if (playerState.currentSong?.id == song.id) PlayingEqualizer(isPlaying = playerState.isPlaying, modifier = Modifier.padding(end = 4.dp))
                     IconButton(onClick = {
                         playlistSongId = song.id
-                    }) { Icon(Icons.AutoMirrored.Filled.PlaylistAdd, "Add to playlist") }
+                    }) { Icon(Icons.AutoMirrored.Filled.PlaylistAdd, "Add to playlist", modifier = Modifier.accentGradientTint()) }
                     IconButton(onClick = {
                         favoriteIds = favoriteIds.toMutableSet()
                             .also { ids -> if (!ids.add(song.id)) ids.remove(song.id) }
@@ -166,7 +168,8 @@ fun LibraryScreen(playerController: PlayerController, onOpenNowPlaying: () -> Un
                         Icon(
                             if (song.id in favoriteIds) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             "Favorite",
-                            tint = if (song.id in favoriteIds) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                            tint = if (song.id in favoriteIds) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.accentGradientTint(),
                         )
                     }
                 }
@@ -187,8 +190,8 @@ private fun LibraryPermission(onRequest: () -> Unit) {
         Icon(
             Icons.Default.LibraryMusic,
             null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(48.dp)
+            tint = Color.White,
+            modifier = Modifier.size(48.dp).accentGradientTint()
         )
         Text(
             "Access your music",
@@ -228,8 +231,8 @@ private fun EmptyLibraryContent() {
         Icon(
             Icons.Default.AudioFile,
             null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(48.dp)
+            tint = Color.White,
+            modifier = Modifier.size(48.dp).accentGradientTint()
         )
         Text(
             "No music found",

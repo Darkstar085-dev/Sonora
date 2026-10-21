@@ -4,6 +4,14 @@ import android.app.Activity
 import android.app.WallpaperManager
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -16,8 +24,47 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sipun.sonora.data.preferences.AccentGradient
+import com.sipun.sonora.data.preferences.AccentStyle
 import com.sipun.sonora.data.preferences.AppTheme
 import com.sipun.sonora.data.preferences.ThemePreferences
+
+val LocalAccentBrush = staticCompositionLocalOf {
+    Brush.horizontalGradient(
+        listOf(Color(0xFFE92B2B), Color(0xFFFF7043)),
+    )
+}
+
+@Composable
+fun Modifier.accentGradientTint(): Modifier {
+    val brush = LocalAccentBrush.current
+    return this
+        .graphicsLayer {
+            compositingStrategy = CompositingStrategy.Offscreen
+        }
+        .drawWithCache {
+            onDrawWithContent {
+                drawContent()
+                drawRect(brush = brush, blendMode = BlendMode.SrcAtop)
+            }
+        }
+}
+
+private fun accentGradient(gradient: AccentGradient): List<Color> = when (gradient) {
+    AccentGradient.SUNSET -> listOf(Color(0xFFFF512F), Color(0xFFDD2476))
+    AccentGradient.OCEAN -> listOf(Color(0xFF2193B0), Color(0xFF6DD5ED))
+    AccentGradient.AURORA -> listOf(Color(0xFF00B09B), Color(0xFF96C93D))
+    AccentGradient.PURPLE_HAZE -> listOf(Color(0xFF8E2DE2), Color(0xFF4A00E0))
+    AccentGradient.PEACH -> listOf(Color(0xFFFF9966), Color(0xFFFF5E62))
+    AccentGradient.EMERALD -> listOf(Color(0xFF11998E), Color(0xFF38EF7D))
+    AccentGradient.CHERRY -> listOf(Color(0xFFFF416C), Color(0xFF8E2DE2))
+    AccentGradient.ROYAL -> listOf(Color(0xFF4F00BC), Color(0xFF29ABE2))
+    AccentGradient.AMBER -> listOf(Color(0xFFFFC371), Color(0xFFFF5F6D))
+    AccentGradient.MINT -> listOf(Color(0xFF36D1DC), Color(0xFF5B86E5))
+    AccentGradient.ROSE -> listOf(Color(0xFFFF4B8B), Color(0xFFC13584))
+    AccentGradient.INDIGO -> listOf(Color(0xFF4776E6), Color(0xFF8E54E9))
+    AccentGradient.CUSTOM -> listOf(Color(0xFFE92DE2), Color(0xFF4A00E0))
+}
 
 private val SonoraLightColors = lightColorScheme(
     primary = SonoraRed,
@@ -86,6 +133,10 @@ fun SonoraTheme(
     val pureBlack by preferences.pureBlack.collectAsStateWithLifecycle()
     val dynamicColor by preferences.dynamicColor.collectAsStateWithLifecycle()
     val customColor by preferences.customColor.collectAsStateWithLifecycle()
+    val accentStyle by preferences.accentStyle.collectAsStateWithLifecycle()
+    val selectedGradient by preferences.accentGradient.collectAsStateWithLifecycle()
+    val customGradientStart by preferences.customGradientStart.collectAsStateWithLifecycle()
+    val customGradientEnd by preferences.customGradientEnd.collectAsStateWithLifecycle()
     val paletteStyle by preferences.dynamicPalette.collectAsStateWithLifecycle()
     var wallpaperSeedColor by androidx.compose.runtime.remember(context) {
         androidx.compose.runtime.mutableStateOf(
@@ -106,6 +157,24 @@ fun SonoraTheme(
             onDispose { manager.removeOnColorsChangedListener(listener) }
         }
     }
+
+    val gradientColors = if (selectedGradient == AccentGradient.CUSTOM) {
+        listOf(Color(customGradientStart), Color(customGradientEnd))
+    } else {
+        accentGradient(selectedGradient)
+    }
+    val accentBrush =
+        if (accentStyle == AccentStyle.GRADIENT) {
+            Brush.horizontalGradient(gradientColors)
+        } else {
+            Brush.horizontalGradient(listOf(Color(customColor), Color(customColor)))
+        }
+    val accentColor =
+        if (accentStyle == AccentStyle.GRADIENT) {
+            gradientColors.first()
+        } else {
+            Color(customColor)
+        }
 
     val darkTheme = pureBlack || when (selectedTheme) {
         AppTheme.SYSTEM -> isSystemInDarkTheme()
@@ -156,18 +225,18 @@ fun SonoraTheme(
             primary = if (dynamicScheme != null) {
                 dynamicScheme.primary
             } else {
-                Color(customColor)
+                accentColor
             },
             onPrimary = Color.White,
             primaryContainer = if (dynamicScheme != null) {
                 dynamicScheme.primaryContainer
             } else {
-                Color(customColor).copy(alpha = 0.35f)
+                accentColor.copy(alpha = 0.35f)
             },
             onPrimaryContainer = if (dynamicScheme != null) {
                 dynamicScheme.onPrimaryContainer
             } else {
-                Color(customColor)
+                accentColor
             },
             background = Color.Black,
             onBackground = Color(0xFFF5F5F5),
@@ -182,19 +251,26 @@ fun SonoraTheme(
             outline = Color(0xFF3A3A3A),
         )
 
-        dynamicScheme != null -> dynamicScheme
-        darkTheme -> SonoraDarkColors.copy(
-            primary = Color(customColor),
+        dynamicScheme != null -> dynamicScheme.copy(
+            primary = accentColor,
             onPrimary = Color.White,
-            primaryContainer = Color(customColor).copy(alpha = 0.35f),
-            onPrimaryContainer = Color(customColor),
+            primaryContainer = accentColor.copy(alpha = if (darkTheme) 0.35f else 0.12f),
+            onPrimaryContainer = if (darkTheme) accentColor else Color.Black,
+            secondary = accentColor,
+            tertiary = accentColor,
+        )
+        darkTheme -> SonoraDarkColors.copy(
+            primary = accentColor,
+            onPrimary = Color.White,
+            primaryContainer = accentColor.copy(alpha = 0.35f),
+            onPrimaryContainer = accentColor,
         )
 
         else -> SonoraLightColors.copy(
-            primary = Color(customColor),
+            primary = accentColor,
             onPrimary = Color.White,
-            primaryContainer = Color(customColor).copy(alpha = 0.12f),
-            onPrimaryContainer = Color(customColor),
+            primaryContainer = accentColor.copy(alpha = 0.12f),
+            onPrimaryContainer = accentColor,
         )
     }
 
@@ -206,12 +282,14 @@ fun SonoraTheme(
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = SonoraTypography,
-        shapes = SonoraShapes,
-        content = content,
-    )
+    CompositionLocalProvider(LocalAccentBrush provides accentBrush) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = SonoraTypography,
+            shapes = SonoraShapes,
+            content = content,
+        )
+    }
 }
 
 private fun readWallpaperSeed(context: android.content.Context): Color =

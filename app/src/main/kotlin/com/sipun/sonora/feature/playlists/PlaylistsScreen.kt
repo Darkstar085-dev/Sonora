@@ -1,5 +1,7 @@
 package com.sipun.sonora.feature.playlists
 
+import androidx.compose.ui.graphics.Color
+import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.animation.AnimatedVisibility
@@ -44,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import com.sipun.sonora.R
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.player.PlayerController
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 
 @Composable
 fun PlaylistsScreen(
@@ -82,11 +85,15 @@ fun PlaylistsScreen(
             }
             FilledIconButton(
                 onClick = { showCreate = true },
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.background(
+                    LocalAccentBrush.current,
+                    RoundedCornerShape(50),
                 ),
-            ) { Icon(Icons.Default.Add, stringResource(R.string.action_create_playlist)) }
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                    contentColor = androidx.compose.ui.graphics.Color.White,
+                ),
+            ) { Icon(Icons.Default.Add, stringResource(R.string.action_create_playlist), modifier = Modifier.accentGradientTint()) }
         }
 
         if (playlists.isEmpty()) {
@@ -100,8 +107,8 @@ fun PlaylistsScreen(
                 Icon(
                     Icons.Default.LibraryMusic,
                     null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(56.dp)
+                    tint = Color.White,
+                    modifier = Modifier.size(56.dp).accentGradientTint()
                 )
                 Text(
                     stringResource(R.string.create_first_playlist),
@@ -148,7 +155,7 @@ fun PlaylistsScreen(
                                     Icons.Default.LibraryMusic,
                                     null,
                                     tint = MaterialTheme.colorScheme.primary
-                                )
+                                , modifier = Modifier.accentGradientTint())
                             }
                             Column(
                                 Modifier
@@ -175,7 +182,7 @@ fun PlaylistsScreen(
                                 Icon(
                                     Icons.Default.DeleteOutline,
                                     stringResource(R.string.action_delete_playlist)
-                                )
+                                , modifier = Modifier.accentGradientTint())
                             }
                         }
                         }

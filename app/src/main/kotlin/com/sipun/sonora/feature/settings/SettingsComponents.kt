@@ -1,9 +1,11 @@
 package com.sipun.sonora.feature.settings
 
+import com.sipun.sonora.ui.theme.accentGradientTint
 import android.app.WallpaperManager
 import android.os.Build
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +28,7 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +38,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +63,7 @@ import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import com.sipun.sonora.BuildConfig
 import com.sipun.sonora.R
 import com.sipun.sonora.data.preferences.DynamicPalette
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.ui.theme.WallpaperPalette
 import com.sipun.sonora.ui.theme.wallpaperPalette
 import androidx.compose.runtime.getValue
@@ -149,7 +155,7 @@ internal fun CrossfadeSelector(
                 Modifier
                     .size(42.dp)
                     .background(
-                        MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                        com.sipun.sonora.ui.theme.LocalAccentBrush.current,
                         RoundedCornerShape(14.dp),
                     ),
                 contentAlignment = Alignment.Center,
@@ -157,8 +163,7 @@ internal fun CrossfadeSelector(
                 Icon(
                     Icons.Default.SwapHoriz,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                )
+                    tint = Color.White)
             }
             Column(
                 Modifier
@@ -197,7 +202,14 @@ internal fun CrossfadeSelector(
 @Composable
 internal fun CustomColorSelector(
     color: Color,
+    style: com.sipun.sonora.data.preferences.AccentStyle,
+    gradient: com.sipun.sonora.data.preferences.AccentGradient,
     onColorChange: (Int) -> Unit,
+    onStyleChange: (com.sipun.sonora.data.preferences.AccentStyle) -> Unit,
+    onGradientChange: (com.sipun.sonora.data.preferences.AccentGradient) -> Unit,
+    customGradientStart: Int,
+    customGradientEnd: Int,
+    onCustomGradientChange: (Int, Int) -> Unit,
 ) {
     val presetColors = listOf(
         Color(0xFFE92B2B),
@@ -212,17 +224,37 @@ internal fun CustomColorSelector(
         Color(0xFF7E57C2),
         Color(0xFF5C6BC0),
         Color(0xFF26C6DA),
-        Color(0xFF26A69A),
         Color(0xFF8BC34A),
-        Color(0xFFD4E157),
         Color(0xFFFFCA28),
         Color(0xFFFFA726),
+    )
+    val gradients = listOf(
+        com.sipun.sonora.data.preferences.AccentGradient.SUNSET to listOf(Color(0xFFFF512F), Color(0xFFDD2476)),
+        com.sipun.sonora.data.preferences.AccentGradient.OCEAN to listOf(Color(0xFF2193B0), Color(0xFF6DD5ED)),
+        com.sipun.sonora.data.preferences.AccentGradient.AURORA to listOf(Color(0xFF00B09B), Color(0xFF96C93D)),
+        com.sipun.sonora.data.preferences.AccentGradient.PURPLE_HAZE to listOf(Color(0xFF8E2DE2), Color(0xFF4A00E0)),
+        com.sipun.sonora.data.preferences.AccentGradient.PEACH to listOf(Color(0xFFFF9966), Color(0xFFFF5E62)),
+        com.sipun.sonora.data.preferences.AccentGradient.EMERALD to listOf(Color(0xFF11998E), Color(0xFF38EF7D)),
+        com.sipun.sonora.data.preferences.AccentGradient.CHERRY to listOf(Color(0xFFFF416C), Color(0xFF8E2DE2)),
+        com.sipun.sonora.data.preferences.AccentGradient.ROYAL to listOf(Color(0xFF4F00BC), Color(0xFF29ABE2)),
+        com.sipun.sonora.data.preferences.AccentGradient.AMBER to listOf(Color(0xFFFFC371), Color(0xFFFF5F6D)),
+        com.sipun.sonora.data.preferences.AccentGradient.MINT to listOf(Color(0xFF36D1DC), Color(0xFF5B86E5)),
+        com.sipun.sonora.data.preferences.AccentGradient.ROSE to listOf(Color(0xFFFF4B8B), Color(0xFFC13584)),
+        com.sipun.sonora.data.preferences.AccentGradient.INDIGO to listOf(Color(0xFF4776E6), Color(0xFF8E54E9)),
     )
     val hsv = remember(color) {
         FloatArray(3).also { android.graphics.Color.colorToHSV(color.toArgb(), it) }
     }
     var hue by remember(color) { mutableStateOf(hsv[0]) }
-
+    var showCustomGradientEditor by remember { mutableStateOf(false) }
+    val startHsv = remember(customGradientStart) {
+        FloatArray(3).also { android.graphics.Color.colorToHSV(customGradientStart, it) }
+    }
+    val endHsv = remember(customGradientEnd) {
+        FloatArray(3).also { android.graphics.Color.colorToHSV(customGradientEnd, it) }
+    }
+    var customStartHue by remember(showCustomGradientEditor, customGradientStart) { mutableStateOf(startHsv[0]) }
+    var customEndHue by remember(showCustomGradientEditor, customGradientEnd) { mutableStateOf(endHsv[0]) }
     val hueColors = remember {
         (0..360 step 30).map { Color.hsv(it.toFloat(), 0.78f, 0.92f) }
     }
@@ -243,86 +275,267 @@ internal fun CustomColorSelector(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 2.dp),
         )
-
         Row(
-            modifier = Modifier
+            Modifier
                 .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
                 .padding(top = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            presetColors.forEach { preset ->
-                Box(
+            listOf(
+                com.sipun.sonora.data.preferences.AccentStyle.SOLID,
+                com.sipun.sonora.data.preferences.AccentStyle.GRADIENT,
+            ).forEach { option ->
+                Surface(
                     modifier = Modifier
-                        .size(38.dp)
-                        .background(preset, RoundedCornerShape(50))
-                        .clickable {
-                            val presetHsv = FloatArray(3)
-                            android.graphics.Color.colorToHSV(preset.toArgb(), presetHsv)
-                            hue = presetHsv[0]
-                            onColorChange(preset.toArgb())
-                        },
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (color.toArgb() == preset.toArgb()) {
-                        Icon(
-                            Icons.Default.Check,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(20.dp),
+                        .weight(1f)
+                        .then(
+                            if (style == option) {
+                                Modifier.background(LocalAccentBrush.current, RoundedCornerShape(14.dp))
+                            } else {
+                                Modifier
+                            },
                         )
-                    }
+                        .clickable { onStyleChange(option) },
+                    shape = RoundedCornerShape(14.dp),
+                    color = if (style == option) {
+                        Color.Transparent
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
+                    },
+                    border = BorderStroke(
+                        1.dp,
+                        if (style == option) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                        },
+                    ),
+                ) {
+                    Text(
+                        text = if (option == com.sipun.sonora.data.preferences.AccentStyle.SOLID) {
+                            "Solid color"
+                        } else {
+                            "Gradient"
+                        },
+                        modifier = Modifier.padding(vertical = 11.dp),
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        color = if (style == option) Color.White else MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.labelLarge,
+                    )
                 }
             }
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(44.dp)
-                .padding(top = 8.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Box(
+        if (style == com.sipun.sonora.data.preferences.AccentStyle.GRADIENT) {
+            Text(
+                "Choose a gradient",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 10.dp, bottom = 2.dp),
+            )
+            gradients.chunked(4).forEach { rowGradients ->
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    rowGradients.forEach { (preset, colors) ->
+                        val selected = gradient == preset
+                        Column(
+                            Modifier
+                                .weight(1f)
+                                .clip(RoundedCornerShape(12.dp))
+                                .clickable { onGradientChange(preset) }
+                                .padding(bottom = 3.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .background(Brush.horizontalGradient(colors))
+                                    .then(
+                                        if (selected) Modifier.border(
+                                            2.dp,
+                                            MaterialTheme.colorScheme.onSurface,
+                                            RoundedCornerShape(12.dp),
+                                        ) else Modifier
+                                    ),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                if (selected) {
+                                    Icon(
+                                        Icons.Default.Check,
+                                        contentDescription = "Selected",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(22.dp),
+                                    )
+                                }
+                            }
+                            Text(
+                                preset.name.lowercase().replace('_', ' ')
+                                    .replaceFirstChar { it.uppercase() },
+                                color = if (selected) MaterialTheme.colorScheme.onSurface
+                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.labelSmall,
+                                maxLines = 1,
+                                softWrap = false,
+                                modifier = Modifier.padding(top = 4.dp),
+                            )
+                        }
+                    }
+                    repeat(4 - rowGradients.size) {
+                        Spacer(Modifier.weight(1f))
+                    }
+                }
+            }
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(12.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(Brush.horizontalGradient(hueColors)),
-            )
-
-            Slider(
-                value = hue,
-                onValueChange = {
-                    hue = it
-                    val hsvColor = floatArrayOf(it, 0.78f, 0.92f)
-                    onColorChange(android.graphics.Color.HSVToColor(hsvColor))
-                },
-                valueRange = 0f..360f,
-                colors = SliderDefaults.colors(
-                    thumbColor = Color.White,
-                    activeTrackColor = Color.Transparent,
-                    inactiveTrackColor = Color.Transparent,
-                    activeTickColor = Color.Transparent,
-                    inactiveTickColor = Color.Transparent,
-                ),
-                thumb = {
+                    .padding(top = 8.dp)
+                    .clickable { showCustomGradientEditor = true },
+                shape = RoundedCornerShape(14.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)),
+            ) {
+                Row(
+                    Modifier.padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
                     Box(
-                        modifier = Modifier
-                            .width(4.dp)
-                            .height(34.dp)
-                            .background(
-                                Color.White,
-                                RoundedCornerShape(50),
-                            ),
+                        Modifier
+                            .size(width = 64.dp, height = 42.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Brush.horizontalGradient(listOf(Color(customGradientStart), Color(customGradientEnd)))),
                     )
-                },
-                modifier = Modifier.fillMaxWidth(),
-            )
+                    Column(Modifier.weight(1f)) {
+                        Text("Custom gradient", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
+                        Text("Choose both colors and preview", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    Text("Edit", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelLarge)
+                }
+            }
+            if (showCustomGradientEditor) {
+                val startColor = Color.hsv(customStartHue, 0.85f, 0.95f)
+                val endColor = Color.hsv(customEndHue, 0.85f, 0.95f)
+                AlertDialog(
+                    onDismissRequest = { showCustomGradientEditor = false },
+                    title = { Text("Custom gradient") },
+                    text = {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(76.dp)
+                                    .clip(RoundedCornerShape(14.dp))
+                                    .background(Brush.horizontalGradient(listOf(startColor, endColor))),
+                            )
+                            Text("Start color", style = MaterialTheme.typography.labelMedium)
+                            Slider(
+                                value = customStartHue,
+                                onValueChange = { customStartHue = it },
+                                valueRange = 0f..360f,
+                                colors = SliderDefaults.colors(thumbColor = startColor, activeTrackColor = startColor),
+                            )
+                            Text("End color", style = MaterialTheme.typography.labelMedium)
+                            Slider(
+                                value = customEndHue,
+                                onValueChange = { customEndHue = it },
+                                valueRange = 0f..360f,
+                                colors = SliderDefaults.colors(thumbColor = endColor, activeTrackColor = endColor),
+                            )
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            onCustomGradientChange(startColor.toArgb(), endColor.toArgb())
+                            onGradientChange(com.sipun.sonora.data.preferences.AccentGradient.CUSTOM)
+                            onStyleChange(com.sipun.sonora.data.preferences.AccentStyle.GRADIENT)
+                            showCustomGradientEditor = false
+                        }) { Text("Apply gradient") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showCustomGradientEditor = false }) { Text("Cancel") }
+                    },
+                )
+            }
+        } else {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(top = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+            ) {
+                presetColors.forEach { preset ->
+                    Box(
+                        Modifier
+                            .size(38.dp)
+                            .background(preset, RoundedCornerShape(50))
+                            .clickable {
+                                val presetHsv = FloatArray(3)
+                                android.graphics.Color.colorToHSV(preset.toArgb(), presetHsv)
+                                hue = presetHsv[0]
+                                onColorChange(preset.toArgb())
+                            },
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        if (color.toArgb() == preset.toArgb()) {
+                            Icon(
+                                Icons.Default.Check,
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(20.dp),
+                            )
+                        }
+                    }
+                }
+            }
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(44.dp)
+                    .padding(top = 8.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(12.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(Brush.horizontalGradient(hueColors)),
+                )
+                Slider(
+                    value = hue,
+                    onValueChange = {
+                        hue = it
+                        onColorChange(
+                            android.graphics.Color.HSVToColor(floatArrayOf(it, 0.78f, 0.92f)),
+                        )
+                    },
+                    valueRange = 0f..360f,
+                    colors = SliderDefaults.colors(
+                        thumbColor = Color.White,
+                        activeTrackColor = Color.Transparent,
+                        inactiveTrackColor = Color.Transparent,
+                        activeTickColor = Color.Transparent,
+                        inactiveTickColor = Color.Transparent,
+                    ),
+                    thumb = {
+                        Box(
+                            Modifier
+                                .width(4.dp)
+                                .height(34.dp)
+                                .background(Color.White, RoundedCornerShape(50)),
+                        )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
         }
     }
 }
-
 @Composable
 internal fun PaletteSelector(
     seed: Color,
@@ -440,7 +653,7 @@ internal fun PaletteCard(
                         Icon(
                             Icons.Default.Check,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
+                            tint = Color.White,
                             modifier = Modifier.size(17.dp),
                         )
                     }
@@ -629,8 +842,7 @@ internal fun ThemeOption(
                     Icon(
                         icon,
                         contentDescription = null,
-                        tint = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        tint = Color.White)
                 }
             }
             Column(
@@ -660,7 +872,7 @@ internal fun ThemeOption(
                         Icon(
                             Icons.Default.Check,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary,
+                            tint = Color.White,
                             modifier = Modifier.size(17.dp),
                         )
                     }
@@ -713,12 +925,12 @@ internal fun SettingsRow(
             Modifier
                 .size(42.dp)
                 .background(
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                    com.sipun.sonora.ui.theme.LocalAccentBrush.current,
                     RoundedCornerShape(14.dp)
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Icon(icon, null, tint = MaterialTheme.colorScheme.primary)
+            Icon(icon, null, modifier = Modifier.size(24.dp), tint = Color.White)
         }
         Column(
             Modifier

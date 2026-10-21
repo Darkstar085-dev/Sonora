@@ -2,6 +2,7 @@
 
 package com.sipun.sonora.ui.components
 
+import com.sipun.sonora.ui.theme.accentGradientTint
 import android.app.Activity
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -88,7 +89,7 @@ fun SongMoreButton(
         onClick = { showMore = true },
         modifier = modifier,
     ) {
-        Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.more_options))
+        Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.more_options), modifier = Modifier.accentGradientTint())
     }
 
     if (showMore) {
@@ -317,7 +318,7 @@ private fun SongMoreOption(
     }
     ListItem(
         headlineContent = { Text(label, color = contentColor) },
-        leadingContent = { Icon(icon, null, tint = contentColor) },
+        leadingContent = { Icon(icon, null, tint = contentColor, modifier = Modifier.accentGradientTint()) },
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),

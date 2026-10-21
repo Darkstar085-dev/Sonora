@@ -1,5 +1,7 @@
 package com.sipun.sonora.ui.components
 
+import androidx.compose.ui.graphics.Color
+import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,7 +34,6 @@ fun SonoraBackButton(
         Icon(
             Icons.AutoMirrored.Filled.ArrowBack,
             contentDescription = "Back",
-            tint = MaterialTheme.colorScheme.onSurface,
-        )
+            tint = Color.White, modifier = Modifier.accentGradientTint())
     }
 }

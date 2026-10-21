@@ -32,6 +32,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,6 +49,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.R
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+import com.sipun.sonora.ui.theme.accentGradientTint
 import com.sipun.sonora.domain.model.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.player.PlayerState
@@ -179,12 +182,15 @@ internal fun LibraryLottieCard(
                                 Icons.Default.Repeat
                             },
                             contentDescription = "Repeat",
-                            modifier = Modifier.graphicsLayer { rotationZ = repeatRotation },
+                            modifier = Modifier
+                                .graphicsLayer { rotationZ = repeatRotation }
+                                .then(
+                                    if (state.repeatMode != com.sipun.sonora.player.RepeatMode.OFF) Modifier.accentGradientTint()
+                                    else Modifier
+                                ),
                             tint = if (state.repeatMode == com.sipun.sonora.player.RepeatMode.OFF) {
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f)
-                            } else {
-                                MaterialTheme.colorScheme.primary
-                            },
+                                MaterialTheme.colorScheme.onSurface
+                            } else Color.White,
                         )
                     }
                     IconButton(
@@ -197,12 +203,13 @@ internal fun LibraryLottieCard(
                         Icon(
                             Icons.Default.SkipPrevious,
                             contentDescription = "Previous",
-                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                     FilledIconButton(
                         onClick = player::togglePlayPause,
-                        modifier = Modifier.size(56.dp),
+                        modifier = Modifier.size(56.dp).clip(CircleShape).background(LocalAccentBrush.current),
+                        colors = IconButtonDefaults.filledIconButtonColors(containerColor = Color.Transparent, contentColor = Color.White),
                     ) {
                         AnimatedContent(
                             targetState = state.isPlaying,
@@ -211,6 +218,7 @@ internal fun LibraryLottieCard(
                             Icon(
                                 if (playing) Icons.Default.Pause else Icons.Default.PlayArrow,
                                 contentDescription = if (playing) "Pause" else "Play",
+                                tint = Color.White,
                             )
                         }
                     }
@@ -224,7 +232,7 @@ internal fun LibraryLottieCard(
                         Icon(
                             Icons.Default.SkipNext,
                             contentDescription = "Next",
-                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                     IconButton(
@@ -239,15 +247,13 @@ internal fun LibraryLottieCard(
                         Icon(
                             Icons.Default.Shuffle,
                             contentDescription = "Shuffle",
-                            modifier = Modifier.graphicsLayer {
-                                scaleX = shuffleScale
-                                scaleY = shuffleScale
-                            },
-                            tint = if (state.shuffleEnabled) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.68f)
-                            },
+                            modifier = Modifier
+                                .graphicsLayer {
+                                    scaleX = shuffleScale
+                                    scaleY = shuffleScale
+                                }
+                                .then(if (state.shuffleEnabled) Modifier.accentGradientTint() else Modifier),
+                            tint = if (state.shuffleEnabled) Color.White else MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 }
@@ -283,13 +289,16 @@ internal fun LibraryLottieCard(
                     )
                     FilledTonalButton(
                         onClick = onPlayAll,
-                        modifier = Modifier.padding(top = 4.dp),
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(LocalAccentBrush.current),
                         colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                            containerColor = Color.Transparent,
+                            contentColor = Color.White,
                         ),
                     ) {
-                        Icon(Icons.Default.PlayArrow, null)
+                        Icon(Icons.Default.PlayArrow, null, tint = Color.White)
                         Spacer(Modifier.width(6.dp))
                         Text(stringResource(R.string.play_all))
                     }
@@ -458,8 +467,8 @@ internal fun OverviewMetric(
                 Icon(
                     it,
                     null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(18.dp),
+                    tint = Color.White,
+                    modifier = Modifier.size(18.dp).accentGradientTint(),
                 )
             }
         }

@@ -1,5 +1,7 @@
 package com.sipun.sonora.ui.components
 
+import com.sipun.sonora.ui.theme.accentGradientTint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.sipun.sonora.navigation.SonoraRoute
+import com.sipun.sonora.ui.theme.LocalAccentBrush
 
 private data class BottomDestination(
     val route: SonoraRoute,
@@ -83,15 +86,17 @@ fun SonoraBottomBar(
                     Surface(
                         modifier = Modifier.weight(1f),
                         shape = MaterialTheme.shapes.large,
-                        color = if (selected) {
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                        } else {
-                            Color.Transparent
-                        },
+                        color = Color.Transparent,
                     ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .then(
+                                    if (selected) Modifier.background(
+                                        LocalAccentBrush.current,
+                                        MaterialTheme.shapes.large,
+                                    ) else Modifier
+                                )
                                 .clickable(
                                     interactionSource = interactionSource,
                                     indication = null,
@@ -111,12 +116,8 @@ fun SonoraBottomBar(
                             Icon(
                                 imageVector = destination.icon,
                                 contentDescription = destination.label,
-                                tint = if (selected) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                },
-                                modifier = Modifier.size(24.dp),
+                                tint = Color.White,
+                                modifier = Modifier.size(24.dp).accentGradientTint(),
                             )
                             Text(
                                 text = destination.label,
@@ -127,11 +128,7 @@ fun SonoraBottomBar(
                                 } else {
                                     FontWeight.Normal
                                 },
-                                color = if (selected) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                },
+                                color = if (selected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.bodySmall,
                             )
                         }

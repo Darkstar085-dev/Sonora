@@ -5,6 +5,10 @@
 
 package com.sipun.sonora.feature.nowplaying
 
+import androidx.compose.ui.graphics.Color
+import com.sipun.sonora.ui.theme.accentGradientTint
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
@@ -82,8 +86,7 @@ internal fun FavoriteQuickAction(
                         Icon(
                             if (favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             "Add to Favorite",
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
+                            tint = Color.White, modifier = Modifier.accentGradientTint())
                     }
                 }
             }
@@ -122,6 +125,7 @@ internal fun ExpressiveSeekBar(
     } else {
         0f
     }
+    val accentBrush = LocalAccentBrush.current
     val primary = if (isPlaying) {
         MaterialTheme.colorScheme.primary
     } else {
@@ -178,7 +182,7 @@ internal fun ExpressiveSeekBar(
                 if (thumbX > trackStart) {
                     drawPath(
                         path = wavePath,
-                        color = primary,
+                        brush = if (isPlaying) accentBrush else androidx.compose.ui.graphics.SolidColor(primary),
                         style = androidx.compose.ui.graphics.drawscope.Stroke(
                             width = 4.dp.toPx(),
                             cap = androidx.compose.ui.graphics.StrokeCap.Round,
@@ -198,7 +202,7 @@ internal fun ExpressiveSeekBar(
                 }
 
                 drawLine(
-                    color = primary,
+                    brush = if (isPlaying) accentBrush else androidx.compose.ui.graphics.SolidColor(primary),
                     start = androidx.compose.ui.geometry.Offset(thumbX, centerY - 11.dp.toPx()),
                     end = androidx.compose.ui.geometry.Offset(thumbX, centerY + 11.dp.toPx()),
                     strokeWidth = 4.dp.toPx(),
@@ -315,8 +319,8 @@ internal fun AudioInfoItem(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            modifier = Modifier.size(17.dp),
-            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(17.dp).accentGradientTint(),
+            tint = Color.White,
         )
         Text(
             text = value,

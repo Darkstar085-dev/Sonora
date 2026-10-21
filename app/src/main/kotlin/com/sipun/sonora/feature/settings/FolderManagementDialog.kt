@@ -1,5 +1,6 @@
 package com.sipun.sonora.feature.settings
 
+import com.sipun.sonora.ui.theme.accentGradientTint
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -85,7 +86,7 @@ internal fun FolderManagementDialog(
                     TextButton(
                         onClick = { folderPickerLauncher.launch(null) }
                     ) {
-                        Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(18.dp).accentGradientTint())
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(stringResource(R.string.action_add_folder))
                     }
@@ -142,7 +143,7 @@ internal fun FolderManagementDialog(
                                             Icons.Default.Folder,
                                             contentDescription = null,
                                             tint = MaterialTheme.colorScheme.primary,
-                                            modifier = Modifier.size(20.dp)
+                                            modifier = Modifier.size(20.dp).accentGradientTint()
                                         )
                                     }
                                     Spacer(modifier = Modifier.width(12.dp))

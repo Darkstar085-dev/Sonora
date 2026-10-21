@@ -82,6 +82,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sipun.sonora.R
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+import com.sipun.sonora.ui.theme.accentGradientTint
 import com.sipun.sonora.data.media.AudioMetadataEditor
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.player.PlayerController
@@ -405,7 +407,12 @@ fun NowPlayingScreen(
                                 MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
                             ),
                     ) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back",
+                            modifier = Modifier.size(24.dp).accentGradientTint(),
+                            tint = Color.White,
+                        )
                     }
                 },
                 actions = {},
@@ -555,15 +562,20 @@ fun NowPlayingScreen(
                             Icon(
                                 if (state.repeatMode == RepeatMode.ONE) Icons.Default.RepeatOne else Icons.Default.Repeat,
                                 "Repeat " + state.repeatMode.name.lowercase(),
-                                modifier = Modifier.graphicsLayer { rotationZ = repeatRotation },
-                                tint = repeatTint,
+                                modifier = Modifier
+                                    .graphicsLayer { rotationZ = repeatRotation }
+                                    .then(
+                                        if (state.repeatMode != RepeatMode.OFF) Modifier.accentGradientTint()
+                                        else Modifier
+                                    ),
+                                tint = if (state.repeatMode != RepeatMode.OFF) Color.White else MaterialTheme.colorScheme.onSurface,
                             )
                         }
                         IconButton(
                             onClick = playerController::skipPrevious,
                             enabled = state.hasPrevious || state.positionMs > 3_000L,
                         ) {
-                            Icon(Icons.Default.SkipPrevious, "Previous")
+                            Icon(Icons.Default.SkipPrevious, "Previous", tint = MaterialTheme.colorScheme.onSurface)
                         }
                         Box(
                             modifier = Modifier.size(96.dp),
@@ -592,9 +604,12 @@ fun NowPlayingScreen(
                             FilledIconButton(
                                 onClick = playerController::togglePlayPause,
                                 enabled = song != null,
-                                modifier = Modifier.size(72.dp),
+                                modifier = Modifier
+                                    .size(72.dp)
+                                    .clip(RoundedCornerShape(50.dp))
+                                    .background(LocalAccentBrush.current),
                                 colors = IconButtonDefaults.filledIconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    containerColor = Color.Transparent,
                                     contentColor = Color.White,
                                 ),
                             ) {
@@ -603,22 +618,28 @@ fun NowPlayingScreen(
                                         if (playing) Icons.Default.Pause else Icons.Default.PlayArrow,
                                         if (playing) "Pause" else "Play",
                                         modifier = Modifier.size(32.dp),
+                                        tint = Color.White,
                                     )
                                 }
                             }
                         }
                         IconButton(onClick = playerController::skipNext, enabled = state.hasNext) {
-                            Icon(Icons.Default.SkipNext, "Next")
+                            Icon(Icons.Default.SkipNext, "Next", tint = MaterialTheme.colorScheme.onSurface)
                         }
                         IconButton(onClick = playerController::toggleShuffle) {
                             Icon(
                                 Icons.Default.Shuffle,
                                 "Shuffle",
-                                modifier = Modifier.graphicsLayer {
-                                    scaleX = shuffleScale
-                                    scaleY = shuffleScale
-                                },
-                                tint = shuffleTint,
+                                modifier = Modifier
+                                    .graphicsLayer {
+                                        scaleX = shuffleScale
+                                        scaleY = shuffleScale
+                                    }
+                                    .then(
+                                        if (state.shuffleEnabled) Modifier.accentGradientTint()
+                                        else Modifier
+                                    ),
+                                tint = if (state.shuffleEnabled) Color.White else MaterialTheme.colorScheme.onSurface,
                             )
                         }
                     }
