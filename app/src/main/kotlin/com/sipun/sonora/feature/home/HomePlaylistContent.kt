@@ -1,5 +1,7 @@
 package com.sipun.sonora.feature.home
 
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
