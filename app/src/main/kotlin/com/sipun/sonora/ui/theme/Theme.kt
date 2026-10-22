@@ -158,24 +158,6 @@ fun SonoraTheme(
         }
     }
 
-    val gradientColors = if (selectedGradient == AccentGradient.CUSTOM) {
-        listOf(Color(customGradientStart), Color(customGradientEnd))
-    } else {
-        accentGradient(selectedGradient)
-    }
-    val accentBrush =
-        if (accentStyle == AccentStyle.GRADIENT) {
-            Brush.horizontalGradient(gradientColors)
-        } else {
-            Brush.horizontalGradient(listOf(Color(customColor), Color(customColor)))
-        }
-    val accentColor =
-        if (accentStyle == AccentStyle.GRADIENT) {
-            gradientColors.first()
-        } else {
-            Color(customColor)
-        }
-
     val darkTheme = pureBlack || when (selectedTheme) {
         AppTheme.SYSTEM -> isSystemInDarkTheme()
         AppTheme.LIGHT -> false
@@ -183,6 +165,21 @@ fun SonoraTheme(
     }
 
     val palette = wallpaperPalette(wallpaperSeedColor, paletteStyle, darkTheme)
+    val gradientColors = if (selectedGradient == AccentGradient.CUSTOM) {
+        listOf(Color(customGradientStart), Color(customGradientEnd))
+    } else {
+        accentGradient(selectedGradient)
+    }
+    val accentBrush = when {
+        dynamicColor -> Brush.horizontalGradient(listOf(palette.primary, palette.tertiary))
+        accentStyle == AccentStyle.GRADIENT -> Brush.horizontalGradient(gradientColors)
+        else -> Brush.horizontalGradient(listOf(Color(customColor), Color(customColor)))
+    }
+    val accentColor = when {
+        dynamicColor -> palette.primary
+        accentStyle == AccentStyle.GRADIENT -> gradientColors.first()
+        else -> Color(customColor)
+    }
     val dynamicScheme = if (dynamicColor) {
         if (darkTheme) darkColorScheme(
             primary = palette.primary,
