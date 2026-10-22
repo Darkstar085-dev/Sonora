@@ -169,12 +169,24 @@ internal class LrcLibClient {
     }
 
     private fun Response.matchScore(title: String, artist: String, album: String): Int {
-        val wantedTitle = title.normalized()
+        val wantedTitles = titleVariants(title).map { it.normalized() }.filter(String::isNotBlank).toSet()
         val candidateTitle = trackName.normalized()
-        if (wantedTitle.isBlank() || candidateTitle.isBlank()) return Int.MIN_VALUE
-        val titleExact = candidateTitle == wantedTitle
+        if (wantedTitles.isEmpty() || candidateTitle.isBlank()) return Int.MIN_VALUE
+        val titleExact = candidateTitle in wantedTitles
+        val bestTitle = wantedTitles.maxByOrNull { candidate ->
+            when {
+                candidateTitle == candidate -> 100
+                candidateTitle.contains(candidate) || candidate.contains(candidateTitle) -> 50
+                else -> candidate.split(' ').intersect(candidateTitle.split(' ').toSet()).size
+            }
+        }.orEmpty()
+        val wantedTokens = bestTitle.split(' ').filter(String::isNotBlank).toSet()
+        val candidateTokens = candidateTitle.split(' ').filter(String::isNotBlank).toSet()
+        val titleOverlap = wantedTokens.intersect(candidateTokens).size
         val titleClose = !titleExact &&
-            (candidateTitle.contains(wantedTitle) || wantedTitle.contains(candidateTitle))
+            (candidateTitle.contains(bestTitle) || bestTitle.contains(candidateTitle)) &&
+            minOf(wantedTokens.size, candidateTokens.size) >= 2 &&
+            titleOverlap >= minOf(2, wantedTokens.size)
         if (!titleExact && !titleClose) return Int.MIN_VALUE
 
         val wantedArtist = artist.normalized()
@@ -206,9 +218,9 @@ internal class LrcLibClient {
     private fun enc(value: String) = URLEncoder.encode(value, "UTF-8")
 
     private companion object {
-        const val CONNECT_TIMEOUT_MS = 10_000
-        const val READ_TIMEOUT_MS = 15_000
-        const val MAX_SEARCHES = 7
+        const val CONNECT_TIMEOUT_MS = 2_500
+        const val READ_TIMEOUT_MS = 3_500
+        const val MAX_SEARCHES = 2
         const val MIN_MATCH_SCORE = 6
     }
 }

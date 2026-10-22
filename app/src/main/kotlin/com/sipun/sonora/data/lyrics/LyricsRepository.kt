@@ -3,12 +3,12 @@ package com.sipun.sonora.data.lyrics
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
+import android.provider.MediaStore
 import com.sipun.sonora.domain.model.Song
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.io.files.Path
@@ -43,6 +43,9 @@ internal class LyricsRepository(context: Context) {
         }
         if (online != null) return@withContext online
 
+        val sidecar = readSidecarLyrics(song.uri)
+        if (sidecar != null && sidecar.lines.isNotEmpty()) return@withContext sidecar
+
         val embedded = readEmbeddedLyrics(song.uri)
         if (embedded?.synced == true && embedded.lines.isNotEmpty()) {
             return@withContext embedded
@@ -68,25 +71,71 @@ internal class LyricsRepository(context: Context) {
     }
 
     private suspend fun fetchAndCache(key: String, song: Song): Lyrics? {
-        var lastFailure: Exception? = null
-        repeat(MAX_ATTEMPTS) { attempt ->
-            try {
-                val result = client.fetch(song.title, song.artist, song.album)
-                if (result != null && result.lines.isNotEmpty()) {
-                    cache.put(key, result)
-                    return result
-                }
-                lastFailure = null
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                lastFailure = e
-            }
-
-            if (attempt < MAX_ATTEMPTS - 1) delay(RETRY_DELAY_MS)
+        val result = client.fetch(song.title, song.artist, song.album)
+        if (result != null && result.lines.isNotEmpty()) {
+            cache.put(key, result)
+            return result
         }
-        lastFailure?.let { throw it }
         return null
+    }
+
+    private fun readSidecarLyrics(uriString: String): Lyrics? {
+        val uri = runCatching { Uri.parse(uriString) }.getOrNull() ?: return null
+        val sidecarText = when (uri.scheme) {
+            "file" -> {
+                val audioFile = runCatching { File(uri.path ?: return null) }.getOrNull() ?: return null
+                File(audioFile.parentFile, audioFile.nameWithoutExtension + ".lrc")
+                    .takeIf { it.isFile && it.canRead() }
+                    ?.let { file -> runCatching { file.readText() }.getOrNull() }
+            }
+            "content" -> {
+                val resolver = appContext.contentResolver
+                val metadata = runCatching {
+                    resolver.query(
+                        uri,
+                        arrayOf(MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns.RELATIVE_PATH),
+                        null,
+                        null,
+                        null,
+                    )?.use { cursor ->
+                        if (!cursor.moveToFirst()) null else {
+                            val name = cursor.getString(0).orEmpty()
+                            val directory = cursor.getString(1)
+                            if (name.isBlank()) null else name to directory
+                        }
+                    }
+                }.getOrNull() ?: return null
+                val lrcName = metadata.first.substringBeforeLast('.', metadata.first) + ".lrc"
+                val selection = if (metadata.second.isNullOrBlank()) {
+                    "${MediaStore.MediaColumns.DISPLAY_NAME} = ?"
+                } else {
+                    "${MediaStore.MediaColumns.DISPLAY_NAME} = ? AND ${MediaStore.MediaColumns.RELATIVE_PATH} = ?"
+                }
+                val args = if (metadata.second.isNullOrBlank()) arrayOf(lrcName)
+                    else arrayOf(lrcName, metadata.second)
+                runCatching {
+                    resolver.query(
+                        MediaStore.Files.getContentUri("external"),
+                        arrayOf(MediaStore.MediaColumns._ID),
+                        selection,
+                        args,
+                        null,
+                    )?.use { cursor ->
+                        if (!cursor.moveToFirst()) null else {
+                            val id = cursor.getLong(0)
+                            val lrcUri = Uri.withAppendedPath(
+                                MediaStore.Files.getContentUri("external"),
+                                id.toString(),
+                            )
+                            resolver.openInputStream(lrcUri)?.bufferedReader()?.use { it.readText() }
+                        }
+                    }
+                }.getOrNull()
+            }
+            else -> null
+        }
+        return sidecarText?.let { runCatching { LyricsParser.parse(it) }.getOrNull() }
+            ?.takeIf { it.lines.isNotEmpty() }
     }
 
     private fun readEmbeddedLyrics(uriString: String): Lyrics? {
@@ -141,8 +190,4 @@ internal class LyricsRepository(context: Context) {
         }
     }
 
-    private companion object {
-        const val MAX_ATTEMPTS = 2
-        const val RETRY_DELAY_MS = 500L
-    }
 }

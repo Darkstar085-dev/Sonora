@@ -28,6 +28,19 @@ class LyricsParserTest {
     }
 
     @Test
+    fun stripsLrcMetadataAndKeepsTimestampedLyrics() {
+        val lyrics = LyricsParser.parse(
+            "[ti:Song Title]\n[ar:Artist Name]\n[al:Album]\n[by:Editor]\n[x-romaji:enabled]\n[00:01.20]First line\n[00:03.40]Second line"
+        )
+        assertEquals(2, lyrics.lines.size)
+        assertEquals("First line", lyrics.lines[0].text)
+        assertEquals(1_200L, lyrics.lines[0].startMs)
+        assertEquals("Second line", lyrics.lines[1].text)
+        assertEquals(3_400L, lyrics.lines[1].startMs)
+        assertTrue(lyrics.synced)
+    }
+
+    @Test
     fun parsesPlainLyrics() {
         val lyrics = LyricsParser.parse("First line\n\nSecond line")
         assertEquals(listOf("First line", "Second line"), lyrics.lines.map(LyricsLine::text))
