@@ -140,7 +140,6 @@ class SonoraPlaybackService : MediaSessionService() {
     private fun endExternalPlayback() {
         if (!externalPlaybackActive) return
         externalPlaybackActive = false
-        activePlayer?.pause()
         triggerNotificationUpdate()
     }
 
