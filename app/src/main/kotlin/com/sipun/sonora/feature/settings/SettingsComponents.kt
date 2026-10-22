@@ -229,18 +229,18 @@ internal fun CustomColorSelector(
         Color(0xFFFFA726),
     )
     val gradients = listOf(
-        com.sipun.sonora.data.preferences.AccentGradient.SUNSET to listOf(Color(0xFFFF512F), Color(0xFFDD2476)),
-        com.sipun.sonora.data.preferences.AccentGradient.OCEAN to listOf(Color(0xFF2193B0), Color(0xFF6DD5ED)),
-        com.sipun.sonora.data.preferences.AccentGradient.AURORA to listOf(Color(0xFF00B09B), Color(0xFF96C93D)),
-        com.sipun.sonora.data.preferences.AccentGradient.PURPLE_HAZE to listOf(Color(0xFF8E2DE2), Color(0xFF4A00E0)),
-        com.sipun.sonora.data.preferences.AccentGradient.PEACH to listOf(Color(0xFFFF9966), Color(0xFFFF5E62)),
-        com.sipun.sonora.data.preferences.AccentGradient.EMERALD to listOf(Color(0xFF11998E), Color(0xFF38EF7D)),
-        com.sipun.sonora.data.preferences.AccentGradient.CHERRY to listOf(Color(0xFFFF416C), Color(0xFF8E2DE2)),
-        com.sipun.sonora.data.preferences.AccentGradient.ROYAL to listOf(Color(0xFF4F00BC), Color(0xFF29ABE2)),
-        com.sipun.sonora.data.preferences.AccentGradient.AMBER to listOf(Color(0xFFFFC371), Color(0xFFFF5F6D)),
-        com.sipun.sonora.data.preferences.AccentGradient.MINT to listOf(Color(0xFF36D1DC), Color(0xFF5B86E5)),
-        com.sipun.sonora.data.preferences.AccentGradient.ROSE to listOf(Color(0xFFFF4B8B), Color(0xFFC13584)),
-        com.sipun.sonora.data.preferences.AccentGradient.INDIGO to listOf(Color(0xFF4776E6), Color(0xFF8E54E9)),
+        com.sipun.sonora.data.preferences.AccentGradient.SUNSET to listOf(Color(0xFFFF7A00), Color(0xFFFF006E)),
+        com.sipun.sonora.data.preferences.AccentGradient.OCEAN to listOf(Color(0xFF0066FF), Color(0xFF00E5FF)),
+        com.sipun.sonora.data.preferences.AccentGradient.AURORA to listOf(Color(0xFF00F5A0), Color(0xFF8A2BE2)),
+        com.sipun.sonora.data.preferences.AccentGradient.PURPLE_HAZE to listOf(Color(0xFF6A00FF), Color(0xFFFF6EC7)),
+        com.sipun.sonora.data.preferences.AccentGradient.PEACH to listOf(Color(0xFFFFD1A9), Color(0xFFFF6B6B)),
+        com.sipun.sonora.data.preferences.AccentGradient.EMERALD to listOf(Color(0xFF006D5B), Color(0xFFA4FF6B)),
+        com.sipun.sonora.data.preferences.AccentGradient.CHERRY to listOf(Color(0xFFFF1744), Color(0xFFFF8ED1)),
+        com.sipun.sonora.data.preferences.AccentGradient.ROYAL to listOf(Color(0xFF1A2ED8), Color(0xFFFFDB35)),
+        com.sipun.sonora.data.preferences.AccentGradient.AMBER to listOf(Color(0xFFFFC107), Color(0xFFFF3D00)),
+        com.sipun.sonora.data.preferences.AccentGradient.MINT to listOf(Color(0xFF00E676), Color(0xFF40C4FF)),
+        com.sipun.sonora.data.preferences.AccentGradient.ROSE to listOf(Color(0xFFD81B60), Color(0xFFFFAB91)),
+        com.sipun.sonora.data.preferences.AccentGradient.INDIGO to listOf(Color(0xFF3949AB), Color(0xFF00BCD4)),
     )
     val hsv = remember(color) {
         FloatArray(3).also { android.graphics.Color.colorToHSV(color.toArgb(), it) }

@@ -51,18 +51,18 @@ fun Modifier.accentGradientTint(): Modifier {
 }
 
 private fun accentGradient(gradient: AccentGradient): List<Color> = when (gradient) {
-    AccentGradient.SUNSET -> listOf(Color(0xFFFF512F), Color(0xFFDD2476))
-    AccentGradient.OCEAN -> listOf(Color(0xFF2193B0), Color(0xFF6DD5ED))
-    AccentGradient.AURORA -> listOf(Color(0xFF00B09B), Color(0xFF96C93D))
-    AccentGradient.PURPLE_HAZE -> listOf(Color(0xFF8E2DE2), Color(0xFF4A00E0))
-    AccentGradient.PEACH -> listOf(Color(0xFFFF9966), Color(0xFFFF5E62))
-    AccentGradient.EMERALD -> listOf(Color(0xFF11998E), Color(0xFF38EF7D))
-    AccentGradient.CHERRY -> listOf(Color(0xFFFF416C), Color(0xFF8E2DE2))
-    AccentGradient.ROYAL -> listOf(Color(0xFF4F00BC), Color(0xFF29ABE2))
-    AccentGradient.AMBER -> listOf(Color(0xFFFFC371), Color(0xFFFF5F6D))
-    AccentGradient.MINT -> listOf(Color(0xFF36D1DC), Color(0xFF5B86E5))
-    AccentGradient.ROSE -> listOf(Color(0xFFFF4B8B), Color(0xFFC13584))
-    AccentGradient.INDIGO -> listOf(Color(0xFF4776E6), Color(0xFF8E54E9))
+    AccentGradient.SUNSET -> listOf(Color(0xFFFF7A00), Color(0xFFFF006E))
+    AccentGradient.OCEAN -> listOf(Color(0xFF0066FF), Color(0xFF00E5FF))
+    AccentGradient.AURORA -> listOf(Color(0xFF00F5A0), Color(0xFF8A2BE2))
+    AccentGradient.PURPLE_HAZE -> listOf(Color(0xFF6A00FF), Color(0xFFFF6EC7))
+    AccentGradient.PEACH -> listOf(Color(0xFFFFD1A9), Color(0xFFFF6B6B))
+    AccentGradient.EMERALD -> listOf(Color(0xFF006D5B), Color(0xFFA4FF6B))
+    AccentGradient.CHERRY -> listOf(Color(0xFFFF1744), Color(0xFFFF8ED1))
+    AccentGradient.ROYAL -> listOf(Color(0xFF1A2ED8), Color(0xFFFFDB35))
+    AccentGradient.AMBER -> listOf(Color(0xFFFFC107), Color(0xFFFF3D00))
+    AccentGradient.MINT -> listOf(Color(0xFF00E676), Color(0xFF40C4FF))
+    AccentGradient.ROSE -> listOf(Color(0xFFD81B60), Color(0xFFFFAB91))
+    AccentGradient.INDIGO -> listOf(Color(0xFF3949AB), Color(0xFF00BCD4))
     AccentGradient.CUSTOM -> listOf(Color(0xFFE92DE2), Color(0xFF4A00E0))
 }
 
