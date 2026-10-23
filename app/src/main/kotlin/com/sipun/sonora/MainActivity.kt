@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -21,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +49,7 @@ class MainActivity : ComponentActivity() {
     private var pendingAudioUri by mutableStateOf<Uri?>(null)
     private val updateCheckRequested = mutableStateOf(false)
     private val updateNotificationRequested = mutableStateOf(false)
+    private var batteryOptimizationPromptRequested = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +96,10 @@ class MainActivity : ComponentActivity() {
             )
         }
         var showExplanation by remember { mutableStateOf(false) }
+
+        LaunchedEffect(permissionGranted) {
+            if (permissionGranted) requestBatteryOptimizationExemption()
+        }
 
         val launcher = rememberLauncherForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
@@ -210,6 +218,21 @@ class MainActivity : ComponentActivity() {
             this,
             permission
         ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestBatteryOptimizationExemption() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || batteryOptimizationPromptRequested) return
+
+        val powerManager = getSystemService(PowerManager::class.java) ?: return
+        if (powerManager.isIgnoringBatteryOptimizations(packageName)) return
+
+        batteryOptimizationPromptRequested = true
+        startActivity(
+            Intent(
+                Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                Uri.parse("package:" + packageName),
+            ),
+        )
     }
 
     private fun configureSystemBars() {
