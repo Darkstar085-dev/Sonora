@@ -39,7 +39,6 @@
     <string name="settings_custom_color">Custom colour</string>
     <string name="settings_custom_color_detail">Pick a colour or adjust the hue</string>
     <string name="settings_pure_black">Pure black</string>
-    <string name="settings_pure_black_detail">Use pure black surfaces in dark mode</string>
     <string name="settings_permissions">Permissions</string>
     <string name="settings_permission_music">Music access</string>
     <string name="settings_permission_music_detail">Find and play music on your device.</string>
@@ -50,7 +49,6 @@
     <string name="settings_permission_media_edit">Artwork and metadata</string>
     <string name="settings_permission_media_edit_detail">Edit artwork and song details.</string>
     <string name="settings_permission_media_delete">Delete music</string>
-    <string name="settings_permission_media_delete_detail">Remove music from your device.</string>
     <string name="settings_permission_media_delete_ondemand">Confirmation is required before removing a song.</string>
     <string name="settings_permission_media_ondemand">Android asks for access when a media change is made.</string>
     <string name="settings_permission_ringtone">Ringtone settings</string>
@@ -161,14 +159,8 @@
     <string name="widget_name_4x2">Sonora Music (4x2)</string>
     <string name="widget_description_4x2">Material 3 music player widget with playback controls and track details.</string>
     <string name="settings_library_folders">Library &amp; folders</string>
-    <string name="settings_scan_folders">Scan folders</string>
-    <string name="settings_scan_folders_detail">Choose specific folders to scan for music</string>
     <string name="settings_excluded_folders">Excluded folders</string>
     <string name="settings_excluded_folders_detail">Manage folders excluded from music library</string>
-    <string name="folder_management_title">Folder Management</string>
-    <string name="folder_include">Include</string>
-    <string name="folder_exclude">Exclude</string>
-    <string name="folder_all_included">All folders included (default)</string>
     <string name="folder_no_discovered">No music folders discovered yet</string>
     <string name="action_add_folder">Add folder...</string>
 </resources>

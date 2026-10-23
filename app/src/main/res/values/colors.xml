@@ -4,12 +4,8 @@
 
     <!-- Material 3 Widget Colors - Light (Semi-transparent 85%) -->
     <color name="widget_m3_surface_container">#D9F3EDF7</color>
-    <color name="widget_m3_surface_container_high">#ECE6F0</color>
     <color name="widget_m3_on_surface">#1D1B20</color>
     <color name="widget_m3_on_surface_variant">#49454F</color>
     <color name="widget_m3_primary">#6750A4</color>
-    <color name="widget_m3_on_primary">#FFFFFF</color>
     <color name="widget_m3_primary_container">#EADDFF</color>
-    <color name="widget_m3_on_primary_container">#21005D</color>
-    <color name="widget_m3_outline">#79747E</color>
 </resources>

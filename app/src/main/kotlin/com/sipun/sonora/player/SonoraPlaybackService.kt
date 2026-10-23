@@ -44,7 +44,7 @@ class SonoraPlaybackService : MediaSessionService() {
             session: MediaSession,
             controller: MediaSession.ControllerInfo,
         ): MediaSession.ConnectionResult {
-            val defaultResult = super<MediaSession.Callback>.onConnect(session, controller)
+            val defaultResult = super.onConnect(session, controller)
             if (!defaultResult.isAccepted || controller.isTrusted) return defaultResult
 
             val playbackCommands = defaultResult.availablePlayerCommands.buildUpon()

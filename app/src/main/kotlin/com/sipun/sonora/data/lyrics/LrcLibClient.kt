@@ -13,7 +13,7 @@ internal class LrcLibClient {
 
     suspend fun fetch(title: String, artist: String, album: String): Lyrics? {
         val exactUrl = "https://lrclib.net/api/get?track_name=" + enc(title) +
-            "&artist_name=" + enc(artist) + "&album_name=" + enc(album)
+                "&artist_name=" + enc(artist) + "&album_name=" + enc(album)
         var best = runCatching { requestExact(exactUrl) }.getOrNull()
             ?.takeIf { !it.instrumental && it.hasLyrics() }
         var bestScore = best?.let {
@@ -37,7 +37,13 @@ internal class LrcLibClient {
                 .filter { !it.instrumental && it.hasLyrics() }
                 .map { response -> response to response.matchScore(title, artist, album) }
                 .filter { (_, score) -> score >= MIN_MATCH_SCORE }
-                .map { (response, score) -> response to (score + response.preferenceScore(title, artist, album)) }
+                .map { (response, score) ->
+                    response to (score + response.preferenceScore(
+                        title,
+                        artist,
+                        album
+                    ))
+                }
                 .maxByOrNull { it.second }
                 ?: continue
             if (candidate.second > bestScore) {
@@ -78,7 +84,7 @@ internal class LrcLibClient {
 
     private fun searchUrl(title: String, artist: String?): String =
         "https://lrclib.net/api/search?track_name=" + enc(title) +
-            (artist?.takeIf { it.isNotBlank() }?.let { "&artist_name=" + enc(it) } ?: "")
+                (artist?.takeIf { it.isNotBlank() }?.let { "&artist_name=" + enc(it) } ?: "")
 
     private fun titleVariants(value: String): List<String> {
         val cleaned = value
@@ -169,7 +175,8 @@ internal class LrcLibClient {
     }
 
     private fun Response.matchScore(title: String, artist: String, album: String): Int {
-        val wantedTitles = titleVariants(title).map { it.normalized() }.filter(String::isNotBlank).toSet()
+        val wantedTitles =
+            titleVariants(title).map { it.normalized() }.filter(String::isNotBlank).toSet()
         val candidateTitle = trackName.normalized()
         if (wantedTitles.isEmpty() || candidateTitle.isBlank()) return Int.MIN_VALUE
         val titleExact = candidateTitle in wantedTitles
@@ -184,9 +191,9 @@ internal class LrcLibClient {
         val candidateTokens = candidateTitle.split(' ').filter(String::isNotBlank).toSet()
         val titleOverlap = wantedTokens.intersect(candidateTokens).size
         val titleClose = !titleExact &&
-            (candidateTitle.contains(bestTitle) || bestTitle.contains(candidateTitle)) &&
-            minOf(wantedTokens.size, candidateTokens.size) >= 2 &&
-            titleOverlap >= minOf(2, wantedTokens.size)
+                (candidateTitle.contains(bestTitle) || bestTitle.contains(candidateTitle)) &&
+                minOf(wantedTokens.size, candidateTokens.size) >= 2 &&
+                titleOverlap >= minOf(2, wantedTokens.size)
         if (!titleExact && !titleClose) return Int.MIN_VALUE
 
         val wantedArtist = artist.normalized()

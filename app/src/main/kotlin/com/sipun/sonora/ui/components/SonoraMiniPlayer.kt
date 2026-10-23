@@ -1,12 +1,11 @@
 package com.sipun.sonora.ui.components
 
-import com.sipun.sonora.ui.theme.accentGradientTint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -23,7 +22,6 @@ import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,7 +44,10 @@ fun SonoraMiniPlayer(
     val state by playerController.state.collectAsStateWithLifecycle()
     val song = state.currentSong ?: return
     val progress = animateFloatAsState(
-        targetValue = if (state.durationMs > 0L) (state.positionMs.toFloat() / state.durationMs.toFloat()).coerceIn(0f, 1f) else 0f,
+        targetValue = if (state.durationMs > 0L) (state.positionMs.toFloat() / state.durationMs.toFloat()).coerceIn(
+            0f,
+            1f
+        ) else 0f,
         animationSpec = tween(140),
         label = "mini_player_progress",
     ).value
@@ -106,7 +107,11 @@ fun SonoraMiniPlayer(
                     onClick = playerController::skipPrevious,
                     enabled = state.hasPrevious,
                 ) {
-                    Icon(Icons.Default.SkipPrevious, "Previous", tint = MaterialTheme.colorScheme.onSurface)
+                    Icon(
+                        Icons.Default.SkipPrevious,
+                        "Previous",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                 }
                 IconButton(
                     onClick = playerController::togglePlayPause,
@@ -114,7 +119,10 @@ fun SonoraMiniPlayer(
                         .clip(CircleShape)
                         .background(LocalAccentBrush.current),
                 ) {
-                    AnimatedContent(targetState = state.isPlaying, label = "mini_player_play_pause") { playing ->
+                    AnimatedContent(
+                        targetState = state.isPlaying,
+                        label = "mini_player_play_pause"
+                    ) { playing ->
                         Icon(
                             if (playing) Icons.Default.Pause else Icons.Default.PlayArrow,
                             if (playing) "Pause" else "Play",

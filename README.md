@@ -80,7 +80,7 @@ streaming service.
 
 <p align="center">
   <img src=".github/assets/settings.png" width="31%" alt="Sonora settings">
-  <img src=".github/assets/permissions.png" width="31%" alt="Sonora permission management">
+  <img src=".github/assets/settings2.png" width="31%" alt="Sonora more settings">
   <img src=".github/assets/about.png" width="31%" alt="Sonora About screen">
 </p>
 
@@ -89,63 +89,53 @@ streaming service.
 
 ## Features
 
-### Local Library
+### Local Music Library
 
-- Scan and browse music stored on the device
-- Search your local music library
-- Songs, albums and artists with dedicated detail pages
-- Playlists and favorites
-- Recently added tracks and continue-listening history on Home
-- Album artwork and local metadata
-- Exclude selected folders from library scanning
+- Scan and browse music stored on the device, with song, album, and artist detail pages
+- Search songs by title, artist, and album
+- Create and manage playlists, mark favorites, and sort library collections
+- Home overview for recently added tracks, listening history, and recently played music
+- Exclude selected folders from the library
+- Display embedded album artwork and local audio metadata
 
 ### Playback
 
-- Play, pause, previous and next
-- Queue management
-- Shuffle and repeat modes
-- Gapless playback between tracks
-- Adjustable crossfade transitions
-- Optional resume playback from where you left off
-- Optional ReplayGain volume normalization
-- Seeking with an expressive playback control
-- Playback speed control
-- Background playback
-- Android system media controls
-- Media notification
-- Audio format information
-- 4×2 home screen widget with album artwork, playback progress, and controls
-- Optional keep-screen-awake setting while music is playing
+- Media3-powered playback with queue, previous/next, shuffle, and repeat controls
+- Gapless playback and adjustable crossfade transitions
+- Optional resume playback, playback-position memory, and listening history
+- Optional volume normalization and keep-screen-awake setting
+- Playback speed controls, background playback, and system media controls
+- Media notification and a 4×2 home-screen widget with artwork and playback controls
+- Open audio files directly from compatible file managers
 
 ### Lyrics
 
-- Dedicated lyrics playback surface
-- Synced lyric highlighting
-- Lyrics retrieval through LRCLIB
-- Local playback-aware lyrics presentation
+- Fetch lyrics from LRCLIB, with fast timeouts and targeted matching
+- Cache lyrics on disk and show cached results immediately while refreshing online in the background
+- Fall back to matching local `.lrc` sidecar files and lyrics embedded in audio tags
+- Parse synced, enhanced word-timestamped, and plain-text lyrics
 
 ### Metadata
 
-- View local track metadata and audio format information
-- Edit tags including title, artist, album artist, genre, year, track/disc number, composer, comments, grouping, lyrics, copyright, and BPM
-- Add, change, or remove embedded album artwork
+- Inspect track tags and audio-format information
+- Edit title, artist, album artist, genre, year, track/disc number, composer, comments, grouping,
+  lyrics, copyright, and BPM
+- Add, replace, or remove embedded album artwork
 
-### Personalization
+### Themes & Personalization
 
-- Device theme
-- Dynamic color
-- Palette and accent customization
-- Hue adjustment
-- Pure black dark mode
+- Follow the system theme or choose light, dark, and pure-black dark modes
+- Use Android dynamic color with selectable palette styles
+- Choose solid accent colors or gradient presets, including custom gradient colors
+- Adjust hue and personalize the look of the interface
 
 ### Android Integration
 
-- Media3-based playback service and background playback
-- System media controls and playback notifications
-- Open audio files directly from compatible file managers
-- Permission management for music, artwork/photos, notifications, metadata editing, and media deletion
-- WorkManager-based update flow with theme-aware dialogs and clear update status messaging
-- First-launch onboarding and media permission flow
+- First-launch onboarding and guided media-permission setup
+- Battery-optimization exemption prompt to help support reliable background playback
+- Manage media, notification, metadata-editing, and related permissions
+- WorkManager-based app-update checks, verified update installation, and update notifications
+- Theme-aware settings and dialogs throughout the app
 
 ---
 
@@ -211,68 +201,81 @@ feature set.
 
 ## Project Structure
 
+The layout below reflects the current source tree. Feature screens are grouped by user-facing area;
+shared services and reusable UI live in their own packages.
+
 ```text
-app/
+.
+├── .github/
+│   ├── assets/                         # README screenshots and banner
+│   ├── badges/downloads.json           # Download badge data
+│   ├── scripts/                        # Build, release, badge, and cleanup helpers
+│   └── workflows/                      # Debug build, release, badge, and cleanup workflows
+├── app/
+│   ├── build.gradle.kts                # Android config, version, dependencies
+│   └── src/
+│       ├── main/
+│       │   ├── AndroidManifest.xml
+│       │   ├── kotlin/com/sipun/sonora/
+│       │   │   ├── MainActivity.kt
+│       │   │   ├── core/update/         # Update checks, verification, installation, worker
+│       │   │   ├── data/
+│       │   │   │   ├── lyrics/          # LRCLIB client, parser, cache, repository
+│       │   │   │   ├── media/           # Local music discovery and metadata editing
+│       │   │   │   └── preferences/     # Library, playback, theme, onboarding settings
+│       │   │   ├── domain/
+│       │   │   ├── feature/
+│       │   │   │   ├── album/
+│       │   │   │   ├── artist/
+│       │   │   │   ├── favorites/
+│       │   │   │   ├── home/
+│       │   │   │   ├── library/
+│       │   │   │   ├── lyrics/
+│       │   │   │   ├── nowplaying/
+│       │   │   │   ├── playlists/
+│       │   │   │   ├── settings/
+│       │   │   │   └── sorting/
+│       │   │   ├── navigation/          # App navigation and mini-player overlay
+│       │   │   ├── player/              # Media3 controller, service, state, artwork
+│       │   │   ├── ui/
+│       │   │   │   ├── components/      # Reusable UI components and dialogs
+│       │   │   │   ├── onboarding/
+│       │   │   │   ├── theme/
+│       │   │   │   └── update/
+│       │   │   └── widget/              # Home-screen widget provider
+│       │   └── res/                     # Drawables, layouts, strings, themes, XML resources
+│       ├── test/
+│       │   ├── java/com/sipun/sonora/ExampleUnitTest.kt
+│       │   └── kotlin/com/sipun/sonora/
+│       │       ├── core/update/         # Update-version tests
+│       │       ├── data/lyrics/         # Lyrics parser tests
+│       │       └── feature/nowplaying/  # Playback-time formatter tests
+│       └── androidTest/java/com/sipun/sonora/ExampleInstrumentedTest.kt
+├── gradle/
+│   ├── libs.versions.toml               # Centralized dependency versions
+│   └── wrapper/
 ├── build.gradle.kts
-└── src/
-    ├── main/
-    │   ├── AndroidManifest.xml
-    │   ├── kotlin/com/sipun/sonora/
-    │   │   ├── MainActivity.kt
-    │   │   ├── core/
-    │   │   │   └── update/
-    │   │   ├── data/
-    │   │   │   ├── lyrics/
-    │   │   │   ├── media/
-    │   │   │   └── preferences/
-    │   │   ├── domain/
-    │   │   │   ├── model/
-    │   │   │   └── repository/
-    │   │   ├── feature/
-    │   │   │   ├── album/
-    │   │   │   ├── artist/
-    │   │   │   ├── favorites/
-    │   │   │   ├── home/
-    │   │   │   │   ├── HomeScreen.kt
-    │   │   │   │   ├── HomeOverview.kt
-    │   │   │   │   ├── HomeOverviewComponents.kt
-    │   │   │   │   ├── HomeLibraryContent.kt
-    │   │   │   │   ├── HomePlaylistContent.kt
-    │   │   │   │   └── HomeScreenEmptyStates.kt
-    │   │   │   ├── library/
-    │   │   │   ├── lyrics/
-    │   │   │   ├── nowplaying/
-    │   │   │   │   ├── NowPlayingScreen.kt
-    │   │   │   │   ├── NowPlayingComponents.kt
-    │   │   │   │   ├── NowPlayingVisuals.kt
-    │   │   │   │   └── PlaybackTimeFormatter.kt
-    │   │   │   ├── playlists/
-    │   │   │   └── settings/
-    │   │   │       ├── SettingsScreen.kt
-    │   │   │       └── SettingsComponents.kt
-    │   │   ├── navigation/
-    │   │   ├── player/
-    │   │   └── ui/
-    │   │       ├── components/
-    │   │       ├── onboarding/
-    │   │       │   ├── WelcomeScreen.kt
-    │   │       │   └── WelcomeVisuals.kt
-    │   │       ├── theme/
-    │   │       └── update/
-    │   └── res/
-    │       ├── drawable/
-    │       ├── mipmap-anydpi-v26/
-    │       ├── raw/
-    │       ├── values/
-    │       └── xml/
-    ├── test/
-    └── androidTest/
+├── settings.gradle.kts
+├── gradle.properties
+├── gradlew
+├── gradlew.bat
+├── README.md
+└── LICENSE
 ```
 
-- **Feature UI:** Screens are grouped by feature, with supporting UI extracted into focused files.
-- **Shared UI:** Reusable components live under `ui/components/`; onboarding visuals and theme code have their own packages.
-- **Data and domain:** Local media, metadata, preferences, lyrics, and domain models are kept separate from feature screens.
-- **Playback and updates:** Media3 playback lives under `player/`; update handling is grouped under `core/update/`.
+### Package Responsibilities
+
+- **`core/update`** handles release discovery, verification, scheduling, notifications, and
+  installation.
+- **`data`** contains local-media access, lyrics lookup/parsing/cache, metadata editing, and
+  preference stores.
+- **`domain`** defines the `Song` model and `MusicRepository` contract.
+- **`feature`** contains screens organized around library, playback, lyrics, settings, and other app
+  features.
+- **`navigation`**, **`player`**, **`ui`**, and **`widget`** own app navigation, Media3 playback,
+  shared visual components, and the home-screen widget.
+- **`app/src/test`** and **`app/src/androidTest`** contain local unit tests and Android
+  instrumentation tests.
 
 ---
 

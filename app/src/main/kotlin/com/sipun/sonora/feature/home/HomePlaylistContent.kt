@@ -1,9 +1,5 @@
 package com.sipun.sonora.feature.home
 
-import androidx.compose.ui.graphics.Color
-import com.sipun.sonora.ui.theme.accentGradientTint
-import com.sipun.sonora.ui.theme.LocalAccentBrush
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,9 +32,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.data.preferences.SonoraPlaylist
 import com.sipun.sonora.data.preferences.SonoraPreferences
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @Composable
 internal fun PlaylistList(
@@ -63,7 +62,12 @@ internal fun PlaylistList(
             }
             var showCreate by remember { mutableStateOf(false) }
             IconButton(onClick = { showCreate = true }) {
-                Icon(Icons.Default.Add, "Create playlist", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.accentGradientTint())
+                Icon(
+                    Icons.Default.Add,
+                    "Create playlist",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.accentGradientTint()
+                )
             }
             if (showCreate) {
                 CreatePlaylistDialog(
@@ -87,7 +91,9 @@ internal fun PlaylistList(
                     Icons.AutoMirrored.Filled.PlaylistPlay,
                     null,
                     tint = Color.White,
-                    modifier = Modifier.size(56.dp).accentGradientTint()
+                    modifier = Modifier
+                        .size(56.dp)
+                        .accentGradientTint()
                 )
                 Text(
                     "No playlists yet",
@@ -147,7 +153,11 @@ internal fun PlaylistList(
                                 preferences.deletePlaylist(playlist.id)
                                 onRefresh()
                             }) {
-                                Icon(Icons.Default.DeleteOutline, "Delete playlist", modifier = Modifier.accentGradientTint())
+                                Icon(
+                                    Icons.Default.DeleteOutline,
+                                    "Delete playlist",
+                                    modifier = Modifier.accentGradientTint()
+                                )
                             }
                         }
                     }

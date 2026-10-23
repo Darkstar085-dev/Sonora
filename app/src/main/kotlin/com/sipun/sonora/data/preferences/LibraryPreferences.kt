@@ -75,7 +75,8 @@ internal class LibraryPreferences(context: Context) {
     }
 
     fun sortOption(scope: String): String =
-        preferences.getString("$SORT_OPTION_PREFIX$scope", DEFAULT_SORT_OPTION) ?: DEFAULT_SORT_OPTION
+        preferences.getString("$SORT_OPTION_PREFIX$scope", DEFAULT_SORT_OPTION)
+            ?: DEFAULT_SORT_OPTION
 
     fun setSortOption(scope: String, option: String) {
         preferences.edit().putString("$SORT_OPTION_PREFIX$scope", option).apply()

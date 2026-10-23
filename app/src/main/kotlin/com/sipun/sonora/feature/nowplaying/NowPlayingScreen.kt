@@ -11,16 +11,16 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.Crossfade
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
@@ -53,7 +53,6 @@ import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -64,7 +63,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -72,8 +70,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -81,21 +79,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieAnimatable
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.sipun.sonora.R
-import com.sipun.sonora.ui.theme.LocalAccentBrush
-import com.sipun.sonora.ui.theme.accentGradientTint
 import com.sipun.sonora.data.media.AudioMetadataEditor
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.player.RepeatMode
 import com.sipun.sonora.ui.components.AddToPlaylistDialog
 import com.sipun.sonora.ui.components.SongArtworkImage
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+import com.sipun.sonora.ui.theme.accentGradientTint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieAnimatable
-import com.airbnb.lottie.compose.rememberLottieComposition
 
 @Composable
 fun NowPlayingScreen(
@@ -410,7 +408,9 @@ fun NowPlayingScreen(
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back",
-                            modifier = Modifier.size(24.dp).accentGradientTint(),
+                            modifier = Modifier
+                                .size(24.dp)
+                                .accentGradientTint(),
                             tint = Color.White,
                         )
                     }
@@ -434,7 +434,9 @@ fun NowPlayingScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Box(
-                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
                     contentAlignment = Alignment.Center,
                 ) {
                     AnimatedContent(
@@ -449,15 +451,20 @@ fun NowPlayingScreen(
                             maxLines = 1,
                             softWrap = false,
                             overflow = TextOverflow.Clip,
-                            modifier = Modifier.fillMaxWidth().basicMarquee(
-                                iterations = Int.MAX_VALUE,
-                                initialDelayMillis = 1_000,
-                                repeatDelayMillis = 1_000,
-                            ),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .basicMarquee(
+                                    iterations = Int.MAX_VALUE,
+                                    initialDelayMillis = 1_000,
+                                    repeatDelayMillis = 1_000,
+                                ),
                         )
                     }
                 }
-                AnimatedContent(targetState = song?.artist ?: "Sonora", label = "song_artist_transition") { artist ->
+                AnimatedContent(
+                    targetState = song?.artist ?: "Sonora",
+                    label = "song_artist_transition"
+                ) { artist ->
                     Text(
                         artist,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -575,7 +582,11 @@ fun NowPlayingScreen(
                             onClick = playerController::skipPrevious,
                             enabled = state.hasPrevious || state.positionMs > 3_000L,
                         ) {
-                            Icon(Icons.Default.SkipPrevious, "Previous", tint = MaterialTheme.colorScheme.onSurface)
+                            Icon(
+                                Icons.Default.SkipPrevious,
+                                "Previous",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                         Box(
                             modifier = Modifier.size(96.dp),
@@ -613,7 +624,10 @@ fun NowPlayingScreen(
                                     contentColor = Color.White,
                                 ),
                             ) {
-                                AnimatedContent(targetState = state.isPlaying, label = "play_pause_transition") { playing ->
+                                AnimatedContent(
+                                    targetState = state.isPlaying,
+                                    label = "play_pause_transition"
+                                ) { playing ->
                                     Icon(
                                         if (playing) Icons.Default.Pause else Icons.Default.PlayArrow,
                                         if (playing) "Pause" else "Play",
@@ -624,7 +638,11 @@ fun NowPlayingScreen(
                             }
                         }
                         IconButton(onClick = playerController::skipNext, enabled = state.hasNext) {
-                            Icon(Icons.Default.SkipNext, "Next", tint = MaterialTheme.colorScheme.onSurface)
+                            Icon(
+                                Icons.Default.SkipNext,
+                                "Next",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                         IconButton(onClick = playerController::toggleShuffle) {
                             Icon(

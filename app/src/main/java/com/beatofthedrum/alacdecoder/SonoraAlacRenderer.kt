@@ -29,7 +29,14 @@ internal class SonoraAlacRenderer(
         if (bitDepth != 16 && bitDepth != 24) return C.FORMAT_UNSUPPORTED_SUBTYPE
         val pcmEncoding = Util.getPcmEncoding(bitDepth)
         if (pcmEncoding == C.ENCODING_INVALID) return C.FORMAT_UNSUPPORTED_SUBTYPE
-        return if (sinkSupportsFormat(Util.getPcmFormat(pcmEncoding, format.channelCount, format.sampleRate))) {
+        return if (sinkSupportsFormat(
+                Util.getPcmFormat(
+                    pcmEncoding,
+                    format.channelCount,
+                    format.sampleRate
+                )
+            )
+        ) {
             C.FORMAT_HANDLED
         } else {
             C.FORMAT_UNSUPPORTED_SUBTYPE

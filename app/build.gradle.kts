@@ -20,8 +20,8 @@ android {
         applicationId = "com.sipun.sonora"
         minSdk = 29
         targetSdk = 37
-        versionCode = 201
-        versionName = "2.1"
+        versionCode = 300
+        versionName = "3.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {

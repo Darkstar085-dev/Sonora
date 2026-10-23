@@ -5,21 +5,17 @@
 
 package com.sipun.sonora.feature.nowplaying
 
-import androidx.compose.ui.graphics.Color
-import com.sipun.sonora.ui.theme.accentGradientTint
-import com.sipun.sonora.ui.theme.LocalAccentBrush
-
 import android.media.MediaExtractor
 import android.media.MediaFormat
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import androidx.compose.foundation.Canvas
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -30,7 +26,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -49,10 +44,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.airbnb.lottie.compose.LottieAnimation
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @Composable
 internal fun FavoriteQuickAction(
@@ -86,7 +84,8 @@ internal fun FavoriteQuickAction(
                         Icon(
                             if (favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                             "Add to Favorite",
-                            tint = Color.White, modifier = Modifier.accentGradientTint())
+                            tint = Color.White, modifier = Modifier.accentGradientTint()
+                        )
                     }
                 }
             }
@@ -182,7 +181,9 @@ internal fun ExpressiveSeekBar(
                 if (thumbX > trackStart) {
                     drawPath(
                         path = wavePath,
-                        brush = if (isPlaying) accentBrush else androidx.compose.ui.graphics.SolidColor(primary),
+                        brush = if (isPlaying) accentBrush else androidx.compose.ui.graphics.SolidColor(
+                            primary
+                        ),
                         style = androidx.compose.ui.graphics.drawscope.Stroke(
                             width = 4.dp.toPx(),
                             cap = androidx.compose.ui.graphics.StrokeCap.Round,
@@ -202,7 +203,9 @@ internal fun ExpressiveSeekBar(
                 }
 
                 drawLine(
-                    brush = if (isPlaying) accentBrush else androidx.compose.ui.graphics.SolidColor(primary),
+                    brush = if (isPlaying) accentBrush else androidx.compose.ui.graphics.SolidColor(
+                        primary
+                    ),
                     start = androidx.compose.ui.geometry.Offset(thumbX, centerY - 11.dp.toPx()),
                     end = androidx.compose.ui.geometry.Offset(thumbX, centerY + 11.dp.toPx()),
                     strokeWidth = 4.dp.toPx(),
@@ -229,7 +232,8 @@ internal fun loadAudioInfo(context: android.content.Context, uriString: String):
                 retriever.setDataSource(descriptor.fileDescriptor)
                 extractor.setDataSource(descriptor.fileDescriptor)
 
-                val mimeType = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)
+                val mimeType =
+                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)
                 var bitrate = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_BITRATE)
                     ?.toLongOrNull()?.takeIf { it > 0 }
                 var sampleRate = 0
@@ -319,7 +323,9 @@ internal fun AudioInfoItem(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            modifier = Modifier.size(17.dp).accentGradientTint(),
+            modifier = Modifier
+                .size(17.dp)
+                .accentGradientTint(),
             tint = Color.White,
         )
         Text(

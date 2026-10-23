@@ -6,8 +6,8 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import com.sipun.sonora.data.preferences.LibraryPreferences
-import com.sipun.sonora.domain.Song
 import com.sipun.sonora.domain.MusicRepository
+import com.sipun.sonora.domain.Song
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,6 +39,7 @@ class AndroidMusicRepository : MusicRepository {
     companion object {
         private val _refreshVersion = MutableStateFlow(0L)
         val refreshVersion = _refreshVersion.asStateFlow()
+
         @Volatile
         private var appContext: Context? = null
 
@@ -253,9 +254,20 @@ private fun String?.cleanMetadata(fallback: String): String {
 
 private fun String?.cleanAlbum(folderPath: String, fallback: String): String {
     val value = orEmpty().trim()
-    if (value.isBlank() || value.equals("<unknown>", ignoreCase = true) || value.equals("Music", ignoreCase = true)) {
+    if (value.isBlank() || value.equals("<unknown>", ignoreCase = true) || value.equals(
+            "Music",
+            ignoreCase = true
+        )
+    ) {
         val folderName = folderPath.substringAfterLast('/').ifBlank { folderPath }
-        if (folderName.isNotBlank() && !folderName.equals("0", ignoreCase = true) && !folderName.equals("Music", ignoreCase = true) && !folderName.equals("Download", ignoreCase = true)) {
+        if (folderName.isNotBlank() && !folderName.equals(
+                "0",
+                ignoreCase = true
+            ) && !folderName.equals("Music", ignoreCase = true) && !folderName.equals(
+                "Download",
+                ignoreCase = true
+            )
+        ) {
             return folderName
         }
         return fallback

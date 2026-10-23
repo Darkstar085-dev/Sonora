@@ -207,7 +207,7 @@ def release():
             "--repo",
             repo,
             "--title",
-            f"Speed Indicator v{version_info()[0]}",
+            f"Sonora v{version_info()[0]}",
             "--notes-file",
             "RELEASE_NOTES.md",
             "--latest",

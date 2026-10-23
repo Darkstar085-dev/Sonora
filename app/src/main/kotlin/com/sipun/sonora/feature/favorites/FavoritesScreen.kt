@@ -1,6 +1,5 @@
 package com.sipun.sonora.feature.favorites
 
-import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,8 +32,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -42,9 +41,10 @@ import com.sipun.sonora.data.media.AndroidMusicRepository
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.domain.Song
 import com.sipun.sonora.player.PlayerController
-import com.sipun.sonora.ui.components.SongArtworkImage
 import com.sipun.sonora.ui.components.PlayingEqualizer
+import com.sipun.sonora.ui.components.SongArtworkImage
 import com.sipun.sonora.ui.theme.LocalAccentBrush
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @Composable
 fun FavoritesScreen(
@@ -97,7 +97,11 @@ fun FavoritesScreen(
                         contentColor = Color.White,
                     ),
                 ) {
-                    Icon(Icons.Default.PlayArrow, contentDescription = "Play favorites", tint = Color.White)
+                    Icon(
+                        Icons.Default.PlayArrow,
+                        contentDescription = "Play favorites",
+                        tint = Color.White
+                    )
                 }
             }
         }
@@ -169,7 +173,10 @@ private fun FavoriteSongCard(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
-            if (isCurrentSong) PlayingEqualizer(isPlaying = isPlaying, modifier = Modifier.padding(end = 8.dp))
+            if (isCurrentSong) PlayingEqualizer(
+                isPlaying = isPlaying,
+                modifier = Modifier.padding(end = 8.dp)
+            )
             IconButton(onClick = onRemove) {
                 Icon(
                     Icons.Default.Favorite,
@@ -195,7 +202,9 @@ private fun EmptyFavorites() {
             Icons.Default.FavoriteBorder,
             contentDescription = null,
             tint = Color.White,
-            modifier = Modifier.size(56.dp).accentGradientTint(),
+            modifier = Modifier
+                .size(56.dp)
+                .accentGradientTint(),
         )
         Text(
             "No favorites yet",

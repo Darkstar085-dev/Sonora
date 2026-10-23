@@ -2,8 +2,6 @@
 
 package com.sipun.sonora.feature.album
 
-import com.sipun.sonora.ui.components.SonoraBackButton
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,12 +16,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -47,11 +41,12 @@ import com.sipun.sonora.feature.sorting.SongSortOption
 import com.sipun.sonora.feature.sorting.SongSortScope
 import com.sipun.sonora.feature.sorting.sortSongs
 import com.sipun.sonora.player.PlayerController
-import com.sipun.sonora.ui.components.SongActionConfig
 import com.sipun.sonora.ui.components.PlayingEqualizer
+import com.sipun.sonora.ui.components.SongActionConfig
 import com.sipun.sonora.ui.components.SongArtworkImage
-import com.sipun.sonora.ui.components.SongMoreButton
 import com.sipun.sonora.ui.components.SongCollectionControls
+import com.sipun.sonora.ui.components.SongMoreButton
+import com.sipun.sonora.ui.components.SonoraBackButton
 
 @Composable
 fun AlbumDetailScreen(
@@ -98,7 +93,8 @@ fun AlbumDetailScreen(
             }
         } else {
             val history = preferences.listeningHistoryIds()
-            val sortedSongs = remember(songs, sortOption, history) { sortSongs(songs, sortOption, history) }
+            val sortedSongs =
+                remember(songs, sortOption, history) { sortSongs(songs, sortOption, history) }
             val first = sortedSongs.first()
             LazyColumn(
                 Modifier
@@ -197,7 +193,10 @@ fun AlbumDetailScreen(
                                 )
                             }
                             if (playerState.currentSong?.id == song.id) {
-                                PlayingEqualizer(isPlaying = playerState.isPlaying, modifier = Modifier.padding(end = 8.dp))
+                                PlayingEqualizer(
+                                    isPlaying = playerState.isPlaying,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
                             }
                             SongMoreButton(
                                 song = song,

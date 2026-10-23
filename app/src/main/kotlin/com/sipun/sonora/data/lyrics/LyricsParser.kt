@@ -47,7 +47,7 @@ internal object LyricsParser {
                 val start = segment.startMs
                 val gap = if (start != null && previousStart != null) start - previousStart else 0L
                 val shouldBreak = currentText.isNotEmpty() &&
-                    (gap > WORD_GAP_LINE_BREAK_MS || sentenceEnding.containsMatchIn(currentText.toString()))
+                        (gap > WORD_GAP_LINE_BREAK_MS || sentenceEnding.containsMatchIn(currentText.toString()))
                 if (shouldBreak) {
                     grouped += LyricsLine(currentText.toString().trim(), currentStart)
                     currentText = StringBuilder()
@@ -58,7 +58,10 @@ internal object LyricsParser {
                 currentText.append(segment.text)
                 previousStart = start
             }
-            if (currentText.isNotEmpty()) grouped += LyricsLine(currentText.toString().trim(), currentStart)
+            if (currentText.isNotEmpty()) grouped += LyricsLine(
+                currentText.toString().trim(),
+                currentStart
+            )
             return grouped.asSequence()
         }
 
@@ -82,11 +85,11 @@ internal object LyricsParser {
 
     private fun timestampToMs(minutes: String, seconds: String, fraction: String): Long =
         minutes.toLong() * 60_000 +
-            seconds.toLong() * 1_000 +
-            when (fraction.length) {
-                1 -> fraction.toLong() * 100
-                2 -> fraction.toLong() * 10
-                3 -> fraction.toLong()
-                else -> 0
-            }
+                seconds.toLong() * 1_000 +
+                when (fraction.length) {
+                    1 -> fraction.toLong() * 100
+                    2 -> fraction.toLong() * 10
+                    3 -> fraction.toLong()
+                    else -> 0
+                }
 }

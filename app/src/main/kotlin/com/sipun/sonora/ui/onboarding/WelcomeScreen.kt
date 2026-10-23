@@ -1,6 +1,5 @@
 package com.sipun.sonora.ui.onboarding
 
-import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -39,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.ui.theme.SonoraRed
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @Composable
 fun WelcomeScreen(
@@ -173,7 +173,8 @@ private fun WelcomePage(
                         Icon(
                             Icons.Rounded.Lock,
                             contentDescription = null,
-                            tint = SonoraRed, modifier = Modifier.accentGradientTint())
+                            tint = SonoraRed, modifier = Modifier.accentGradientTint()
+                        )
                     }
                     Column {
                         Text(

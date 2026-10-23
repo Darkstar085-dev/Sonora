@@ -32,28 +32,28 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.R
-import com.sipun.sonora.ui.theme.LocalAccentBrush
-import com.sipun.sonora.ui.theme.accentGradientTint
 import com.sipun.sonora.domain.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.player.PlayerState
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @Composable
 internal fun LibraryLottieCard(
@@ -208,8 +208,14 @@ internal fun LibraryLottieCard(
                     }
                     FilledIconButton(
                         onClick = player::togglePlayPause,
-                        modifier = Modifier.size(56.dp).clip(CircleShape).background(LocalAccentBrush.current),
-                        colors = IconButtonDefaults.filledIconButtonColors(containerColor = Color.Transparent, contentColor = Color.White),
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(CircleShape)
+                            .background(LocalAccentBrush.current),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = Color.White
+                        ),
                     ) {
                         AnimatedContent(
                             targetState = state.isPlaying,
@@ -321,7 +327,8 @@ internal fun ExpressiveHomeSeekBar(
     } else {
         0f
     }
-    val primary = if (isPlaying) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+    val primary =
+        if (isPlaying) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
     val track = MaterialTheme.colorScheme.surfaceVariant
 
     Box(
@@ -468,7 +475,9 @@ internal fun OverviewMetric(
                     it,
                     null,
                     tint = Color.White,
-                    modifier = Modifier.size(18.dp).accentGradientTint(),
+                    modifier = Modifier
+                        .size(18.dp)
+                        .accentGradientTint(),
                 )
             }
         }

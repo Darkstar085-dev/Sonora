@@ -1,6 +1,5 @@
 package com.sipun.sonora.feature.settings
 
-import com.sipun.sonora.ui.theme.accentGradientTint
 import android.app.WallpaperManager
 import android.os.Build
 import androidx.compose.foundation.BorderStroke
@@ -24,11 +23,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.SwapHoriz
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,8 +38,10 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,8 +66,6 @@ import com.sipun.sonora.data.preferences.DynamicPalette
 import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.ui.theme.WallpaperPalette
 import com.sipun.sonora.ui.theme.wallpaperPalette
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 
 @Composable
 internal fun SettingsPermissionRow(
@@ -155,7 +153,7 @@ internal fun CrossfadeSelector(
                 Modifier
                     .size(42.dp)
                     .background(
-                        com.sipun.sonora.ui.theme.LocalAccentBrush.current,
+                        LocalAccentBrush.current,
                         RoundedCornerShape(14.dp),
                     ),
                 contentAlignment = Alignment.Center,
@@ -163,7 +161,8 @@ internal fun CrossfadeSelector(
                 Icon(
                     Icons.Default.SwapHoriz,
                     contentDescription = null,
-                    tint = Color.White)
+                    tint = Color.White
+                )
             }
             Column(
                 Modifier
@@ -229,18 +228,54 @@ internal fun CustomColorSelector(
         Color(0xFFFFA726),
     )
     val gradients = listOf(
-        com.sipun.sonora.data.preferences.AccentGradient.SUNSET to listOf(Color(0xFFFF7A00), Color(0xFFFF006E)),
-        com.sipun.sonora.data.preferences.AccentGradient.OCEAN to listOf(Color(0xFF0066FF), Color(0xFF00E5FF)),
-        com.sipun.sonora.data.preferences.AccentGradient.AURORA to listOf(Color(0xFF00F5A0), Color(0xFF8A2BE2)),
-        com.sipun.sonora.data.preferences.AccentGradient.PURPLE_HAZE to listOf(Color(0xFF6A00FF), Color(0xFFFF6EC7)),
-        com.sipun.sonora.data.preferences.AccentGradient.PEACH to listOf(Color(0xFFFFD1A9), Color(0xFFFF6B6B)),
-        com.sipun.sonora.data.preferences.AccentGradient.EMERALD to listOf(Color(0xFF006D5B), Color(0xFFA4FF6B)),
-        com.sipun.sonora.data.preferences.AccentGradient.CHERRY to listOf(Color(0xFFFF1744), Color(0xFFFF8ED1)),
-        com.sipun.sonora.data.preferences.AccentGradient.ROYAL to listOf(Color(0xFF1A2ED8), Color(0xFFFFDB35)),
-        com.sipun.sonora.data.preferences.AccentGradient.AMBER to listOf(Color(0xFFFFC107), Color(0xFFFF3D00)),
-        com.sipun.sonora.data.preferences.AccentGradient.MINT to listOf(Color(0xFF00E676), Color(0xFF40C4FF)),
-        com.sipun.sonora.data.preferences.AccentGradient.ROSE to listOf(Color(0xFFD81B60), Color(0xFFFFAB91)),
-        com.sipun.sonora.data.preferences.AccentGradient.INDIGO to listOf(Color(0xFF3949AB), Color(0xFF00BCD4)),
+        com.sipun.sonora.data.preferences.AccentGradient.SUNSET to listOf(
+            Color(0xFFFF7A00),
+            Color(0xFFFF006E)
+        ),
+        com.sipun.sonora.data.preferences.AccentGradient.OCEAN to listOf(
+            Color(0xFF0066FF),
+            Color(0xFF00E5FF)
+        ),
+        com.sipun.sonora.data.preferences.AccentGradient.AURORA to listOf(
+            Color(0xFF00F5A0),
+            Color(0xFF8A2BE2)
+        ),
+        com.sipun.sonora.data.preferences.AccentGradient.PURPLE_HAZE to listOf(
+            Color(0xFF6A00FF),
+            Color(0xFFFF6EC7)
+        ),
+        com.sipun.sonora.data.preferences.AccentGradient.PEACH to listOf(
+            Color(0xFFFFD1A9),
+            Color(0xFFFF6B6B)
+        ),
+        com.sipun.sonora.data.preferences.AccentGradient.EMERALD to listOf(
+            Color(0xFF006D5B),
+            Color(0xFFA4FF6B)
+        ),
+        com.sipun.sonora.data.preferences.AccentGradient.CHERRY to listOf(
+            Color(0xFFFF1744),
+            Color(0xFFFF8ED1)
+        ),
+        com.sipun.sonora.data.preferences.AccentGradient.ROYAL to listOf(
+            Color(0xFF1A2ED8),
+            Color(0xFFFFDB35)
+        ),
+        com.sipun.sonora.data.preferences.AccentGradient.AMBER to listOf(
+            Color(0xFFFFC107),
+            Color(0xFFFF3D00)
+        ),
+        com.sipun.sonora.data.preferences.AccentGradient.MINT to listOf(
+            Color(0xFF00E676),
+            Color(0xFF40C4FF)
+        ),
+        com.sipun.sonora.data.preferences.AccentGradient.ROSE to listOf(
+            Color(0xFFD81B60),
+            Color(0xFFFFAB91)
+        ),
+        com.sipun.sonora.data.preferences.AccentGradient.INDIGO to listOf(
+            Color(0xFF3949AB),
+            Color(0xFF00BCD4)
+        ),
     )
     val hsv = remember(color) {
         FloatArray(3).also { android.graphics.Color.colorToHSV(color.toArgb(), it) }
@@ -253,8 +288,16 @@ internal fun CustomColorSelector(
     val endHsv = remember(customGradientEnd) {
         FloatArray(3).also { android.graphics.Color.colorToHSV(customGradientEnd, it) }
     }
-    var customStartHue by remember(showCustomGradientEditor, customGradientStart) { mutableStateOf(startHsv[0]) }
-    var customEndHue by remember(showCustomGradientEditor, customGradientEnd) { mutableStateOf(endHsv[0]) }
+    var customStartHue by remember(showCustomGradientEditor, customGradientStart) {
+        mutableStateOf(
+            startHsv[0]
+        )
+    }
+    var customEndHue by remember(showCustomGradientEditor, customGradientEnd) {
+        mutableStateOf(
+            endHsv[0]
+        )
+    }
     val hueColors = remember {
         (0..360 step 30).map { Color.hsv(it.toFloat(), 0.78f, 0.92f) }
     }
@@ -290,7 +333,10 @@ internal fun CustomColorSelector(
                         .weight(1f)
                         .then(
                             if (style == option) {
-                                Modifier.background(LocalAccentBrush.current, RoundedCornerShape(14.dp))
+                                Modifier.background(
+                                    LocalAccentBrush.current,
+                                    RoundedCornerShape(14.dp)
+                                )
                             } else {
                                 Modifier
                             },
@@ -376,7 +422,7 @@ internal fun CustomColorSelector(
                                 preset.name.lowercase().replace('_', ' ')
                                     .replaceFirstChar { it.uppercase() },
                                 color = if (selected) MaterialTheme.colorScheme.onSurface
-                                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                                else MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.labelSmall,
                                 maxLines = 1,
                                 softWrap = false,
@@ -407,13 +453,32 @@ internal fun CustomColorSelector(
                         Modifier
                             .size(width = 64.dp, height = 42.dp)
                             .clip(RoundedCornerShape(10.dp))
-                            .background(Brush.horizontalGradient(listOf(Color(customGradientStart), Color(customGradientEnd)))),
+                            .background(
+                                Brush.horizontalGradient(
+                                    listOf(
+                                        Color(customGradientStart),
+                                        Color(customGradientEnd)
+                                    )
+                                )
+                            ),
                     )
                     Column(Modifier.weight(1f)) {
-                        Text("Custom gradient", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.onSurface)
-                        Text("Choose both colors and preview", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(
+                            "Custom gradient",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            "Choose both colors and preview",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
-                    Text("Edit", color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        "Edit",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
             }
             if (showCustomGradientEditor) {
@@ -429,21 +494,34 @@ internal fun CustomColorSelector(
                                     .fillMaxWidth()
                                     .height(76.dp)
                                     .clip(RoundedCornerShape(14.dp))
-                                    .background(Brush.horizontalGradient(listOf(startColor, endColor))),
+                                    .background(
+                                        Brush.horizontalGradient(
+                                            listOf(
+                                                startColor,
+                                                endColor
+                                            )
+                                        )
+                                    ),
                             )
                             Text("Start color", style = MaterialTheme.typography.labelMedium)
                             Slider(
                                 value = customStartHue,
                                 onValueChange = { customStartHue = it },
                                 valueRange = 0f..360f,
-                                colors = SliderDefaults.colors(thumbColor = startColor, activeTrackColor = startColor),
+                                colors = SliderDefaults.colors(
+                                    thumbColor = startColor,
+                                    activeTrackColor = startColor
+                                ),
                             )
                             Text("End color", style = MaterialTheme.typography.labelMedium)
                             Slider(
                                 value = customEndHue,
                                 onValueChange = { customEndHue = it },
                                 valueRange = 0f..360f,
-                                colors = SliderDefaults.colors(thumbColor = endColor, activeTrackColor = endColor),
+                                colors = SliderDefaults.colors(
+                                    thumbColor = endColor,
+                                    activeTrackColor = endColor
+                                ),
                             )
                         }
                     },
@@ -456,7 +534,9 @@ internal fun CustomColorSelector(
                         }) { Text("Apply gradient") }
                     },
                     dismissButton = {
-                        TextButton(onClick = { showCustomGradientEditor = false }) { Text("Cancel") }
+                        TextButton(onClick = {
+                            showCustomGradientEditor = false
+                        }) { Text("Cancel") }
                     },
                 )
             }
@@ -536,6 +616,7 @@ internal fun CustomColorSelector(
         }
     }
 }
+
 @Composable
 internal fun PaletteSelector(
     seed: Color,
@@ -826,7 +907,9 @@ internal fun ThemeOption(
         },
         border = BorderStroke(
             if (selected) 1.5.dp else 1.dp,
-            if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(alpha = 0.45f),
+            if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline.copy(
+                alpha = 0.45f
+            ),
         ),
     ) {
         Row(
@@ -842,7 +925,8 @@ internal fun ThemeOption(
                     Icon(
                         icon,
                         contentDescription = null,
-                        tint = Color.White)
+                        tint = Color.White
+                    )
                 }
             }
             Column(
@@ -925,7 +1009,7 @@ internal fun SettingsRow(
             Modifier
                 .size(42.dp)
                 .background(
-                    com.sipun.sonora.ui.theme.LocalAccentBrush.current,
+                    LocalAccentBrush.current,
                     RoundedCornerShape(14.dp)
                 ),
             contentAlignment = Alignment.Center

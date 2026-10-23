@@ -37,7 +37,6 @@ import androidx.compose.material.icons.filled.Code
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Info
@@ -47,7 +46,6 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.AlertDialog
@@ -59,12 +57,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -77,8 +76,6 @@ import com.sipun.sonora.R
 import com.sipun.sonora.data.preferences.AppTheme
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.data.preferences.ThemePreferences
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 
 @Composable
 fun SettingsScreen(
@@ -111,7 +108,7 @@ fun SettingsScreen(
     var mediaManagementAllowed by remember(context) {
         mutableStateOf(
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                MediaStore.canManageMedia(context),
+                    MediaStore.canManageMedia(context),
         )
     }
     var ringtoneAllowed by remember(context) {
@@ -120,7 +117,7 @@ fun SettingsScreen(
     var installUpdatesAllowed by remember(context) {
         mutableStateOf(
             Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
-                context.packageManager.canRequestPackageInstalls(),
+                    context.packageManager.canRequestPackageInstalls(),
         )
     }
     var batteryUnrestricted by remember(context) {
@@ -144,36 +141,37 @@ fun SettingsScreen(
     var photoPermissionAllowed by remember(context) {
         mutableStateOf(
             Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                ) == PackageManager.PERMISSION_GRANTED ||
-                (
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
-                        ContextCompat.checkSelfPermission(
-                            context,
-                            "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
-                        ) == PackageManager.PERMISSION_GRANTED
-                ),
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_MEDIA_IMAGES,
+                    ) == PackageManager.PERMISSION_GRANTED ||
+                    (
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
+                                    ContextCompat.checkSelfPermission(
+                                        context,
+                                        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
+                                    ) == PackageManager.PERMISSION_GRANTED
+                            ),
         )
     }
     var notificationPermissionAllowed by remember(context) {
         mutableStateOf(
             Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS,
-                ) == PackageManager.PERMISSION_GRANTED,
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.POST_NOTIFICATIONS,
+                    ) == PackageManager.PERMISSION_GRANTED,
         )
     }
+
     fun refreshPermissionStates() {
         mediaManagementAllowed =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                MediaStore.canManageMedia(context)
+                    MediaStore.canManageMedia(context)
         ringtoneAllowed = Settings.System.canWrite(context)
         installUpdatesAllowed =
             Build.VERSION.SDK_INT < Build.VERSION_CODES.O ||
-                context.packageManager.canRequestPackageInstalls()
+                    context.packageManager.canRequestPackageInstalls()
         batteryUnrestricted =
             (context.getSystemService(PowerManager::class.java))
                 ?.isIgnoringBatteryOptimizations(context.packageName) == true
@@ -187,24 +185,25 @@ fun SettingsScreen(
         ) == PackageManager.PERMISSION_GRANTED
         photoPermissionAllowed =
             Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.READ_MEDIA_IMAGES,
-                ) == PackageManager.PERMISSION_GRANTED ||
-                (
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
-                        ContextCompat.checkSelfPermission(
-                            context,
-                            "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
-                        ) == PackageManager.PERMISSION_GRANTED
-                )
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_MEDIA_IMAGES,
+                    ) == PackageManager.PERMISSION_GRANTED ||
+                    (
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
+                                    ContextCompat.checkSelfPermission(
+                                        context,
+                                        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
+                                    ) == PackageManager.PERMISSION_GRANTED
+                            )
         notificationPermissionAllowed =
             Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.POST_NOTIFICATIONS,
-                ) == PackageManager.PERMISSION_GRANTED
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.POST_NOTIFICATIONS,
+                    ) == PackageManager.PERMISSION_GRANTED
     }
+
     val lifecycleOwner = LocalLifecycleOwner.current
     var wallpaperSeed by remember(context) { mutableStateOf(readWallpaperSeed(context)) }
 
@@ -331,23 +330,23 @@ fun SettingsScreen(
 
         SettingsSection(stringResource(R.string.settings_appearance)) {
             SettingsRow(
-                    icon = Icons.Default.LightMode,
-                    title = stringResource(R.string.settings_theme),
-                    subtitle = themeLabel,
-                    onClick = { showThemeDialog = true },
-                    trailing = {
-                        Surface(
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
-                            shape = RoundedCornerShape(50),
-                        ) {
-                            Text(
-                                themeLabel,
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.labelLarge,
-                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
-                            )
-                        }
-                    },
+                icon = Icons.Default.LightMode,
+                title = stringResource(R.string.settings_theme),
+                subtitle = themeLabel,
+                onClick = { showThemeDialog = true },
+                trailing = {
+                    Surface(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.10f),
+                        shape = RoundedCornerShape(50),
+                    ) {
+                        Text(
+                            themeLabel,
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.labelLarge,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
+                        )
+                    }
+                },
             )
             SettingsRow(
                 icon = Icons.Default.Palette,
@@ -536,8 +535,10 @@ fun SettingsScreen(
                 status = when {
                     Build.VERSION.SDK_INT < Build.VERSION_CODES.S ->
                         stringResource(R.string.settings_permission_ondemand)
+
                     mediaManagementAllowed ->
                         stringResource(R.string.settings_permission_allowed)
+
                     else ->
                         stringResource(R.string.settings_permission_allow)
                 },

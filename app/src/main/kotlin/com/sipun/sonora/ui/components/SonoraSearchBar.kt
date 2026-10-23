@@ -1,6 +1,5 @@
 package com.sipun.sonora.ui.components
 
-import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material.icons.Icons
@@ -16,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.R
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @Composable
 fun SonoraSearchBar(
@@ -34,8 +34,9 @@ fun SonoraSearchBar(
             Icon(
                 Icons.Default.Search,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            , modifier = Modifier.accentGradientTint())
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.accentGradientTint()
+            )
         },
         placeholder = {
             Text(

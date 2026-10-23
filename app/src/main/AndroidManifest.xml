@@ -50,6 +50,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <receiver
             android:name=".player.BootCompletedReceiver"
             android:enabled="true"
@@ -75,6 +76,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/sonora_widget_4x2_info" />
         </receiver>
+
         <service
             android:name=".player.SonoraPlaybackService"
             android:exported="true"

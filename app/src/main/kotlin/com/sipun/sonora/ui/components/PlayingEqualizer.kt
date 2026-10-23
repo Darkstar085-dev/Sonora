@@ -16,13 +16,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.MaterialTheme
 
 @Composable
 internal fun PlayingEqualizer(
@@ -34,22 +34,41 @@ internal fun PlayingEqualizer(
     val first = transition.animateFloat(
         initialValue = 0.28f,
         targetValue = 0.92f,
-        animationSpec = infiniteRepeatable(tween(420, easing = FastOutSlowInEasing), repeatMode = RepeatMode.Reverse),
+        animationSpec = infiniteRepeatable(
+            tween(420, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
         label = "equalizer_bar_one",
     )
     val second = transition.animateFloat(
         initialValue = 0.72f,
         targetValue = 0.34f,
-        animationSpec = infiniteRepeatable(tween(510, delayMillis = 70, easing = FastOutSlowInEasing), repeatMode = RepeatMode.Reverse),
+        animationSpec = infiniteRepeatable(
+            tween(
+                510,
+                delayMillis = 70,
+                easing = FastOutSlowInEasing
+            ), repeatMode = RepeatMode.Reverse
+        ),
         label = "equalizer_bar_two",
     )
     val third = transition.animateFloat(
         initialValue = 0.38f,
         targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(460, delayMillis = 130, easing = FastOutSlowInEasing), repeatMode = RepeatMode.Reverse),
+        animationSpec = infiniteRepeatable(
+            tween(
+                460,
+                delayMillis = 130,
+                easing = FastOutSlowInEasing
+            ), repeatMode = RepeatMode.Reverse
+        ),
         label = "equalizer_bar_three",
     )
-    val heights = if (isPlaying) listOf(first.value, second.value, third.value) else listOf(0.28f, 0.28f, 0.28f)
+    val heights = if (isPlaying) listOf(first.value, second.value, third.value) else listOf(
+        0.28f,
+        0.28f,
+        0.28f
+    )
 
     Row(
         modifier = modifier

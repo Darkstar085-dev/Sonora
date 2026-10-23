@@ -2,7 +2,6 @@
 
 package com.sipun.sonora.ui.components
 
-import com.sipun.sonora.ui.theme.accentGradientTint
 import android.app.Activity
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -57,6 +56,7 @@ import com.sipun.sonora.data.media.AudioMetadataEditor
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.domain.Song
 import com.sipun.sonora.player.PlayerController
+import com.sipun.sonora.ui.theme.accentGradientTint
 import kotlinx.coroutines.launch
 
 @Composable
@@ -89,7 +89,11 @@ fun SongMoreButton(
         onClick = { showMore = true },
         modifier = modifier,
     ) {
-        Icon(Icons.Default.MoreVert, contentDescription = stringResource(R.string.more_options), modifier = Modifier.accentGradientTint())
+        Icon(
+            Icons.Default.MoreVert,
+            contentDescription = stringResource(R.string.more_options),
+            modifier = Modifier.accentGradientTint()
+        )
     }
 
     if (showMore) {
@@ -224,7 +228,8 @@ fun SongMoreButton(
                         showRemoveConfirmation = false
                         scope.launch {
                             val uri = Uri.parse(song.uri)
-                            val deleteRequest = AudioMetadataEditor.getDeleteRequestIntentSender(context, uri)
+                            val deleteRequest =
+                                AudioMetadataEditor.getDeleteRequestIntentSender(context, uri)
                             if (deleteRequest != null) {
                                 deleteRequestLauncher.launch(
                                     IntentSenderRequest.Builder(deleteRequest).build()
@@ -318,7 +323,14 @@ private fun SongMoreOption(
     }
     ListItem(
         headlineContent = { Text(label, color = contentColor) },
-        leadingContent = { Icon(icon, null, tint = contentColor, modifier = Modifier.accentGradientTint()) },
+        leadingContent = {
+            Icon(
+                icon,
+                null,
+                tint = contentColor,
+                modifier = Modifier.accentGradientTint()
+            )
+        },
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),

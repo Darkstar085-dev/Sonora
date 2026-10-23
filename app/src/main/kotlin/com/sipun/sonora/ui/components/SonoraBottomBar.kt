@@ -1,6 +1,5 @@
 package com.sipun.sonora.ui.components
 
-import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -35,6 +34,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.sipun.sonora.navigation.SonoraRoute
 import com.sipun.sonora.ui.theme.LocalAccentBrush
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 private data class BottomDestination(
     val route: SonoraRoute,
@@ -117,7 +117,9 @@ fun SonoraBottomBar(
                                 imageVector = destination.icon,
                                 contentDescription = destination.label,
                                 tint = Color.White,
-                                modifier = Modifier.size(24.dp).accentGradientTint(),
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .accentGradientTint(),
                             )
                             Text(
                                 text = destination.label,

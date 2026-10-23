@@ -1,6 +1,5 @@
 package com.sipun.sonora.ui.components
 
-import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.heightIn
@@ -28,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.R
 import com.sipun.sonora.data.preferences.SonoraPreferences
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @Composable
 fun AddToPlaylistDialog(songId: Long, preferences: SonoraPreferences, onDismiss: () -> Unit) {
@@ -70,8 +70,9 @@ fun AddToPlaylistDialog(songId: Long, preferences: SonoraPreferences, onDismiss:
                                     Icon(
                                         Icons.Default.LibraryMusic,
                                         null,
-                                        tint = if (added) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
-                                    , modifier = Modifier.accentGradientTint())
+                                        tint = if (added) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.accentGradientTint()
+                                    )
                                 },
                                 trailingContent = {
                                     if (added) Text(
@@ -88,8 +89,8 @@ fun AddToPlaylistDialog(songId: Long, preferences: SonoraPreferences, onDismiss:
                                             stringResource(
                                                 R.string.action_add_to_playlist,
                                                 playlist.name
-                                            )
-                                        , modifier = Modifier.accentGradientTint())
+                                            ), modifier = Modifier.accentGradientTint()
+                                        )
                                     }
                                 },
                             )

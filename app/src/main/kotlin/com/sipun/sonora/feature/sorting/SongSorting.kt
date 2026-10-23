@@ -26,14 +26,34 @@ enum class SongSortOption(val key: String, val label: String) {
     }
 }
 
-fun sortSongs(songs: List<Song>, option: SongSortOption, listeningHistoryIds: List<Long>): List<Song> =
+fun sortSongs(
+    songs: List<Song>,
+    option: SongSortOption,
+    listeningHistoryIds: List<Long>
+): List<Song> =
     when (option) {
         SongSortOption.TITLE_ASC -> songs.sortedWith(compareByNatural(Song::title))
         SongSortOption.TITLE_DESC -> songs.sortedWith(compareByNatural(Song::title).reversed())
-        SongSortOption.ARTIST_ASC -> songs.sortedWith(compareByNatural(Song::artist).then(compareByNatural(Song::title)))
-        SongSortOption.ARTIST_DESC -> songs.sortedWith(compareByNatural(Song::artist).reversed().then(compareByNatural(Song::title)))
-        SongSortOption.ALBUM_ASC -> songs.sortedWith(compareByNatural(Song::album).then(compareByNatural(Song::title)))
-        SongSortOption.ALBUM_DESC -> songs.sortedWith(compareByNatural(Song::album).reversed().then(compareByNatural(Song::title)))
+        SongSortOption.ARTIST_ASC -> songs.sortedWith(
+            compareByNatural(Song::artist).then(
+                compareByNatural(Song::title)
+            )
+        )
+
+        SongSortOption.ARTIST_DESC -> songs.sortedWith(
+            compareByNatural(Song::artist).reversed().then(compareByNatural(Song::title))
+        )
+
+        SongSortOption.ALBUM_ASC -> songs.sortedWith(
+            compareByNatural(Song::album).then(
+                compareByNatural(Song::title)
+            )
+        )
+
+        SongSortOption.ALBUM_DESC -> songs.sortedWith(
+            compareByNatural(Song::album).reversed().then(compareByNatural(Song::title))
+        )
+
         SongSortOption.RECENTLY_ADDED -> songs.sortedByDescending(Song::dateAddedSeconds)
         SongSortOption.RECENTLY_PLAYED -> {
             val positions = listeningHistoryIds.withIndex().associate { it.value to it.index }

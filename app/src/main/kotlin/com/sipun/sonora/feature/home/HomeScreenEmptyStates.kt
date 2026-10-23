@@ -1,6 +1,5 @@
 package com.sipun.sonora.feature.home
 
-import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.R
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @Composable
 internal fun EmptyLibraryState() {
@@ -30,7 +30,9 @@ internal fun EmptyLibraryState() {
             Icons.Default.MusicOff,
             null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(48.dp).accentGradientTint()
+            modifier = Modifier
+                .size(48.dp)
+                .accentGradientTint()
         )
         Text(
             stringResource(R.string.home_no_music),
@@ -56,7 +58,9 @@ internal fun EmptySearchState(query: String) {
             Icons.Default.SearchOff,
             null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(48.dp).accentGradientTint()
+            modifier = Modifier
+                .size(48.dp)
+                .accentGradientTint()
         )
         Text(
             stringResource(R.string.home_no_music),

@@ -178,7 +178,11 @@ fun HomeScreen(
                             )
                         }
                         IconButton(onClick = onOpenSettings) {
-                            Icon(Icons.Default.Settings, stringResource(R.string.action_settings), modifier = Modifier.accentGradientTint())
+                            Icon(
+                                Icons.Default.Settings,
+                                stringResource(R.string.action_settings),
+                                modifier = Modifier.accentGradientTint()
+                            )
                         }
                     },
                 )

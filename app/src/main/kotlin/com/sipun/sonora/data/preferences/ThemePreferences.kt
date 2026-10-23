@@ -63,9 +63,11 @@ class ThemePreferences private constructor(context: Context) {
     val accentStyle: StateFlow<AccentStyle> = _accentStyle.asStateFlow()
     private val _accentGradient = MutableStateFlow(readAccentGradient())
     val accentGradient: StateFlow<AccentGradient> = _accentGradient.asStateFlow()
-    private val _customGradientStart = MutableStateFlow(preferences.getInt(KEY_CUSTOM_GRADIENT_START, 0xFFE92DE2.toInt()))
+    private val _customGradientStart =
+        MutableStateFlow(preferences.getInt(KEY_CUSTOM_GRADIENT_START, 0xFFE92DE2.toInt()))
     val customGradientStart: StateFlow<Int> = _customGradientStart.asStateFlow()
-    private val _customGradientEnd = MutableStateFlow(preferences.getInt(KEY_CUSTOM_GRADIENT_END, 0xFF4A00E0.toInt()))
+    private val _customGradientEnd =
+        MutableStateFlow(preferences.getInt(KEY_CUSTOM_GRADIENT_END, 0xFF4A00E0.toInt()))
     val customGradientEnd: StateFlow<Int> = _customGradientEnd.asStateFlow()
 
     fun setTheme(theme: AppTheme) {
@@ -127,6 +129,7 @@ class ThemePreferences private constructor(context: Context) {
                     ?: AccentGradient.SUNSET.name,
             )
         }.getOrDefault(AccentGradient.SUNSET)
+
     private fun readPureBlack(): Boolean =
         preferences.getBoolean(KEY_PURE_BLACK, false)
 

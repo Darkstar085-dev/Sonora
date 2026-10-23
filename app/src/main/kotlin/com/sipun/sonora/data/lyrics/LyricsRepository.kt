@@ -83,17 +83,22 @@ internal class LyricsRepository(context: Context) {
         val uri = runCatching { Uri.parse(uriString) }.getOrNull() ?: return null
         val sidecarText = when (uri.scheme) {
             "file" -> {
-                val audioFile = runCatching { File(uri.path ?: return null) }.getOrNull() ?: return null
+                val audioFile =
+                    runCatching { File(uri.path ?: return null) }.getOrNull() ?: return null
                 File(audioFile.parentFile, audioFile.nameWithoutExtension + ".lrc")
                     .takeIf { it.isFile && it.canRead() }
                     ?.let { file -> runCatching { file.readText() }.getOrNull() }
             }
+
             "content" -> {
                 val resolver = appContext.contentResolver
                 val metadata = runCatching {
                     resolver.query(
                         uri,
-                        arrayOf(MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns.RELATIVE_PATH),
+                        arrayOf(
+                            MediaStore.MediaColumns.DISPLAY_NAME,
+                            MediaStore.MediaColumns.RELATIVE_PATH
+                        ),
                         null,
                         null,
                         null,
@@ -112,7 +117,7 @@ internal class LyricsRepository(context: Context) {
                     "${MediaStore.MediaColumns.DISPLAY_NAME} = ? AND ${MediaStore.MediaColumns.RELATIVE_PATH} = ?"
                 }
                 val args = if (metadata.second.isNullOrBlank()) arrayOf(lrcName)
-                    else arrayOf(lrcName, metadata.second)
+                else arrayOf(lrcName, metadata.second)
                 runCatching {
                     resolver.query(
                         MediaStore.Files.getContentUri("external"),
@@ -127,11 +132,13 @@ internal class LyricsRepository(context: Context) {
                                 MediaStore.Files.getContentUri("external"),
                                 id.toString(),
                             )
-                            resolver.openInputStream(lrcUri)?.bufferedReader()?.use { it.readText() }
+                            resolver.openInputStream(lrcUri)?.bufferedReader()
+                                ?.use { it.readText() }
                         }
                     }
                 }.getOrNull()
             }
+
             else -> null
         }
         return sidecarText?.let { runCatching { LyricsParser.parse(it) }.getOrNull() }

@@ -4,9 +4,9 @@ import android.content.Context
 import android.os.Handler
 import androidx.media3.exoplayer.DefaultRenderersFactory
 import androidx.media3.exoplayer.Renderer
-import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import androidx.media3.exoplayer.audio.AudioRendererEventListener
 import androidx.media3.exoplayer.audio.AudioSink
+import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
 import com.beatofthedrum.alacdecoder.SonoraAlacRenderer
 
 class SonoraRenderersFactory(context: Context) : DefaultRenderersFactory(context) {

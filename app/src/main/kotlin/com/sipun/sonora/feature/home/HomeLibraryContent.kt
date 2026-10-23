@@ -1,9 +1,6 @@
 package com.sipun.sonora.feature.home
 
-import androidx.compose.ui.graphics.Color
-import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,27 +26,29 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.domain.Song
 import com.sipun.sonora.feature.sorting.SongSortOption
 import com.sipun.sonora.feature.sorting.SongSortScope
 import com.sipun.sonora.feature.sorting.sortSongs
 import com.sipun.sonora.player.PlayerController
-import com.sipun.sonora.ui.components.SongActionConfig
 import com.sipun.sonora.ui.components.PlayingEqualizer
+import com.sipun.sonora.ui.components.SongActionConfig
 import com.sipun.sonora.ui.components.SongArtworkImage
 import com.sipun.sonora.ui.components.SongMoreButton
 import com.sipun.sonora.ui.components.SongSortButton
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @Composable
 internal fun SongList(
@@ -83,7 +82,8 @@ internal fun SongList(
                     Icon(
                         Icons.Default.Shuffle,
                         contentDescription = "Shuffle songs",
-                        tint = Color.White, modifier = Modifier.accentGradientTint())
+                        tint = Color.White, modifier = Modifier.accentGradientTint()
+                    )
                 }
                 SongSortButton(
                     scope = SongSortScope.SONGS,
@@ -136,7 +136,9 @@ internal fun FavoriteList(
                 Icons.Default.FavoriteBorder,
                 null,
                 tint = Color.White,
-                modifier = Modifier.size(56.dp).accentGradientTint()
+                modifier = Modifier
+                    .size(56.dp)
+                    .accentGradientTint()
             )
             Text(
                 "No favorites yet",
@@ -217,7 +219,10 @@ private fun SongCard(
                     overflow = TextOverflow.Ellipsis,
                 )
             }
-            if (isCurrentSong) PlayingEqualizer(isPlaying = isPlaying, modifier = Modifier.padding(end = 8.dp))
+            if (isCurrentSong) PlayingEqualizer(
+                isPlaying = isPlaying,
+                modifier = Modifier.padding(end = 8.dp)
+            )
             SongMoreButton(
                 song = song,
                 preferences = preferences,

@@ -429,7 +429,8 @@ class PlayerController(context: Context) {
 
         val isPlaying = mediaController.isPlaying
         val position = mediaController.currentPosition.coerceAtLeast(0L)
-        val duration = mediaController.duration.takeIf { it != C.TIME_UNSET }?.coerceAtLeast(0L) ?: 0L
+        val duration =
+            mediaController.duration.takeIf { it != C.TIME_UNSET }?.coerceAtLeast(0L) ?: 0L
         val shuffleEnabled = mediaController.shuffleModeEnabled
         val repeatModeInt = when (mediaController.repeatMode) {
             Player.REPEAT_MODE_ONE -> 2

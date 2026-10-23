@@ -18,14 +18,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -56,19 +56,19 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.sipun.sonora.domain.Song
 import com.sipun.sonora.ui.theme.accentGradientTint
 import kotlinx.coroutines.Dispatchers
@@ -99,7 +99,9 @@ internal fun QuickAction(
                     Icon(
                         icon,
                         contentDescription = label,
-                        modifier = Modifier.size(24.dp).accentGradientTint(),
+                        modifier = Modifier
+                            .size(24.dp)
+                            .accentGradientTint(),
                         tint = Color.White,
                     )
                 }
@@ -266,7 +268,9 @@ internal fun QueueDialog(
                                                 Icons.Default.GraphicEq,
                                                 contentDescription = null,
                                                 tint = Color.White,
-                                                modifier = Modifier.size(24.dp).accentGradientTint(),
+                                                modifier = Modifier
+                                                    .size(24.dp)
+                                                    .accentGradientTint(),
                                             )
                                         } else {
                                             Text(
@@ -357,13 +361,17 @@ internal fun SongInfoDialog(song: Song, onDismiss: () -> Unit) {
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Surface(
-            modifier = Modifier.fillMaxWidth(0.92f).widthIn(max = 460.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.92f)
+                .widthIn(max = 460.dp),
             shape = RoundedCornerShape(28.dp),
             color = dialogSurfaceColor(),
             tonalElevation = 0.dp,
             shadowElevation = 8.dp,
         ) {
-            Column(Modifier.fillMaxWidth().padding(24.dp)) {
+            Column(Modifier
+                .fillMaxWidth()
+                .padding(24.dp)) {
                 DialogTitle("Song info")
                 Spacer(Modifier.height(20.dp))
                 SongInfoItem("Title", song.title)
@@ -381,7 +389,9 @@ internal fun SongInfoDialog(song: Song, onDismiss: () -> Unit) {
 
 @Composable
 private fun SongInfoItem(label: String, value: String) {
-    Column(Modifier.fillMaxWidth().padding(vertical = 7.dp)) {
+    Column(Modifier
+        .fillMaxWidth()
+        .padding(vertical = 7.dp)) {
         Text(
             label,
             style = MaterialTheme.typography.labelLarge,
@@ -419,7 +429,9 @@ private fun DialogTitle(text: String) {
 @Composable
 private fun DialogCloseButton(onDismiss: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
         horizontalArrangement = Arrangement.End,
     ) {
         TextButton(onClick = onDismiss) { Text("Close") }
@@ -439,13 +451,17 @@ internal fun PlaybackSpeedDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Surface(
-            modifier = Modifier.fillMaxWidth(0.92f).widthIn(max = 460.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.92f)
+                .widthIn(max = 460.dp),
             shape = RoundedCornerShape(28.dp),
             color = dialogSurfaceColor(),
             tonalElevation = 0.dp,
             shadowElevation = 8.dp,
         ) {
-            Column(Modifier.fillMaxWidth().padding(24.dp)) {
+            Column(Modifier
+                .fillMaxWidth()
+                .padding(24.dp)) {
                 DialogTitle("Playback speed")
                 Spacer(Modifier.height(20.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -483,13 +499,17 @@ internal fun SleepTimerDialog(
         properties = DialogProperties(usePlatformDefaultWidth = false),
     ) {
         Surface(
-            modifier = Modifier.fillMaxWidth(0.92f).widthIn(max = 460.dp),
+            modifier = Modifier
+                .fillMaxWidth(0.92f)
+                .widthIn(max = 460.dp),
             shape = RoundedCornerShape(28.dp),
             color = dialogSurfaceColor(),
             tonalElevation = 0.dp,
             shadowElevation = 8.dp,
         ) {
-            Column(Modifier.fillMaxWidth().padding(24.dp)) {
+            Column(Modifier
+                .fillMaxWidth()
+                .padding(24.dp)) {
                 DialogTitle("Sleep timer")
                 Spacer(Modifier.height(20.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -564,6 +584,7 @@ private fun speedLabel(speed: Float): String = when (speed) {
     1f -> "1×"
     else -> "${speed}×"
 }
+
 internal fun setAsRingtone(context: android.content.Context, song: Song) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(context)) {
         context.startActivity(

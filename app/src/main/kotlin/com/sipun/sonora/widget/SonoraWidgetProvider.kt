@@ -51,15 +51,19 @@ class SonoraWidgetProvider : AppWidgetProvider() {
             ACTION_WIDGET_PLAY_PAUSE -> {
                 sendMediaKeyEvent(context, KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE)
             }
+
             ACTION_WIDGET_SKIP_NEXT -> {
                 sendMediaKeyEvent(context, KeyEvent.KEYCODE_MEDIA_NEXT)
             }
+
             ACTION_WIDGET_SKIP_PREVIOUS -> {
                 sendMediaKeyEvent(context, KeyEvent.KEYCODE_MEDIA_PREVIOUS)
             }
+
             ACTION_WIDGET_TOGGLE_SHUFFLE -> {
                 toggleShuffle(context)
             }
+
             ACTION_WIDGET_CYCLE_REPEAT -> {
                 cycleRepeat(context)
             }
@@ -97,14 +101,19 @@ class SonoraWidgetProvider : AppWidgetProvider() {
             val positionMs = preferences.lastPlayedPositionMs()
             val durationMs = preferences.lastPlayedDurationMs()
 
-            val defaultInactiveColor = ContextCompat.getColor(context, R.color.widget_m3_on_surface_variant)
+            val defaultInactiveColor =
+                ContextCompat.getColor(context, R.color.widget_m3_on_surface_variant)
 
             // Apply App Primary Accent Color to Play/Pause circle background
             views.setInt(R.id.widget_btn_play_pause_bg, "setColorFilter", accentColor)
 
             // Apply App Primary Accent Color to Progress Bar
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                views.setColorStateList(R.id.widget_progress, "setProgressTintList", ColorStateList.valueOf(accentColor))
+                views.setColorStateList(
+                    R.id.widget_progress,
+                    "setProgressTintList",
+                    ColorStateList.valueOf(accentColor)
+                )
             }
 
             // Apply Shuffle state & tint
@@ -167,7 +176,10 @@ class SonoraWidgetProvider : AppWidgetProvider() {
                 flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
             }
             val mainPendingIntent = PendingIntent.getActivity(
-                context, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                context,
+                0,
+                mainIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
             views.setOnClickPendingIntent(R.id.widget_container, mainPendingIntent)
             views.setOnClickPendingIntent(R.id.widget_artwork, mainPendingIntent)
@@ -176,15 +188,24 @@ class SonoraWidgetProvider : AppWidgetProvider() {
                 action = ACTION_WIDGET_PLAY_PAUSE
             }
             val playPausePendingIntent = PendingIntent.getBroadcast(
-                context, 1, playPauseIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                context,
+                1,
+                playPauseIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
-            views.setOnClickPendingIntent(R.id.widget_btn_play_pause_container, playPausePendingIntent)
+            views.setOnClickPendingIntent(
+                R.id.widget_btn_play_pause_container,
+                playPausePendingIntent
+            )
 
             val prevIntent = Intent(context, SonoraWidgetProvider::class.java).apply {
                 action = ACTION_WIDGET_SKIP_PREVIOUS
             }
             val prevPendingIntent = PendingIntent.getBroadcast(
-                context, 2, prevIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                context,
+                2,
+                prevIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
             views.setOnClickPendingIntent(R.id.widget_btn_prev, prevPendingIntent)
 
@@ -192,7 +213,10 @@ class SonoraWidgetProvider : AppWidgetProvider() {
                 action = ACTION_WIDGET_SKIP_NEXT
             }
             val nextPendingIntent = PendingIntent.getBroadcast(
-                context, 3, nextIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                context,
+                3,
+                nextIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
             views.setOnClickPendingIntent(R.id.widget_btn_next, nextPendingIntent)
 
@@ -200,7 +224,10 @@ class SonoraWidgetProvider : AppWidgetProvider() {
                 action = ACTION_WIDGET_CYCLE_REPEAT
             }
             val repeatPendingIntent = PendingIntent.getBroadcast(
-                context, 4, repeatIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                context,
+                4,
+                repeatIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
             views.setOnClickPendingIntent(R.id.widget_btn_repeat, repeatPendingIntent)
 
@@ -208,7 +235,10 @@ class SonoraWidgetProvider : AppWidgetProvider() {
                 action = ACTION_WIDGET_TOGGLE_SHUFFLE
             }
             val shufflePendingIntent = PendingIntent.getBroadcast(
-                context, 5, shuffleIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                context,
+                5,
+                shuffleIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             )
             views.setOnClickPendingIntent(R.id.widget_btn_shuffle, shufflePendingIntent)
 
@@ -228,7 +258,10 @@ class SonoraWidgetProvider : AppWidgetProvider() {
         private fun toggleShuffle(context: Context) {
             val future = MediaController.Builder(
                 context.applicationContext,
-                SessionToken(context.applicationContext, ComponentName(context.applicationContext, SonoraPlaybackService::class.java)),
+                SessionToken(
+                    context.applicationContext,
+                    ComponentName(context.applicationContext, SonoraPlaybackService::class.java)
+                ),
             ).buildAsync()
             future.addListener({
                 runCatching {
@@ -242,7 +275,10 @@ class SonoraWidgetProvider : AppWidgetProvider() {
         private fun cycleRepeat(context: Context) {
             val future = MediaController.Builder(
                 context.applicationContext,
-                SessionToken(context.applicationContext, ComponentName(context.applicationContext, SonoraPlaybackService::class.java)),
+                SessionToken(
+                    context.applicationContext,
+                    ComponentName(context.applicationContext, SonoraPlaybackService::class.java)
+                ),
             ).buildAsync()
             future.addListener({
                 runCatching {

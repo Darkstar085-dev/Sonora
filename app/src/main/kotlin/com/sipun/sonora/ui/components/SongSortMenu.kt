@@ -1,6 +1,5 @@
 package com.sipun.sonora.ui.components
 
-import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Album
 import androidx.compose.material.icons.filled.ArrowDownward
@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Shuffle
-import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,6 +46,7 @@ import com.sipun.sonora.domain.Song
 import com.sipun.sonora.feature.sorting.SongSortOption
 import com.sipun.sonora.feature.sorting.SongSortScope
 import com.sipun.sonora.player.PlayerController
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,7 +59,12 @@ fun SongSortButton(
     var expanded by remember(scope) { mutableStateOf(false) }
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         IconButton(onClick = { expanded = true }) {
-            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = "Sort songs", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.accentGradientTint())
+            Icon(
+                Icons.AutoMirrored.Filled.Sort,
+                contentDescription = "Sort songs",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.accentGradientTint()
+            )
         }
         if (scope == SongSortScope.SONGS) {
             DropdownMenu(
@@ -95,7 +100,11 @@ fun SongSortButton(
                                     )
                                 },
                                 leadingIcon = {
-                                    SortOptionIcon(option, option == currentOption, modifier = Modifier.accentGradientTint())
+                                    SortOptionIcon(
+                                        option,
+                                        option == currentOption,
+                                        modifier = Modifier.accentGradientTint()
+                                    )
                                 },
                                 trailingIcon = {
                                     if (option == currentOption) {
@@ -103,11 +112,15 @@ fun SongSortButton(
                                             Icons.Default.Check,
                                             contentDescription = "Selected",
                                             tint = MaterialTheme.colorScheme.primary,
-                                            modifier = Modifier.size(18.dp).accentGradientTint(),
+                                            modifier = Modifier
+                                                .size(18.dp)
+                                                .accentGradientTint(),
                                         )
                                     }
                                 },
-                                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp),
+                                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                                    horizontal = 10.dp
+                                ),
                                 onClick = {
                                     onOptionSelected(option)
                                     expanded = false
@@ -154,10 +167,16 @@ fun SongSortButton(
                                 .padding(horizontal = 14.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            SortOptionIcon(option, selected, modifier = Modifier.accentGradientTint())
+                            SortOptionIcon(
+                                option,
+                                selected,
+                                modifier = Modifier.accentGradientTint()
+                            )
                             Text(
                                 option.label,
-                                modifier = Modifier.weight(1f).padding(start = 14.dp),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 14.dp),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurface,
                             )
@@ -166,7 +185,9 @@ fun SongSortButton(
                                     Icons.Default.Check,
                                     contentDescription = "Selected",
                                     tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(20.dp).accentGradientTint(),
+                                    modifier = Modifier
+                                        .size(20.dp)
+                                        .accentGradientTint(),
                                 )
                             }
                         }
@@ -180,14 +201,18 @@ fun SongSortButton(
 @Composable
 private fun SortMenuHeading() {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 10.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             Icons.AutoMirrored.Filled.Sort,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(20.dp).accentGradientTint(),
+            modifier = Modifier
+                .size(20.dp)
+                .accentGradientTint(),
         )
         Text(
             "Sort by",
@@ -199,7 +224,11 @@ private fun SortMenuHeading() {
 }
 
 @Composable
-private fun SortOptionIcon(option: SongSortOption, selected: Boolean, modifier: Modifier = Modifier) {
+private fun SortOptionIcon(
+    option: SongSortOption,
+    selected: Boolean,
+    modifier: Modifier = Modifier
+) {
     Icon(
         imageVector = when (option) {
             SongSortOption.TITLE_ASC -> Icons.Default.ArrowUpward
@@ -211,7 +240,9 @@ private fun SortOptionIcon(option: SongSortOption, selected: Boolean, modifier: 
         },
         contentDescription = null,
         tint = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-        modifier = Modifier.size(20.dp).accentGradientTint(),
+        modifier = Modifier
+            .size(20.dp)
+            .accentGradientTint(),
     )
 }
 
@@ -225,12 +256,19 @@ fun SongCollectionControls(
     onOptionSelected: (SongSortOption) -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(onClick = { playerController.playQueueShuffled(songs); onOpenNowPlaying() }) {
-            Icon(Icons.Default.Shuffle, contentDescription = "Shuffle", tint = MaterialTheme.colorScheme.primary, modifier = Modifier.accentGradientTint())
+            Icon(
+                Icons.Default.Shuffle,
+                contentDescription = "Shuffle",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.accentGradientTint()
+            )
         }
         FilledIconButton(
             onClick = { playerController.playQueue(songs); onOpenNowPlaying() },

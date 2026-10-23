@@ -1,6 +1,5 @@
 package com.sipun.sonora.feature.lyrics
 
-import com.sipun.sonora.ui.theme.accentGradientTint
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -45,10 +44,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -56,12 +55,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sipun.sonora.R
-import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.data.lyrics.Lyrics
 import com.sipun.sonora.data.lyrics.LyricsRepository
 import com.sipun.sonora.player.PlayerController
-import com.sipun.sonora.ui.components.SonoraBackButton
 import com.sipun.sonora.ui.components.SongArtworkImage
+import com.sipun.sonora.ui.components.SonoraBackButton
+import com.sipun.sonora.ui.theme.LocalAccentBrush
+import com.sipun.sonora.ui.theme.accentGradientTint
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 
@@ -114,7 +114,9 @@ fun LyricsScreen(playerController: PlayerController, onBack: () -> Unit) {
                     IconButton(onClick = { retry++ }) {
                         Icon(
                             Icons.Default.Refresh,
-                            contentDescription = stringResource(R.string.lyrics_retry), modifier = Modifier.accentGradientTint())
+                            contentDescription = stringResource(R.string.lyrics_retry),
+                            modifier = Modifier.accentGradientTint()
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -253,8 +255,8 @@ private fun LyricsCard(
             val viewportHeight = layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset
             val lowerThreshold = layoutInfo.viewportStartOffset + (viewportHeight * 0.72f).toInt()
             val shouldScroll = activeItem == null ||
-                activeItem.offset + activeItem.size > lowerThreshold ||
-                activeItem.offset < layoutInfo.viewportStartOffset
+                    activeItem.offset + activeItem.size > lowerThreshold ||
+                    activeItem.offset < layoutInfo.viewportStartOffset
 
             if (shouldScroll) {
                 listState.animateScrollToItem((active - 3).coerceAtLeast(0))

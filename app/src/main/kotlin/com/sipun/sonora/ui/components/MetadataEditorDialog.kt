@@ -1,6 +1,5 @@
 package com.sipun.sonora.ui.components
 
-import com.sipun.sonora.ui.theme.accentGradientTint
 import android.app.Activity
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -45,6 +44,7 @@ import com.sipun.sonora.data.media.AndroidMusicRepository
 import com.sipun.sonora.data.media.AudioMetadataEditor
 import com.sipun.sonora.data.media.EditableSongMetadata
 import com.sipun.sonora.domain.Song
+import com.sipun.sonora.ui.theme.accentGradientTint
 import kotlinx.coroutines.launch
 
 @Composable
@@ -205,11 +205,21 @@ fun MetadataEditorDialog(song: Song, onDismiss: () -> Unit, onSaved: (Song) -> U
                                     contentScale = ContentScale.Crop,
                                 )
                             } else {
-                                Icon(Icons.Default.Album, null, modifier = Modifier.size(84.dp).accentGradientTint())
+                                Icon(
+                                    Icons.Default.Album,
+                                    null,
+                                    modifier = Modifier
+                                        .size(84.dp)
+                                        .accentGradientTint()
+                                )
                             }
                             Column(Modifier.padding(start = 12.dp)) {
                                 Button(onClick = { picker.launch("image/*") }) {
-                                    Icon(Icons.Default.Edit, null, modifier = Modifier.accentGradientTint())
+                                    Icon(
+                                        Icons.Default.Edit,
+                                        null,
+                                        modifier = Modifier.accentGradientTint()
+                                    )
                                     Text(
                                         if (preview == null) stringResource(R.string.metadata_add_artwork)
                                         else stringResource(R.string.metadata_change_artwork),
@@ -222,7 +232,11 @@ fun MetadataEditorDialog(song: Song, onDismiss: () -> Unit, onSaved: (Song) -> U
                                         embeddedArtwork = null
                                         artworkChanged = true
                                     }) {
-                                        Icon(Icons.Default.Delete, null, modifier = Modifier.accentGradientTint())
+                                        Icon(
+                                            Icons.Default.Delete,
+                                            null,
+                                            modifier = Modifier.accentGradientTint()
+                                        )
                                         Text(stringResource(R.string.metadata_remove_artwork))
                                     }
                                 }

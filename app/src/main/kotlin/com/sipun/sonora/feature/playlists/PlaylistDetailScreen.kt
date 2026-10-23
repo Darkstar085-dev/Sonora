@@ -2,10 +2,6 @@
 
 package com.sipun.sonora.feature.playlists
 
-import androidx.compose.ui.graphics.Color
-import com.sipun.sonora.ui.theme.accentGradientTint
-import com.sipun.sonora.ui.components.SonoraBackButton
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,10 +18,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistPlay
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -40,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -50,10 +45,12 @@ import com.sipun.sonora.feature.sorting.SongSortOption
 import com.sipun.sonora.feature.sorting.SongSortScope
 import com.sipun.sonora.feature.sorting.sortSongs
 import com.sipun.sonora.player.PlayerController
-import com.sipun.sonora.ui.components.SongActionConfig
 import com.sipun.sonora.ui.components.PlayingEqualizer
-import com.sipun.sonora.ui.components.SongMoreButton
+import com.sipun.sonora.ui.components.SongActionConfig
 import com.sipun.sonora.ui.components.SongCollectionControls
+import com.sipun.sonora.ui.components.SongMoreButton
+import com.sipun.sonora.ui.components.SonoraBackButton
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @Composable
 fun PlaylistDetailScreen(
@@ -130,7 +127,9 @@ fun PlaylistDetailScreen(
                                 Icons.AutoMirrored.Filled.PlaylistPlay,
                                 null,
                                 tint = Color.White,
-                                modifier = Modifier.size(72.dp).accentGradientTint()
+                                modifier = Modifier
+                                    .size(72.dp)
+                                    .accentGradientTint()
                             )
                         }
                         Text(
@@ -155,7 +154,10 @@ fun PlaylistDetailScreen(
                                 currentOption = sortOption,
                                 onOptionSelected = { option ->
                                     sortOption = option
-                                    preferences.setSortOption(SongSortScope.PLAYLIST.key, option.key)
+                                    preferences.setSortOption(
+                                        SongSortScope.PLAYLIST.key,
+                                        option.key
+                                    )
                                 },
                             )
                         }
@@ -163,7 +165,12 @@ fun PlaylistDetailScreen(
                 }
                 itemsIndexed(sortedSongs, key = { _, song -> song.id }) { index, song ->
                     Card(
-                        onClick = { playerController.playQueue(sortedSongs, index); onOpenNowPlaying() },
+                        onClick = {
+                            playerController.playQueue(
+                                sortedSongs,
+                                index
+                            ); onOpenNowPlaying()
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(18.dp),
                     ) {
@@ -193,7 +200,10 @@ fun PlaylistDetailScreen(
                                 )
                             }
                             if (playerState.currentSong?.id == song.id) {
-                                PlayingEqualizer(isPlaying = playerState.isPlaying, modifier = Modifier.padding(end = 8.dp))
+                                PlayingEqualizer(
+                                    isPlaying = playerState.isPlaying,
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
                             }
                             SongMoreButton(
                                 song = song,

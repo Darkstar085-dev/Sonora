@@ -1,6 +1,6 @@
 package com.sipun.sonora.ui.components
 
-import com.sipun.sonora.ui.theme.accentGradientTint
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
@@ -38,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sipun.sonora.core.update.AppUpdate
 import com.sipun.sonora.core.update.DownloadProgress
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @Composable
 fun UpdateDialog(
@@ -151,7 +151,9 @@ fun UpdateDialog(
                         contentColor = MaterialTheme.colorScheme.onPrimary,
                     ),
                 ) {
-                    Icon(Icons.Default.Download, null, Modifier.size(17.dp).accentGradientTint())
+                    Icon(Icons.Default.Download, null, Modifier
+                        .size(17.dp)
+                        .accentGradientTint())
                     Spacer(Modifier.size(6.dp))
                     Text(
                         when {
@@ -253,7 +255,14 @@ private fun UpdateInfoRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(9.dp),
     ) {
-        Icon(icon, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp).accentGradientTint())
+        Icon(
+            icon,
+            null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .size(18.dp)
+                .accentGradientTint()
+        )
         Text(
             label,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

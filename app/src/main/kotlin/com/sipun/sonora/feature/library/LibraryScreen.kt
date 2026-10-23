@@ -1,13 +1,10 @@
 package com.sipun.sonora.feature.library
 
-import androidx.compose.ui.graphics.Color
-import com.sipun.sonora.ui.theme.accentGradientTint
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -51,8 +49,9 @@ import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.domain.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.AddToPlaylistDialog
-import com.sipun.sonora.ui.components.SongArtworkImage
 import com.sipun.sonora.ui.components.PlayingEqualizer
+import com.sipun.sonora.ui.components.SongArtworkImage
+import com.sipun.sonora.ui.theme.accentGradientTint
 
 @Composable
 fun LibraryScreen(playerController: PlayerController, onOpenNowPlaying: () -> Unit) {
@@ -156,10 +155,19 @@ fun LibraryScreen(playerController: PlayerController, onOpenNowPlaying: () -> Un
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
-                    if (playerState.currentSong?.id == song.id) PlayingEqualizer(isPlaying = playerState.isPlaying, modifier = Modifier.padding(end = 4.dp))
+                    if (playerState.currentSong?.id == song.id) PlayingEqualizer(
+                        isPlaying = playerState.isPlaying,
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
                     IconButton(onClick = {
                         playlistSongId = song.id
-                    }) { Icon(Icons.AutoMirrored.Filled.PlaylistAdd, "Add to playlist", modifier = Modifier.accentGradientTint()) }
+                    }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.PlaylistAdd,
+                            "Add to playlist",
+                            modifier = Modifier.accentGradientTint()
+                        )
+                    }
                     IconButton(onClick = {
                         favoriteIds = favoriteIds.toMutableSet()
                             .also { ids -> if (!ids.add(song.id)) ids.remove(song.id) }
@@ -191,7 +199,9 @@ private fun LibraryPermission(onRequest: () -> Unit) {
             Icons.Default.LibraryMusic,
             null,
             tint = Color.White,
-            modifier = Modifier.size(48.dp).accentGradientTint()
+            modifier = Modifier
+                .size(48.dp)
+                .accentGradientTint()
         )
         Text(
             "Access your music",
@@ -232,7 +242,9 @@ private fun EmptyLibraryContent() {
             Icons.Default.AudioFile,
             null,
             tint = Color.White,
-            modifier = Modifier.size(48.dp).accentGradientTint()
+            modifier = Modifier
+                .size(48.dp)
+                .accentGradientTint()
         )
         Text(
             "No music found",
