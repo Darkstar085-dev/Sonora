@@ -1,7 +1,7 @@
 package com.sipun.sonora.data.preferences
 
 import android.content.Context
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 
 data class SonoraPlaylist(
     val id: String,

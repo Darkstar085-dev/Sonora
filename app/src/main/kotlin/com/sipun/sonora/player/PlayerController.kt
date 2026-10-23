@@ -12,7 +12,7 @@ import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
 import com.sipun.sonora.data.media.AndroidMusicRepository
 import com.sipun.sonora.data.preferences.SonoraPreferences
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

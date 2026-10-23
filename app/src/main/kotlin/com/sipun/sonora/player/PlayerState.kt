@@ -1,6 +1,6 @@
 package com.sipun.sonora.player
 
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 
 data class PlayerState(
     val currentSong: Song? = null,

@@ -43,7 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import com.sipun.sonora.feature.sorting.SongSortOption
 import com.sipun.sonora.feature.sorting.SongSortScope
 import com.sipun.sonora.player.PlayerController

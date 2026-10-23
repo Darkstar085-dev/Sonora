@@ -69,7 +69,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import com.sipun.sonora.ui.theme.accentGradientTint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

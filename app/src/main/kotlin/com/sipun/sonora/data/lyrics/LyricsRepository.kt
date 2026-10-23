@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

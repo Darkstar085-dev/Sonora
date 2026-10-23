@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.dp
 import com.sipun.sonora.R
 import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.ui.theme.accentGradientTint
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.player.PlayerState
 

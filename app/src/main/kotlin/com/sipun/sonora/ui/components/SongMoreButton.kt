@@ -55,7 +55,7 @@ import androidx.compose.ui.unit.dp
 import com.sipun.sonora.R
 import com.sipun.sonora.data.media.AudioMetadataEditor
 import com.sipun.sonora.data.preferences.SonoraPreferences
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import com.sipun.sonora.player.PlayerController
 import kotlinx.coroutines.launch
 

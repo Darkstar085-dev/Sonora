@@ -1,4 +1,4 @@
-package com.sipun.sonora.domain.model
+package com.sipun.sonora.domain
 
 data class Song(
     val id: Long,

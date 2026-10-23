@@ -15,13 +15,16 @@ internal class ArtworkLoader(private val context: Context) {
     companion object {
         private const val MAX_ARTWORK_SIZE = 512
         private const val MAX_ARTWORK_BYTES = 2 * 1024 * 1024
+        private val memoryCache = java.util.concurrent.ConcurrentHashMap<String, ByteArray>()
     }
 
     fun extractEmbeddedArtwork(uri: Uri?): ByteArray? {
         if (uri == null) return null
+        val cacheKey = uri.toString()
+        memoryCache[cacheKey]?.let { return it }
 
         val retriever = MediaMetadataRetriever()
-        return try {
+        val result = try {
             retriever.setDataSource(context, uri)
             val embedded = retriever.embeddedPicture
             if (embedded != null) {
@@ -34,12 +37,18 @@ internal class ArtworkLoader(private val context: Context) {
         } finally {
             retriever.release()
         }
+        if (result != null) {
+            memoryCache[cacheKey] = result
+        }
+        return result
     }
 
     fun loadArtwork(uri: Uri?): ByteArray? {
         if (uri == null) return null
+        val cacheKey = uri.toString()
+        memoryCache[cacheKey]?.let { return it }
 
-        return try {
+        val result = try {
             context.contentResolver.openInputStream(uri)?.use { input ->
                 val bytes = input.readBytes()
                 if (bytes.size <= MAX_ARTWORK_BYTES) bytes else resizeArtwork(bytes)
@@ -47,6 +56,10 @@ internal class ArtworkLoader(private val context: Context) {
         } catch (_: Exception) {
             null
         }
+        if (result != null) {
+            memoryCache[cacheKey] = result
+        }
+        return result
     }
 
     private fun extractWithJaudiotagger(uri: Uri): ByteArray? {

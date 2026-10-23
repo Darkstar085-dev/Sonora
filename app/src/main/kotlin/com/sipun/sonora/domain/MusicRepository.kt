@@ -1,6 +1,4 @@
-package com.sipun.sonora.domain.repository
-
-import com.sipun.sonora.domain.model.Song
+package com.sipun.sonora.domain
 
 interface MusicRepository {
     suspend fun songs(): List<Song>

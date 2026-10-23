@@ -42,7 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.data.media.AndroidMusicRepository
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import com.sipun.sonora.feature.sorting.SongSortOption
 import com.sipun.sonora.feature.sorting.SongSortScope
 import com.sipun.sonora.feature.sorting.sortSongs

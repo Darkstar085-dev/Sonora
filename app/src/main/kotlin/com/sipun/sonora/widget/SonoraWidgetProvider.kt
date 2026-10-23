@@ -27,7 +27,7 @@ import com.sipun.sonora.MainActivity
 import com.sipun.sonora.R
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.data.preferences.ThemePreferences
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import com.sipun.sonora.player.ArtworkLoader
 import com.sipun.sonora.player.SonoraPlaybackService
 import java.io.InputStream

@@ -15,7 +15,7 @@ import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.provider.Settings
 import android.webkit.MimeTypeMap
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.io.files.Path

@@ -44,7 +44,7 @@ import com.sipun.sonora.R
 import com.sipun.sonora.data.media.AndroidMusicRepository
 import com.sipun.sonora.data.media.AudioMetadataEditor
 import com.sipun.sonora.data.media.EditableSongMetadata
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import kotlinx.coroutines.launch
 
 @Composable

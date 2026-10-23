@@ -6,8 +6,8 @@ import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
 import com.sipun.sonora.data.preferences.LibraryPreferences
-import com.sipun.sonora.domain.model.Song
-import com.sipun.sonora.domain.repository.MusicRepository
+import com.sipun.sonora.domain.Song
+import com.sipun.sonora.domain.MusicRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

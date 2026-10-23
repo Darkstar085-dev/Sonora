@@ -40,7 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.data.media.AndroidMusicRepository
 import com.sipun.sonora.data.preferences.SonoraPreferences
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.SongArtworkImage
 import com.sipun.sonora.ui.components.PlayingEqualizer

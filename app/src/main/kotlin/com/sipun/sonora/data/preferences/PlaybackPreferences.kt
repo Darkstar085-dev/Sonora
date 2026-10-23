@@ -1,7 +1,7 @@
 package com.sipun.sonora.data.preferences
 
 import android.content.Context
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 
 internal class PlaybackPreferences(context: Context) {
     private val preferences = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)

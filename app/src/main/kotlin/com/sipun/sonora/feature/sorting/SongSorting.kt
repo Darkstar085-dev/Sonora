@@ -1,6 +1,6 @@
 package com.sipun.sonora.feature.sorting
 
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import java.text.Normalizer
 
 enum class SongSortScope(val key: String) {

@@ -56,7 +56,7 @@ import androidx.compose.ui.zIndex
 import com.sipun.sonora.R
 import com.sipun.sonora.data.media.AndroidMusicRepository
 import com.sipun.sonora.data.preferences.SonoraPreferences
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.SonoraMiniPlayer
 import com.sipun.sonora.ui.components.SonoraSearchBar
@@ -123,11 +123,13 @@ fun HomeScreen(
         }
     }
 
-    val filtered = songs.filter {
-        query.isBlank() ||
-                it.title.contains(query, true) ||
-                it.artist.contains(query, true) ||
-                it.album.contains(query, true)
+    val filtered = remember(songs, query) {
+        songs.filter {
+            query.isBlank() ||
+                    it.title.contains(query, true) ||
+                    it.artist.contains(query, true) ||
+                    it.album.contains(query, true)
+        }
     }
 
     Box(Modifier.fillMaxSize()) {

@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.sipun.sonora.data.media.AndroidMusicRepository
 import com.sipun.sonora.data.preferences.SonoraPreferences
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.AddToPlaylistDialog
 import com.sipun.sonora.ui.components.SongArtworkImage

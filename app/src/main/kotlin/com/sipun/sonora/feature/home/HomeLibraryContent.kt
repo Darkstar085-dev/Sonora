@@ -40,7 +40,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sipun.sonora.data.preferences.SonoraPreferences
-import com.sipun.sonora.domain.model.Song
+import com.sipun.sonora.domain.Song
 import com.sipun.sonora.feature.sorting.SongSortOption
 import com.sipun.sonora.feature.sorting.SongSortScope
 import com.sipun.sonora.feature.sorting.sortSongs
@@ -238,7 +238,8 @@ private fun SongCard(
 
 @Composable
 internal fun AlbumList(songs: List<Song>, openAlbum: (String) -> Unit) {
-    val albums = songs.groupBy(Song::album)
+    val albums = remember(songs) { songs.groupBy(Song::album) }
+    val sortedAlbums = remember(albums) { albums.keys.sorted() }
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -246,7 +247,7 @@ internal fun AlbumList(songs: List<Song>, openAlbum: (String) -> Unit) {
         contentPadding = PaddingValues(bottom = 85.dp),
         modifier = Modifier.fillMaxSize(),
     ) {
-        items(albums.keys.sorted(), key = { it }) { album ->
+        items(sortedAlbums, key = { it }) { album ->
             val tracks = albums.getValue(album)
             Card(
                 onClick = { openAlbum(album) },
@@ -297,7 +298,8 @@ internal fun AlbumList(songs: List<Song>, openAlbum: (String) -> Unit) {
 
 @Composable
 internal fun ArtistList(songs: List<Song>, openArtist: (String) -> Unit) {
-    val artists = songs.groupBy(Song::artist)
+    val artists = remember(songs) { songs.groupBy(Song::artist) }
+    val sortedArtists = remember(artists) { artists.keys.sorted() }
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -305,7 +307,7 @@ internal fun ArtistList(songs: List<Song>, openArtist: (String) -> Unit) {
         contentPadding = PaddingValues(bottom = 85.dp),
         modifier = Modifier.fillMaxSize(),
     ) {
-        items(artists.keys.sorted(), key = { it }) { artist ->
+        items(sortedArtists, key = { it }) { artist ->
             val tracks = artists.getValue(artist)
             Card(
                 onClick = { openArtist(artist) },
