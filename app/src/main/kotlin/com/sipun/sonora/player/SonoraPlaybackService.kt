@@ -188,11 +188,7 @@ class SonoraPlaybackService : MediaSessionService() {
 
         override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
             if (!playWhenReady && reason == Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS) {
-                beginExternalPlayback()
-            } else if (playWhenReady &&
-                reason == Player.PLAY_WHEN_READY_CHANGE_REASON_AUDIO_FOCUS_LOSS &&
-                externalPlaybackActive
-            ) {
+                cancelCrossfade()
                 endExternalPlayback()
             }
             if (!playWhenReady &&
@@ -209,7 +205,9 @@ class SonoraPlaybackService : MediaSessionService() {
 
         override fun onPlaybackSuppressionReasonChanged(playbackSuppressionReason: Int) {
             if (playbackSuppressionReason == Player.PLAYBACK_SUPPRESSION_REASON_TRANSIENT_AUDIO_FOCUS_LOSS) {
-                beginExternalPlayback()
+                cancelCrossfade()
+                activePlayer?.pause()
+                endExternalPlayback()
             } else if (playbackSuppressionReason == Player.PLAYBACK_SUPPRESSION_REASON_NONE) {
                 endExternalPlayback()
             }
