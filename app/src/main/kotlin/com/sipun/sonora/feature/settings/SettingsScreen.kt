@@ -207,12 +207,13 @@ fun SettingsScreen(
     }
 
     val lifecycleOwner = LocalLifecycleOwner.current
-    var wallpaperSeed by remember(context) { mutableStateOf(readWallpaperSeed(context)) }
+    var wallpaperSeed by remember(context) { mutableStateOf(Color(0xFFE92B2B)) }
 
     DisposableEffect(context, dynamicColor) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1 || !dynamicColor) {
             onDispose { }
         } else {
+            wallpaperSeed = readWallpaperSeed(context)
             val manager = WallpaperManager.getInstance(context)
             val listener = WallpaperManager.OnColorsChangedListener { colors, which ->
                 if ((which and WallpaperManager.FLAG_SYSTEM) != 0 && colors != null) {
@@ -226,7 +227,6 @@ fun SettingsScreen(
     }
 
     DisposableEffect(lifecycleOwner, context) {
-        refreshPermissionStates()
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) refreshPermissionStates()
         }
@@ -322,17 +322,16 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontFamily = BrushScriptFont,
-                    fontSize = 30.sp,
-                    lineHeight = 36.sp,
+                    fontSize = 34.sp,
+                    lineHeight = 40.sp,
                 ),
-                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
             )
             Text(
                 stringResource(R.string.settings_tagline),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyLarge.copy(
-                    fontSize = 18.sp,
-                    lineHeight = 24.sp,
+                    fontSize = 16.sp,
+                    lineHeight = 22.sp,
                 ),
                 modifier = Modifier.padding(top = 4.dp)
             )

@@ -60,7 +60,7 @@ fun SonoraMiniPlayer(
         shape = MaterialTheme.shapes.large,
         color = MaterialTheme.colorScheme.surfaceContainer,
         tonalElevation = 0.dp,
-        shadowElevation = 5.dp,
+        shadowElevation = 0.dp,
         onClick = onOpenNowPlaying,
     ) {
         Column {

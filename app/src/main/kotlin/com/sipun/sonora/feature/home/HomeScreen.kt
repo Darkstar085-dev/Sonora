@@ -155,8 +155,8 @@ fun HomeScreen(
                             Text(
                                 stringResource(R.string.home_tagline),
                                 style = MaterialTheme.typography.bodyLarge.copy(
-                                    fontSize = 18.sp,
-                                    lineHeight = 24.sp,
+                                    fontSize = 16.sp,
+                                    lineHeight = 22.sp,
                                 ),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )

@@ -164,7 +164,7 @@ internal fun ExpressiveSeekBar(
 
                 val wavePath = androidx.compose.ui.graphics.Path()
                 val waveLength = 34.dp.toPx()
-                val amplitude = 4.dp.toPx()
+                val amplitude = 3.dp.toPx()
                 val angularLength = (2f * kotlin.math.PI).toFloat()
                 val startPhase = (trackStart / waveLength) * angularLength + wavePhase
                 val startY = centerY + kotlin.math.sin(startPhase) * amplitude
@@ -185,7 +185,7 @@ internal fun ExpressiveSeekBar(
                             primary
                         ),
                         style = androidx.compose.ui.graphics.drawscope.Stroke(
-                            width = 4.dp.toPx(),
+                            width = 3.dp.toPx(),
                             cap = androidx.compose.ui.graphics.StrokeCap.Round,
                             join = androidx.compose.ui.graphics.StrokeJoin.Round,
                         ),
@@ -197,7 +197,7 @@ internal fun ExpressiveSeekBar(
                         color = track,
                         start = androidx.compose.ui.geometry.Offset(thumbX, centerY),
                         end = androidx.compose.ui.geometry.Offset(trackEnd, centerY),
-                        strokeWidth = 4.dp.toPx(),
+                        strokeWidth = 3.dp.toPx(),
                         cap = androidx.compose.ui.graphics.StrokeCap.Round,
                     )
                 }
@@ -206,9 +206,9 @@ internal fun ExpressiveSeekBar(
                     brush = if (isPlaying) accentBrush else androidx.compose.ui.graphics.SolidColor(
                         primary
                     ),
-                    start = androidx.compose.ui.geometry.Offset(thumbX, centerY - 11.dp.toPx()),
-                    end = androidx.compose.ui.geometry.Offset(thumbX, centerY + 11.dp.toPx()),
-                    strokeWidth = 4.dp.toPx(),
+                    start = androidx.compose.ui.geometry.Offset(thumbX, centerY - 9.dp.toPx()),
+                    end = androidx.compose.ui.geometry.Offset(thumbX, centerY + 9.dp.toPx()),
+                    strokeWidth = 3.dp.toPx(),
                     cap = androidx.compose.ui.graphics.StrokeCap.Round,
                 )
             }
@@ -298,7 +298,7 @@ internal fun AudioInfoPill(info: AudioInfo, modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 9.dp),
+                .padding(horizontal = 10.dp, vertical = 7.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -317,14 +317,14 @@ internal fun AudioInfoItem(
     value: String,
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             imageVector = icon,
             contentDescription = null,
             modifier = Modifier
-                .size(17.dp)
+                .size(16.dp)
                 .accentGradientTint(),
             tint = Color.White,
         )
@@ -343,7 +343,7 @@ internal fun AudioInfoDivider() {
     Box(
         modifier = Modifier
             .width(1.dp)
-            .height(20.dp)
+            .height(18.dp)
             .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)),
     )
 }

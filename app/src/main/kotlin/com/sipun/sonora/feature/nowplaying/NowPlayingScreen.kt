@@ -558,7 +558,7 @@ fun NowPlayingScreen(
                             .padding(horizontal = 18.dp),
                     )
 
-                    Spacer(Modifier.height(20.dp))
+                    Spacer(Modifier.height(16.dp))
 
                     Row(
                         Modifier.fillMaxWidth(),

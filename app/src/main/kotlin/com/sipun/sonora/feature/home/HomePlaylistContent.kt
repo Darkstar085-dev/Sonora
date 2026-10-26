@@ -109,7 +109,7 @@ internal fun PlaylistList(
         } else {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
-                contentPadding = PaddingValues(bottom = 85.dp),
+                contentPadding = PaddingValues(bottom = 132.dp),
             ) {
                 items(playlists, key = { it.id }) { playlist ->
                     Card(

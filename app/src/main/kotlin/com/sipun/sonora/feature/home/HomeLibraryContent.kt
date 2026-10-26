@@ -70,7 +70,7 @@ internal fun SongList(
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(bottom = 85.dp),
+        contentPadding = PaddingValues(bottom = 132.dp),
     ) {
         item {
             Row(
@@ -157,7 +157,7 @@ internal fun FavoriteList(
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(bottom = 85.dp),
+        contentPadding = PaddingValues(bottom = 132.dp),
     ) {
         itemsIndexed(songs, key = { _, song -> song.id }) { index, song ->
             SongCard(
@@ -249,7 +249,7 @@ internal fun AlbumList(songs: List<Song>, openAlbum: (String) -> Unit) {
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(bottom = 85.dp),
+        contentPadding = PaddingValues(bottom = 132.dp),
         modifier = Modifier.fillMaxSize(),
     ) {
         items(sortedAlbums, key = { it }) { album ->
@@ -309,7 +309,7 @@ internal fun ArtistList(songs: List<Song>, openArtist: (String) -> Unit) {
         columns = GridCells.Fixed(2),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(bottom = 85.dp),
+        contentPadding = PaddingValues(bottom = 132.dp),
         modifier = Modifier.fillMaxSize(),
     ) {
         items(sortedArtists, key = { it }) { artist ->

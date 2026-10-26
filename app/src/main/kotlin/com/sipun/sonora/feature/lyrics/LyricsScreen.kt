@@ -153,7 +153,7 @@ fun LyricsScreen(playerController: PlayerController, onBack: () -> Unit) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 20.dp),
+                    .padding(top = 8.dp, bottom = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(
@@ -294,7 +294,7 @@ private fun LyricsCard(
                             targetValue = if (isActive) {
                                 MaterialTheme.colorScheme.primary
                             } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.72f)
                             },
                             animationSpec = tween(durationMillis = 220),
                             label = "lyrics_text_color",
@@ -339,7 +339,7 @@ private fun LyricsCard(
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .height(58.dp)
+                    .height(40.dp)
                     .align(Alignment.TopCenter)
                     .background(
                         Brush.verticalGradient(
@@ -351,7 +351,7 @@ private fun LyricsCard(
             Box(
                 Modifier
                     .fillMaxWidth()
-                    .height(72.dp)
+                    .height(44.dp)
                     .align(Alignment.BottomCenter)
                     .background(
                         Brush.verticalGradient(
