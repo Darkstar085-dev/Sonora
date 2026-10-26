@@ -67,6 +67,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -76,6 +77,7 @@ import com.sipun.sonora.R
 import com.sipun.sonora.data.preferences.AppTheme
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.data.preferences.ThemePreferences
+import com.sipun.sonora.ui.theme.BrushScriptFont
 
 @Composable
 fun SettingsScreen(
@@ -317,13 +319,21 @@ fun SettingsScreen(
         Column(Modifier.padding(top = 20.dp, bottom = 18.dp)) {
             Text(
                 stringResource(R.string.settings_title),
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontFamily = BrushScriptFont,
+                    fontSize = 30.sp,
+                    lineHeight = 36.sp,
+                ),
                 fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
             )
             Text(
                 stringResource(R.string.settings_tagline),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = 18.sp,
+                    lineHeight = 24.sp,
+                ),
                 modifier = Modifier.padding(top = 4.dp)
             )
         }

@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.airbnb.lottie.LottieProperty
 import com.airbnb.lottie.compose.LottieAnimation
@@ -63,6 +64,7 @@ import com.airbnb.lottie.compose.rememberLottieDynamicProperty
 import com.sipun.sonora.BuildConfig
 import com.sipun.sonora.R
 import com.sipun.sonora.data.preferences.DynamicPalette
+import com.sipun.sonora.ui.theme.BrushScriptFont
 import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.ui.theme.WallpaperPalette
 import com.sipun.sonora.ui.theme.wallpaperPalette
@@ -975,7 +977,7 @@ internal fun SettingsSection(title: String, content: @Composable ColumnScope.() 
     Text(
         title,
         color = MaterialTheme.colorScheme.primary,
-        style = MaterialTheme.typography.labelLarge,
+        style = MaterialTheme.typography.titleLarge.copy(fontFamily = BrushScriptFont, fontSize = 22.sp, lineHeight = 30.sp),
         modifier = Modifier.padding(start = 4.dp, bottom = 8.dp, top = 8.dp)
     )
     Card(

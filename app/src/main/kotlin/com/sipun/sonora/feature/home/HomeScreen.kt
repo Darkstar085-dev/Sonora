@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.sipun.sonora.R
 import com.sipun.sonora.data.media.AndroidMusicRepository
@@ -60,6 +61,7 @@ import com.sipun.sonora.domain.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.SonoraMiniPlayer
 import com.sipun.sonora.ui.components.SonoraSearchBar
+import com.sipun.sonora.ui.theme.BrushScriptFont
 import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.ui.theme.accentGradientTint
 import kotlinx.coroutines.launch
@@ -143,11 +145,19 @@ fun HomeScreen(
                         Column {
                             Text(
                                 stringResource(R.string.app_name),
-                                style = MaterialTheme.typography.headlineSmall
+                                style = MaterialTheme.typography.headlineSmall.copy(
+                                    fontFamily = BrushScriptFont,
+                                    fontSize = 34.sp,
+                                    lineHeight = 40.sp,
+                                ),
+                                color = MaterialTheme.colorScheme.primary
                             )
                             Text(
                                 stringResource(R.string.home_tagline),
-                                style = MaterialTheme.typography.bodySmall,
+                                style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontSize = 18.sp,
+                                    lineHeight = 24.sp,
+                                ),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }

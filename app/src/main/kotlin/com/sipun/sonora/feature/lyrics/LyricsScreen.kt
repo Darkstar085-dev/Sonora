@@ -53,6 +53,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sipun.sonora.R
 import com.sipun.sonora.data.lyrics.Lyrics
@@ -60,6 +61,7 @@ import com.sipun.sonora.data.lyrics.LyricsRepository
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.ui.components.SongArtworkImage
 import com.sipun.sonora.ui.components.SonoraBackButton
+import com.sipun.sonora.ui.theme.InterFont
 import com.sipun.sonora.ui.theme.LocalAccentBrush
 import com.sipun.sonora.ui.theme.accentGradientTint
 import kotlinx.coroutines.CancellationException
@@ -318,7 +320,11 @@ private fun LyricsCard(
 
                         Text(
                             text = line.text,
-                            style = MaterialTheme.typography.titleLarge,
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontFamily = InterFont,
+                                fontSize = 22.sp,
+                                lineHeight = 32.sp,
+                            ),
                             fontWeight = if (isActive) {
                                 FontWeight.Bold
                             } else {

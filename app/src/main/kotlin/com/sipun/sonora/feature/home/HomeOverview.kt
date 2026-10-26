@@ -43,12 +43,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.sipun.sonora.R
 import com.sipun.sonora.data.preferences.SonoraPreferences
 import com.sipun.sonora.domain.Song
 import com.sipun.sonora.player.PlayerController
 import com.sipun.sonora.player.PlayerState
 import com.sipun.sonora.ui.components.SongMoreButton
+import com.sipun.sonora.ui.theme.BrushScriptFont
 import com.sipun.sonora.ui.theme.LocalAccentBrush
 
 @Composable
@@ -148,7 +150,8 @@ internal fun Overview(
         item {
             Text(
                 stringResource(R.string.recently_added),
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge.copy(fontFamily = BrushScriptFont, fontSize = 22.sp, lineHeight = 30.sp),
+                color = MaterialTheme.colorScheme.primary,
             )
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -229,7 +232,8 @@ internal fun Overview(
             item {
                 Text(
                     stringResource(R.string.continue_listening),
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge.copy(fontFamily = BrushScriptFont, fontSize = 22.sp, lineHeight = 30.sp),
+                    color = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(Modifier.size(8.dp))
                 Card(
