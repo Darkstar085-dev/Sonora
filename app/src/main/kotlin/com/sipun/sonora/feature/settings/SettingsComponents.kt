@@ -192,6 +192,10 @@ internal fun CrossfadeSelector(
             onValueChange = { onSecondsChange(it.toInt()) },
             valueRange = 0f..12f,
             steps = 11,
+            colors = SliderDefaults.colors(
+                inactiveTrackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.15f),
+                inactiveTickColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.25f),
+            ),
             modifier = Modifier.padding(start = 42.dp, top = 2.dp),
         )
     }
