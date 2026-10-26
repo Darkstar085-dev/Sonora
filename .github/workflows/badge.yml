@@ -33,7 +33,7 @@ jobs:
           git config user.email "sipunkumar85@gmail.com"
 
           date_ist=$(TZ='Asia/Kolkata' date +'%d-%m-%Y %I:%M %p')
-          commit_title="chore: update APK download badge - ${date_ist}"
+          commit_title="chore(badge): update APK download badge - ${date_ist}"
           description="- Refresh cumulative APK download count from Sonora releases"
 
           git add .github/badges/downloads.json
