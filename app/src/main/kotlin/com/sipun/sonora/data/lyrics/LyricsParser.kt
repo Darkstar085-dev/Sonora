@@ -3,6 +3,7 @@ package com.sipun.sonora.data.lyrics
 internal object LyricsParser {
     private val lrcTimestamp = Regex("""\[(\d{1,3}):(\d{2})(?:\.(\d{1,3}))?\]""")
     private val wordTimestamp = Regex("""<(\d{1,3}):(\d{2})(?:\.(\d{1,3}))?>""")
+    private val offsetMetadata = Regex("""^\s*\[offset\s*:\s*([+-]?\d+)\s*]$""", RegexOption.IGNORE_CASE)
     private val metadata = Regex(
         """^\s*\[(?:(?:ti|ar|al|by|re|ve|length|offset|kana|la|au|tool|id|sign)\s*:.*|x-[^]]+)\]$""",
         RegexOption.IGNORE_CASE,
@@ -12,10 +13,20 @@ internal object LyricsParser {
     private const val WORD_GAP_LINE_BREAK_MS = 1_800L
 
     fun parse(value: String): Lyrics {
-        val lines = value.lineSequence()
+        val sourceLines = value.lineSequence().toList()
+        val offsetMs = sourceLines
+            .firstNotNullOfOrNull { line ->
+                offsetMetadata.matchEntire(line)?.groupValues?.get(1)?.toLongOrNull()
+            } ?: 0L
+        val lines = sourceLines.asSequence()
             .filterNot { metadata.matches(it) }
             .flatMap(::parseLine)
             .filter { it.text.isNotEmpty() }
+            .map { line ->
+                line.copy(
+                    startMs = line.startMs?.let { (it + offsetMs).coerceAtLeast(0L) },
+                )
+            }
             .toList()
         return Lyrics(lines, lines.any { it.startMs != null })
     }

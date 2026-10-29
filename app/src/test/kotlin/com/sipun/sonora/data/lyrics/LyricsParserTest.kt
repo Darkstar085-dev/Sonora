@@ -18,6 +18,34 @@ class LyricsParserTest {
     }
 
     @Test
+    fun appliesPositiveLrcOffsetToSyncedLyrics() {
+        val lyrics = LyricsParser.parse(
+            "[offset:+250]\n[00:01.20]First line\n[00:03.450]Second line"
+        )
+
+        assertEquals(listOf(1_450L, 3_700L), lyrics.lines.mapNotNull(LyricsLine::startMs))
+    }
+
+    @Test
+    fun appliesNegativeLrcOffsetWithoutNegativeTimestamps() {
+        val lyrics = LyricsParser.parse(
+            "[offset:-1500]\n[00:01.20]First line\n[00:03.450]Second line"
+        )
+
+        assertEquals(listOf(0L, 1_950L), lyrics.lines.mapNotNull(LyricsLine::startMs))
+    }
+
+    @Test
+    fun appliesLrcOffsetToEnhancedWordTimestamps() {
+        val lyrics = LyricsParser.parse(
+            "[offset:100]\n<00:01.20>Hello <00:01.50>there"
+        )
+
+        assertEquals(1_300L, lyrics.lines.single().startMs)
+        assertEquals("Hello there", lyrics.lines.single().text)
+    }
+
+    @Test
     fun groupsEnhancedWordTimestampsIntoReadableSyncedLines() {
         val lyrics = LyricsParser.parse(
             "<00:52.69>तो <00:53.01>फिर <00:53.66>आओ, <00:56.79>मुझको <00:57.764>सताओ"
