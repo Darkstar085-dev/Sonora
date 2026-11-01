@@ -155,6 +155,7 @@ fun HomeScreen(
                             Text(
                                 stringResource(R.string.home_tagline),
                                 style = MaterialTheme.typography.bodyLarge.copy(
+                                    fontFamily = BrushScriptFont,
                                     fontSize = 16.sp,
                                     lineHeight = 22.sp,
                                 ),

@@ -330,6 +330,7 @@ fun SettingsScreen(
                 stringResource(R.string.settings_tagline),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyLarge.copy(
+                    fontFamily = BrushScriptFont,
                     fontSize = 16.sp,
                     lineHeight = 22.sp,
                 ),
