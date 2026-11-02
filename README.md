@@ -80,7 +80,7 @@ streaming service.
 
 <p align="center">
   <img src=".github/assets/settings.png" width="31%" alt="Sonora settings">
-  <img src=".github/assets/settings2.png" width="31%" alt="Sonora more settings">
+  <img src=".github/assets/settings_2.png" width="31%" alt="Sonora more settings">
   <img src=".github/assets/about.png" width="31%" alt="Sonora About screen">
 </p>
 
@@ -105,6 +105,8 @@ streaming service.
 - Optional resume playback, playback-position memory, and listening history
 - Optional volume normalization and keep-screen-awake setting
 - Playback speed controls, background playback, and system media controls
+- Resume playback after transient audio-focus interruptions, including phone calls
+- A refined Now Playing seek bar and compact audio metadata presentation
 - Media notification and a 4×2 home-screen widget with artwork and playback controls
 - Open audio files directly from compatible file managers
 
@@ -113,7 +115,9 @@ streaming service.
 - Fetch lyrics from LRCLIB, with fast timeouts and targeted matching
 - Cache lyrics on disk and show cached results immediately while refreshing online in the background
 - Fall back to matching local `.lrc` sidecar files and lyrics embedded in audio tags
-- Parse synced, enhanced word-timestamped, and plain-text lyrics
+- Parse synced, enhanced word-timestamped, and plain-text lyrics, including signed LRC offset
+  metadata
+- Keep the active synced line centered during playback, with tap-to-seek and soft fading edges
 
 ### Metadata
 
@@ -126,7 +130,8 @@ streaming service.
 
 - Follow the system theme or choose light, dark, and pure-black dark modes
 - Use Android dynamic color with selectable palette styles
-- Choose solid accent colors or gradient presets, including custom gradient colors
+- Choose solid accent colors or refreshed gradient presets, including custom gradient colors
+- Use a consistent type system across Home, Settings, lyrics, and supporting UI
 - Adjust hue and personalize the look of the interface
 
 ### Android Integration
@@ -134,6 +139,7 @@ streaming service.
 - First-launch onboarding and guided media-permission setup
 - Battery-optimization exemption prompt to help support reliable background playback
 - Manage media, notification, metadata-editing, and related permissions
+- Use Android MediaStore confirmation requests when deleting audio on Android 11 and newer
 - WorkManager-based app-update checks, verified update installation, and update notifications
 - Theme-aware settings and dialogs throughout the app
 
