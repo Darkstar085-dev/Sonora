@@ -235,52 +235,52 @@ internal fun CustomColorSelector(
     )
     val gradients = listOf(
         com.sipun.sonora.data.preferences.AccentGradient.SUNSET to listOf(
-            Color(0xFFFF7A00),
-            Color(0xFFFF006E)
+            Color(0xFF667EEA),
+            Color(0xFF764BA2),
         ),
         com.sipun.sonora.data.preferences.AccentGradient.OCEAN to listOf(
-            Color(0xFF0066FF),
-            Color(0xFF00E5FF)
+            Color(0xFF00C6FF),
+            Color(0xFF0072FF),
         ),
         com.sipun.sonora.data.preferences.AccentGradient.AURORA to listOf(
-            Color(0xFF00F5A0),
-            Color(0xFF8A2BE2)
+            Color(0xFF43E97B),
+            Color(0xFF38F9D7),
         ),
         com.sipun.sonora.data.preferences.AccentGradient.PURPLE_HAZE to listOf(
-            Color(0xFF6A00FF),
-            Color(0xFFFF6EC7)
+            Color(0xFF8E44AD),
+            Color(0xFFF8B500),
         ),
         com.sipun.sonora.data.preferences.AccentGradient.PEACH to listOf(
-            Color(0xFFFFD1A9),
-            Color(0xFFFF6B6B)
+            Color(0xFFFF7E5F),
+            Color(0xFFFEB47B),
         ),
         com.sipun.sonora.data.preferences.AccentGradient.EMERALD to listOf(
-            Color(0xFF006D5B),
-            Color(0xFFA4FF6B)
+            Color(0xFF11998E),
+            Color(0xFF38EF7D),
         ),
         com.sipun.sonora.data.preferences.AccentGradient.CHERRY to listOf(
-            Color(0xFFFF1744),
-            Color(0xFFFF8ED1)
+            Color(0xFFFF2D55),
+            Color(0xFFFFA600),
         ),
         com.sipun.sonora.data.preferences.AccentGradient.ROYAL to listOf(
-            Color(0xFF1A2ED8),
-            Color(0xFFFFDB35)
+            Color(0xFF56CCF2),
+            Color(0xFF2F80ED),
         ),
         com.sipun.sonora.data.preferences.AccentGradient.AMBER to listOf(
-            Color(0xFFFFC107),
-            Color(0xFFFF3D00)
+            Color(0xFFFF6EC7),
+            Color(0xFFFF9A44),
         ),
         com.sipun.sonora.data.preferences.AccentGradient.MINT to listOf(
-            Color(0xFF00E676),
-            Color(0xFF40C4FF)
+            Color(0xFF0F2027),
+            Color(0xFF203A43),
         ),
         com.sipun.sonora.data.preferences.AccentGradient.ROSE to listOf(
-            Color(0xFFD81B60),
-            Color(0xFFFFAB91)
+            Color(0xFFA18CD1),
+            Color(0xFFFBC2EB),
         ),
         com.sipun.sonora.data.preferences.AccentGradient.INDIGO to listOf(
-            Color(0xFF3949AB),
-            Color(0xFF00BCD4)
+            Color(0xFFFF9966),
+            Color(0xFFFF5E62),
         ),
     )
     val hsv = remember(color) {
