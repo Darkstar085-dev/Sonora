@@ -977,7 +977,11 @@ internal fun SettingsSection(title: String, content: @Composable ColumnScope.() 
     Text(
         title,
         color = MaterialTheme.colorScheme.primary,
-        style = MaterialTheme.typography.titleLarge.copy(fontFamily = BrushScriptFont, fontSize = 22.sp, lineHeight = 30.sp),
+        style = MaterialTheme.typography.titleLarge.copy(
+            fontFamily = BrushScriptFont,
+            fontSize = 22.sp,
+            lineHeight = 30.sp
+        ),
         modifier = Modifier.padding(start = 4.dp, bottom = 8.dp, top = 8.dp)
     )
     Card(

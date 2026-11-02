@@ -150,7 +150,11 @@ internal fun Overview(
         item {
             Text(
                 stringResource(R.string.recently_added),
-                style = MaterialTheme.typography.titleLarge.copy(fontFamily = BrushScriptFont, fontSize = 22.sp, lineHeight = 30.sp),
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontFamily = BrushScriptFont,
+                    fontSize = 22.sp,
+                    lineHeight = 30.sp
+                ),
                 color = MaterialTheme.colorScheme.primary,
             )
             LazyRow(
@@ -232,7 +236,11 @@ internal fun Overview(
             item {
                 Text(
                     stringResource(R.string.continue_listening),
-                    style = MaterialTheme.typography.titleLarge.copy(fontFamily = BrushScriptFont, fontSize = 22.sp, lineHeight = 30.sp),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontFamily = BrushScriptFont,
+                        fontSize = 22.sp,
+                        lineHeight = 30.sp
+                    ),
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Spacer(Modifier.size(8.dp))

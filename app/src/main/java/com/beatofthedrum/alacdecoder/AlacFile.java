@@ -36,6 +36,7 @@ package com.beatofthedrum.alacdecoder;
 
 class AlacFile {
 
+    private final int buffer_size = 16384;
     public int[] predictor_coef_table = new int[1024];
     public int[] predictor_coef_table_a = new int[1024];
     public int[] predictor_coef_table_b = new int[1024];
@@ -62,7 +63,6 @@ class AlacFile {
     int setinfo_86 = 0; // 0x00069fe4
     /* bit rate (avarge)?? */
     int setinfo_8a_rate = 0; // 0x0000ac44
-    private final int buffer_size = 16384;
     /* buffers */
     int[] predicterror_buffer_a = new int[buffer_size];
     int[] predicterror_buffer_b = new int[buffer_size];

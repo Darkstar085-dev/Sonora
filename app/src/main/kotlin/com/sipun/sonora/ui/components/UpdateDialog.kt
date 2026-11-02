@@ -151,9 +151,11 @@ fun UpdateDialog(
                         contentColor = MaterialTheme.colorScheme.onPrimary,
                     ),
                 ) {
-                    Icon(Icons.Default.Download, null, Modifier
-                        .size(17.dp)
-                        .accentGradientTint())
+                    Icon(
+                        Icons.Default.Download, null, Modifier
+                            .size(17.dp)
+                            .accentGradientTint()
+                    )
                     Spacer(Modifier.size(6.dp))
                     Text(
                         when {

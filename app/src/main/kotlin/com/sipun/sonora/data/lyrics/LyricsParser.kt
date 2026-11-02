@@ -3,7 +3,8 @@ package com.sipun.sonora.data.lyrics
 internal object LyricsParser {
     private val lrcTimestamp = Regex("""\[(\d{1,3}):(\d{2})(?:\.(\d{1,3}))?\]""")
     private val wordTimestamp = Regex("""<(\d{1,3}):(\d{2})(?:\.(\d{1,3}))?>""")
-    private val offsetMetadata = Regex("""^\s*\[offset\s*:\s*([+-]?\d+)\s*]$""", RegexOption.IGNORE_CASE)
+    private val offsetMetadata =
+        Regex("""^\s*\[offset\s*:\s*([+-]?\d+)\s*]$""", RegexOption.IGNORE_CASE)
     private val metadata = Regex(
         """^\s*\[(?:(?:ti|ar|al|by|re|ve|length|offset|kana|la|au|tool|id|sign)\s*:.*|x-[^]]+)\]$""",
         RegexOption.IGNORE_CASE,

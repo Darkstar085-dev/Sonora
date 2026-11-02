@@ -369,9 +369,11 @@ internal fun SongInfoDialog(song: Song, onDismiss: () -> Unit) {
             tonalElevation = 0.dp,
             shadowElevation = 8.dp,
         ) {
-            Column(Modifier
-                .fillMaxWidth()
-                .padding(24.dp)) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp)
+            ) {
                 DialogTitle("Song info")
                 Spacer(Modifier.height(20.dp))
                 SongInfoItem("Title", song.title)
@@ -389,9 +391,11 @@ internal fun SongInfoDialog(song: Song, onDismiss: () -> Unit) {
 
 @Composable
 private fun SongInfoItem(label: String, value: String) {
-    Column(Modifier
-        .fillMaxWidth()
-        .padding(vertical = 7.dp)) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 7.dp)
+    ) {
         Text(
             label,
             style = MaterialTheme.typography.labelLarge,
@@ -459,9 +463,11 @@ internal fun PlaybackSpeedDialog(
             tonalElevation = 0.dp,
             shadowElevation = 8.dp,
         ) {
-            Column(Modifier
-                .fillMaxWidth()
-                .padding(24.dp)) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp)
+            ) {
                 DialogTitle("Playback speed")
                 Spacer(Modifier.height(20.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -507,9 +513,11 @@ internal fun SleepTimerDialog(
             tonalElevation = 0.dp,
             shadowElevation = 8.dp,
         ) {
-            Column(Modifier
-                .fillMaxWidth()
-                .padding(24.dp)) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp)
+            ) {
                 DialogTitle("Sleep timer")
                 Spacer(Modifier.height(20.dp))
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
